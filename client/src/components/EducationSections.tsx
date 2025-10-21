@@ -15,35 +15,35 @@ export default function EducationSections() {
         <div className="grid sm:grid-cols-2 gap-4 mt-8">
           <div 
             className="p-8 rounded-lg border-2 flex flex-col items-center justify-center min-h-[180px]"
-            style={{ backgroundColor: '#FF1B8D', borderColor: '#FF1B8D' }}
+            style={{ backgroundColor: '#652B6B', borderColor: '#652B6B' }}
           >
             <p 
               className="text-3xl font-bold mb-3" 
-              style={{ color: '#FFFFFF' }}
+              style={{ color: '#FFC1EA' }}
               data-testid="text-good-contrast"
             >
               Can You Read This?
             </p>
             <div className="text-center">
-              <p className="text-sm font-semibold text-white">✓ 6.5:1 Contrast</p>
-              <p className="text-xs text-white/80 mt-1">Passes WCAG AA & AAA</p>
+              <p className="text-sm font-semibold" style={{ color: '#FFC1EA' }}>✓ 6.7:1 Contrast</p>
+              <p className="text-xs mt-1" style={{ color: '#FFC1EA', opacity: 0.8 }}>Passes WCAG AA & AAA</p>
             </div>
           </div>
           
           <div 
             className="p-8 rounded-lg border-2 flex flex-col items-center justify-center min-h-[180px]"
-            style={{ backgroundColor: '#FF1B8D', borderColor: '#FF1B8D' }}
+            style={{ backgroundColor: '#652B6B', borderColor: '#652B6B' }}
           >
             <p 
               className="text-3xl font-bold mb-3" 
-              style={{ color: '#FF9FD4' }}
+              style={{ color: '#834178' }}
               data-testid="text-poor-contrast"
             >
               Can You Read This?
             </p>
             <div className="text-center">
-              <p className="text-sm font-semibold text-white">✗ 1.4:1 Contrast</p>
-              <p className="text-xs text-white/80 mt-1">Fails all WCAG standards</p>
+              <p className="text-sm font-semibold" style={{ color: '#FFC1EA' }}>✗ 1.4:1 Contrast</p>
+              <p className="text-xs mt-1" style={{ color: '#FFC1EA', opacity: 0.8 }}>Fails all WCAG standards</p>
             </div>
           </div>
         </div>
