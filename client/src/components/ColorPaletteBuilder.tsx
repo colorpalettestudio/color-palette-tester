@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, X, Pipette } from "lucide-react";
+import { Plus, X, Pipette, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { parseColor, rgbToHex, type RGB } from "@/lib/colorUtils";
@@ -15,6 +15,7 @@ export default function ColorPaletteBuilder({
 }: ColorPaletteBuilderProps) {
   const [newColorInput, setNewColorInput] = useState("");
   const [colorPickerValue, setColorPickerValue] = useState("#000000");
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const handleAddColor = (colorString: string) => {
     if (!colorString.trim()) return;
@@ -80,8 +81,48 @@ export default function ColorPaletteBuilder({
     }
   };
 
+  const handleClearPalette = () => {
+    onColorsChange([]);
+  };
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const newColors = [...colors];
+    const draggedColor = newColors[draggedIndex];
+    newColors.splice(draggedIndex, 1);
+    newColors.splice(index, 0, draggedColor);
+    
+    onColorsChange(newColors);
+    setDraggedIndex(index);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+
   return (
     <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium text-foreground">Your Palette</p>
+        {colors.length > 0 && (
+          <Button
+            onClick={handleClearPalette}
+            variant="ghost"
+            size="sm"
+            data-testid="button-clear-palette"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Clear Palette
+          </Button>
+        )}
+      </div>
+
       <div className="flex flex-wrap gap-3 min-h-[60px] p-4 bg-muted/30 rounded-md border border-border">
         {colors.length === 0 && (
           <p className="text-sm text-muted-foreground italic">
@@ -94,13 +135,17 @@ export default function ColorPaletteBuilder({
           return (
             <div
               key={`${hexValue}-${index}`}
-              className="group relative"
+              className="group relative cursor-move"
               data-testid={`color-chip-${index}`}
+              draggable
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragEnd={handleDragEnd}
             >
               <div
                 className="w-16 h-16 rounded-md border-2 border-border hover-elevate transition-all"
                 style={{ backgroundColor: hexValue }}
-                title={hexValue}
+                title={`${hexValue} - Drag to reorder`}
               />
               <button
                 onClick={() => handleRemoveColor(index)}

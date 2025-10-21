@@ -208,8 +208,6 @@ export default function Home() {
           onSampleClick={handleSampleColors}
           colors={colors}
           onColorsChange={setColors}
-          wcagLevel={wcagLevel}
-          onWcagLevelChange={setWcagLevel}
         />
 
         <AdPlaceholder className="my-6" />

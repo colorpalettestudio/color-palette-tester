@@ -7,8 +7,6 @@ interface HeroSectionProps {
   onSampleClick: () => void;
   colors: RGB[];
   onColorsChange: (colors: RGB[]) => void;
-  wcagLevel: string;
-  onWcagLevelChange: (value: string) => void;
 }
 
 export default function HeroSection({
@@ -16,8 +14,6 @@ export default function HeroSection({
   onSampleClick,
   colors,
   onColorsChange,
-  wcagLevel,
-  onWcagLevelChange,
 }: HeroSectionProps) {
   return (
     <div className="text-center space-y-8">
@@ -63,35 +59,6 @@ export default function HeroSection({
           >
             Try sample colors
           </button>
-        </div>
-
-        <div className="space-y-3">
-          <p className="text-sm font-medium text-foreground">WCAG Level</p>
-          <div className="flex flex-wrap gap-4 justify-center">
-            {[
-              { value: "aa-small", label: "AA Small (4.5)", threshold: 4.5 },
-              { value: "aa-large", label: "AA Large (3.0)", threshold: 3.0 },
-              { value: "aaa-small", label: "AAA Small (7.0)", threshold: 7.0 },
-              { value: "aaa-large", label: "AAA Large (4.5)", threshold: 4.5 },
-            ].map((option) => (
-              <label
-                key={option.value}
-                className="flex items-center gap-2 cursor-pointer"
-                data-testid={`label-wcag-${option.value}`}
-              >
-                <input
-                  type="radio"
-                  name="wcag-level"
-                  value={option.value}
-                  checked={wcagLevel === option.value}
-                  onChange={(e) => onWcagLevelChange(e.target.value)}
-                  className="w-4 h-4 text-primary focus:ring-2 focus:ring-ring"
-                  data-testid={`radio-wcag-${option.value}`}
-                />
-                <span className="text-sm text-foreground">{option.label}</span>
-              </label>
-            ))}
-          </div>
         </div>
       </div>
     </div>
