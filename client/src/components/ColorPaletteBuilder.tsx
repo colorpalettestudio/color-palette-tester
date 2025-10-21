@@ -222,54 +222,81 @@ export default function ColorPaletteBuilder({
       )}
 
       {/* Add Colors Section */}
-      <div className="p-6 rounded-lg border-2 border-dashed border-border bg-muted/30 space-y-4">
+      <div className="p-6 rounded-lg border-2 border-dashed border-border bg-muted/30 space-y-5">
         <h3 className="text-sm font-semibold text-foreground">Add Colors to Your Palette</h3>
         
-        <div className="grid sm:grid-cols-2 gap-3">
-          <div className="flex gap-2">
-            <Input
-              placeholder="Paste: #FF6F61, rgb(255,111,97)..."
-              value={bulkInput}
-              onChange={(e) => setBulkInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleBulkPaste();
-              }}
-              className="flex-1"
-              data-testid="input-bulk-colors"
-            />
-            <Button
-              onClick={handleBulkPaste}
-              disabled={!bulkInput.trim()}
-              size="sm"
-              data-testid="button-add-bulk"
-            >
-              <Plus className="w-4 h-4" />
-            </Button>
+        <div className="grid sm:grid-cols-2 gap-6">
+          {/* Import Multiple Colors */}
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Import Multiple Colors
+            </label>
+            <div className="flex gap-2">
+              <Input
+                placeholder="#FF6F61, #FDD66F, rgb(142,214,169)..."
+                value={bulkInput}
+                onChange={(e) => setBulkInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleBulkPaste();
+                }}
+                className="flex-1"
+                data-testid="input-bulk-colors"
+              />
+              <Button
+                onClick={handleBulkPaste}
+                disabled={!bulkInput.trim()}
+                size="default"
+                data-testid="button-add-bulk"
+              >
+                Import
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Paste multiple colors separated by commas
+            </p>
           </div>
 
-          <div className="flex gap-2">
-            <Input
-              placeholder="Type: #FF6F61"
-              value={singleInput}
-              onChange={(e) => setSingleInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleAddSingle();
-              }}
-              className="flex-1"
-              data-testid="input-single-color"
-            />
-            <Button
-              onClick={handleAddSingle}
-              disabled={!singleInput.trim()}
-              size="sm"
-              data-testid="button-add-single"
-            >
-              <Plus className="w-4 h-4" />
-            </Button>
+          {/* Add Single Color */}
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+              Add Single Color
+            </label>
+            <div className="flex gap-2">
+              <div className="relative flex-1 flex gap-2">
+                <input
+                  type="color"
+                  value={singleInput.startsWith('#') && singleInput.length === 7 ? singleInput : '#000000'}
+                  onChange={(e) => setSingleInput(e.target.value)}
+                  className="h-9 w-12 rounded-md border border-input cursor-pointer"
+                  data-testid="input-color-picker"
+                />
+                <Input
+                  placeholder="#FF6F61"
+                  value={singleInput}
+                  onChange={(e) => setSingleInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleAddSingle();
+                  }}
+                  className="flex-1"
+                  data-testid="input-single-color"
+                />
+              </div>
+              <Button
+                onClick={handleAddSingle}
+                disabled={!singleInput.trim()}
+                size="default"
+                data-testid="button-add-single"
+              >
+                Add
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Use the picker or type a color code
+            </p>
           </div>
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center pt-2">
           <Button
             onClick={onSampleClick}
             variant="outline"
