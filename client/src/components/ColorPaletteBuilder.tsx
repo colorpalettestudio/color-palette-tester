@@ -71,7 +71,7 @@ export default function ColorPaletteBuilder({
   const handleColorPickerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const hexValue = e.target.value;
     setColorPickerValue(hexValue);
-    handleAddSingleColor(hexValue);
+    setSingleColorInput(hexValue);
   };
 
   const handleDragStart = (index: number) => {
