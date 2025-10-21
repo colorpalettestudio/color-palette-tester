@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import HeroSection from "@/components/HeroSection";
@@ -35,13 +35,10 @@ export default function Home() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
-  const handleTestColors = () => {
+  // Automatically test colors whenever the palette changes
+  useEffect(() => {
     if (colors.length < 2) {
-      toast({
-        title: "Not enough colors",
-        description: "Please add at least 2 colors to compare.",
-        variant: "destructive",
-      });
+      setPairs([]);
       return;
     }
 
@@ -86,11 +83,22 @@ export default function Home() {
       return fgIndexA - fgIndexB;
     });
     setPairs(newPairs);
+  }, [colors, wcagLevel]);
 
-    toast({
-      title: "Testing complete",
-      description: `Analyzed ${newPairs.length} color combinations.`,
-    });
+  const handleTestColors = () => {
+    // Manual test button - just scroll to results if they exist
+    if (pairs.length > 0) {
+      const resultsElement = document.getElementById("results-table");
+      if (resultsElement) {
+        resultsElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    } else {
+      toast({
+        title: "Not enough colors",
+        description: "Please add at least 2 colors to compare.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleSampleColors = () => {
