@@ -10,6 +10,37 @@ export default function EducationSections() {
           Instead of checking one combination at a time, this tool tests every foreground/background pairing 
           in one click and flags which ones pass WCAG guidelines.
         </p>
+        
+        {/* Contrast Visualization */}
+        <div className="grid sm:grid-cols-2 gap-4 mt-8">
+          <div className="p-8 bg-white rounded-lg border-2 border-gray-200 flex flex-col items-center justify-center min-h-[180px]">
+            <p 
+              className="text-3xl font-bold mb-3" 
+              style={{ color: '#595959' }}
+              data-testid="text-good-contrast"
+            >
+              Can You Read This?
+            </p>
+            <div className="text-center">
+              <p className="text-sm font-semibold text-green-600">✓ 6.5:1 Contrast</p>
+              <p className="text-xs text-gray-500 mt-1">Passes WCAG AA & AAA</p>
+            </div>
+          </div>
+          
+          <div className="p-8 bg-white rounded-lg border-2 border-gray-200 flex flex-col items-center justify-center min-h-[180px]">
+            <p 
+              className="text-3xl font-bold mb-3" 
+              style={{ color: '#c9c9c9' }}
+              data-testid="text-poor-contrast"
+            >
+              Can You Read This?
+            </p>
+            <div className="text-center">
+              <p className="text-sm font-semibold text-red-600">✗ 1.4:1 Contrast</p>
+              <p className="text-xs text-gray-500 mt-1">Fails all WCAG standards</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="space-y-4">
