@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import ResultsSection from '../ResultsSection';
+import ColorPairTable from '../ColorPairTable';
 
-export default function ResultsSectionExample() {
+export default function ColorPairTableExample() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [wcagLevel, setWcagLevel] = useState('aa-small');
 
@@ -20,6 +20,13 @@ export default function ResultsSectionExample() {
       ratio: 12.2,
       passes: true,
     },
+    {
+      id: '3',
+      foreground: { r: 142, g: 214, b: 169 },
+      background: { r: 17, g: 24, b: 39 },
+      ratio: 10.5,
+      passes: true,
+    },
   ];
 
   const toggleFavorite = (id: string) => {
@@ -36,15 +43,12 @@ export default function ResultsSectionExample() {
 
   return (
     <div className="p-8">
-      <ResultsSection
+      <ColorPairTable
         pairs={mockPairs}
         threshold={4.5}
         textSize="small"
         favorites={favorites}
         onToggleFavorite={toggleFavorite}
-        onExportPNG={() => console.log('Export PNG')}
-        onExportPDF={() => console.log('Export PDF')}
-        onClearFavorites={() => setFavorites(new Set())}
         wcagLevel={wcagLevel}
         onWcagLevelChange={setWcagLevel}
       />

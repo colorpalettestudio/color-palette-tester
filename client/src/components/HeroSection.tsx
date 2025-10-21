@@ -27,7 +27,7 @@ export default function HeroSection({
         <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
           Test Your{" "}
           <span 
-            className="bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 bg-[length:200%_auto] text-transparent bg-clip-text motion-reduce:bg-gradient-to-r motion-reduce:from-foreground motion-reduce:to-foreground animate-rainbow"
+            className="bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 text-transparent bg-clip-text"
             data-testid="text-rainbow"
           >
             Color Palette

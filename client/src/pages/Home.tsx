@@ -2,7 +2,8 @@ import { useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import HeroSection from "@/components/HeroSection";
-import ResultsSection, { type ColorPair } from "@/components/ResultsSection";
+import ResultsSection from "@/components/ResultsSection";
+import { type ColorPair } from "@/components/ColorPairTable";
 import AdPlaceholder from "@/components/AdPlaceholder";
 import CTACard from "@/components/CTACard";
 import HowItWorksSection from "@/components/HowItWorksSection";
@@ -133,11 +134,11 @@ export default function Home() {
       return;
     }
 
-    const gridElement = document.getElementById("results-grid");
-    if (!gridElement) return;
+    const tableElement = document.getElementById("results-table");
+    if (!tableElement) return;
 
     try {
-      const canvas = await html2canvas(gridElement);
+      const canvas = await html2canvas(tableElement);
       const link = document.createElement("a");
       link.download = "color-palette-results.png";
       link.href = canvas.toDataURL();
@@ -166,11 +167,11 @@ export default function Home() {
       return;
     }
 
-    const gridElement = document.getElementById("results-grid");
-    if (!gridElement) return;
+    const tableElement = document.getElementById("results-table");
+    if (!tableElement) return;
 
     try {
-      const canvas = await html2canvas(gridElement);
+      const canvas = await html2canvas(tableElement);
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
         orientation: "landscape",
@@ -229,6 +230,8 @@ export default function Home() {
               onExportPNG={handleExportPNG}
               onExportPDF={handleExportPDF}
               onClearFavorites={handleClearFavorites}
+              wcagLevel={wcagLevel}
+              onWcagLevelChange={setWcagLevel}
             />
 
             <AdPlaceholder className="my-6" />
