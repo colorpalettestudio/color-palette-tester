@@ -26,7 +26,8 @@ export default function HeroSection({
           <span className="text-foreground">Color Palette </span>
           <span 
             style={{
-              background: 'linear-gradient(to right, #ff6b35 0%, #ffa500 20%, #ffd700 40%, #32cd32 60%, #00bfff 80%, #9370db 100%)',
+              backgroundImage: 'linear-gradient(90deg, #ff6b35 0%, #ffa500 16%, #ffd700 33%, #32cd32 50%, #00bfff 66%, #9370db 83%, #ff6b35 100%)',
+              backgroundSize: '200% 100%',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text'
