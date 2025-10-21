@@ -48,6 +48,12 @@ export default function Home() {
     const threshold = WCAG_THRESHOLDS[wcagLevel as keyof typeof WCAG_THRESHOLDS];
     const newPairs: ColorPair[] = [];
 
+    // Create a map of color hex to original index
+    const colorIndexMap = new Map<string, number>();
+    colors.forEach((color, index) => {
+      colorIndexMap.set(rgbToHex(color), index);
+    });
+
     for (let i = 0; i < colors.length; i++) {
       for (let j = 0; j < colors.length; j++) {
         if (i !== j) {
@@ -68,16 +74,16 @@ export default function Home() {
       }
     }
 
-    // Sort by background color first, then foreground color
+    // Sort by background color's original index first, then foreground color's original index
     newPairs.sort((a, b) => {
-      const bgA = rgbToHex(a.background);
-      const bgB = rgbToHex(b.background);
-      if (bgA !== bgB) {
-        return bgA.localeCompare(bgB);
+      const bgIndexA = colorIndexMap.get(rgbToHex(a.background)) ?? 0;
+      const bgIndexB = colorIndexMap.get(rgbToHex(b.background)) ?? 0;
+      if (bgIndexA !== bgIndexB) {
+        return bgIndexA - bgIndexB;
       }
-      const fgA = rgbToHex(a.foreground);
-      const fgB = rgbToHex(b.foreground);
-      return fgA.localeCompare(fgB);
+      const fgIndexA = colorIndexMap.get(rgbToHex(a.foreground)) ?? 0;
+      const fgIndexB = colorIndexMap.get(rgbToHex(b.foreground)) ?? 0;
+      return fgIndexA - fgIndexB;
     });
     setPairs(newPairs);
 
