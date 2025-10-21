@@ -2,6 +2,14 @@ import { type RGB, rgbToHex } from "@/lib/colorUtils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CheckSquare, XCircle, HelpCircle } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Popover,
   PopoverContent,
@@ -26,6 +34,10 @@ interface ColorPairTableProps {
   onClearFavorites: () => void;
   wcagLevel: string;
   onWcagLevelChange: (value: string) => void;
+  previewFontSize: number;
+  onPreviewFontSizeChange: (size: number) => void;
+  previewFont: string;
+  onPreviewFontChange: (font: string) => void;
 }
 
 export default function ColorPairTable({
@@ -38,12 +50,27 @@ export default function ColorPairTable({
   onClearFavorites,
   wcagLevel,
   onWcagLevelChange,
+  previewFontSize,
+  onPreviewFontSizeChange,
+  previewFont,
+  onPreviewFontChange,
 }: ColorPairTableProps) {
   const filterOptions = [
     { value: "all", label: "All Pairs", threshold: 0 },
     { value: "aa-large", label: "WCAG AA Large (3:1+)", threshold: 3.0 },
     { value: "aa-small", label: "WCAG AA Normal (4.5:1+)", threshold: 4.5 },
     { value: "aaa-large", label: "WCAG AAA Normal (7:1+)", threshold: 7.0 },
+  ];
+
+  const fontOptions = [
+    { value: "Inter", label: "Inter" },
+    { value: "Roboto", label: "Roboto" },
+    { value: "Open Sans", label: "Open Sans" },
+    { value: "Lato", label: "Lato" },
+    { value: "Montserrat", label: "Montserrat" },
+    { value: "Poppins", label: "Poppins" },
+    { value: "Source Sans 3", label: "Source Sans 3" },
+    { value: "Raleway", label: "Raleway" },
   ];
 
   const getFilteredPairs = (filterValue: string) => {
@@ -78,55 +105,92 @@ export default function ColorPairTable({
       </div>
 
       <div id="results-table" className="space-y-6">
-        <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-start pb-3 border-b border-border">
-          <h3 className="text-sm font-bold text-foreground">Pairing Preview</h3>
-          
-          <div className="flex flex-col items-center min-w-[120px]">
-            <h3 className="text-sm font-bold text-foreground text-center">Contrast Score</h3>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button
-                  className="mt-1 p-1 text-muted-foreground hover:text-foreground hover-elevate rounded"
-                  data-testid="button-contrast-help"
-                >
-                  <HelpCircle className="w-3.5 h-3.5" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-80">
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-sm">What is a Contrast Score?</h4>
-                  <p className="text-sm text-muted-foreground">
-                    The contrast ratio measures the difference in brightness between text and background colors, ranging from 1:1 (no contrast) to 21:1 (maximum contrast).
-                  </p>
-                  <div className="space-y-1 text-xs">
-                    <p><strong>WCAG AA Large:</strong> Requires 3:1 for large text (18pt+)</p>
-                    <p><strong>WCAG AA Normal:</strong> Requires 4.5:1 for normal text</p>
-                    <p><strong>WCAG AAA:</strong> Requires 7:1 for enhanced accessibility</p>
-                  </div>
+        <div className="space-y-4">
+          <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-start pb-3 border-b border-border">
+            <div>
+              <h3 className="text-sm font-bold text-foreground mb-3">Pairing Preview</h3>
+              <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex items-center gap-3">
+                  <label className="text-xs text-muted-foreground whitespace-nowrap">
+                    Text Size: {previewFontSize}px
+                  </label>
+                  <Slider
+                    value={[previewFontSize]}
+                    onValueChange={(values) => onPreviewFontSizeChange(values[0])}
+                    min={10}
+                    max={32}
+                    step={1}
+                    className="w-32"
+                    data-testid="slider-preview-font-size"
+                  />
                 </div>
-              </PopoverContent>
-            </Popover>
-          </div>
-          
-          <div className="flex flex-col items-center min-w-[140px]">
-            <h3 className="text-sm font-bold text-foreground text-center">Approved Pair?</h3>
-            <div className="flex items-center gap-1 mt-1">
-              <button
-                onClick={onSelectAll}
-                className="p-1 text-muted-foreground hover:text-foreground hover-elevate rounded"
-                data-testid="button-select-all"
-                title="Select All"
-              >
-                <CheckSquare className="w-3.5 h-3.5" />
-              </button>
-              <button
-                onClick={onClearFavorites}
-                className="p-1 text-muted-foreground hover:text-foreground hover-elevate rounded"
-                data-testid="button-clear-favorites"
-                title="Clear All"
-              >
-                <XCircle className="w-3.5 h-3.5" />
-              </button>
+                <div className="flex items-center gap-3">
+                  <label className="text-xs text-muted-foreground whitespace-nowrap">
+                    Font:
+                  </label>
+                  <Select value={previewFont} onValueChange={onPreviewFontChange}>
+                    <SelectTrigger className="w-40" data-testid="select-preview-font">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {fontOptions.map((font) => (
+                        <SelectItem key={font.value} value={font.value}>
+                          {font.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex flex-col items-center min-w-[120px]">
+              <h3 className="text-sm font-bold text-foreground text-center">Contrast Score</h3>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    className="mt-1 p-1 text-muted-foreground hover:text-foreground hover-elevate rounded"
+                    data-testid="button-contrast-help"
+                  >
+                    <HelpCircle className="w-3.5 h-3.5" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                  <div className="space-y-2">
+                    <h4 className="font-semibold text-sm">What is a Contrast Score?</h4>
+                    <p className="text-sm text-muted-foreground">
+                      The contrast ratio measures the difference in brightness between text and background colors, ranging from 1:1 (no contrast) to 21:1 (maximum contrast).
+                    </p>
+                    <div className="space-y-1 text-xs">
+                      <p><strong>WCAG AA Large:</strong> Requires 3:1 for large text (18pt+)</p>
+                      <p><strong>WCAG AA Normal:</strong> Requires 4.5:1 for normal text</p>
+                      <p><strong>WCAG AAA:</strong> Requires 7:1 for enhanced accessibility</p>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
+            
+            <div className="flex flex-col items-center min-w-[140px]">
+              <h3 className="text-sm font-bold text-foreground text-center">Approved Pair?</h3>
+              <div className="flex items-center gap-1 mt-1">
+                <button
+                  onClick={onSelectAll}
+                  className="p-1 text-muted-foreground hover:text-foreground hover-elevate rounded"
+                  data-testid="button-select-all"
+                  title="Select All"
+                >
+                  <CheckSquare className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={onClearFavorites}
+                  className="p-1 text-muted-foreground hover:text-foreground hover-elevate rounded"
+                  data-testid="button-clear-favorites"
+                  title="Clear All"
+                >
+                  <XCircle className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -149,8 +213,13 @@ export default function ColorPairTable({
                 data-testid={`row-pair-${pair.id}`}
               >
                 <div
-                  className="px-6 py-6 rounded-md flex items-center justify-start font-mono text-sm border border-border"
-                  style={{ backgroundColor: bgHex, color: fgHex }}
+                  className="px-6 py-6 rounded-md flex items-center justify-start border border-border"
+                  style={{ 
+                    backgroundColor: bgHex, 
+                    color: fgHex,
+                    fontFamily: previewFont,
+                    fontSize: `${previewFontSize}px`
+                  }}
                 >
                   <span className="font-medium">
                     TEXT {fgHex.toUpperCase()} ON BACKGROUND {bgHex.toUpperCase()}

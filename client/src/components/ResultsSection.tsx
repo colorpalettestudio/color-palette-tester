@@ -14,6 +14,10 @@ interface ResultsSectionProps {
   onClearFavorites: () => void;
   wcagLevel: string;
   onWcagLevelChange: (value: string) => void;
+  previewFontSize: number;
+  onPreviewFontSizeChange: (size: number) => void;
+  previewFont: string;
+  onPreviewFontChange: (font: string) => void;
 }
 
 export default function ResultsSection({
@@ -28,6 +32,10 @@ export default function ResultsSection({
   onClearFavorites,
   wcagLevel,
   onWcagLevelChange,
+  previewFontSize,
+  onPreviewFontSizeChange,
+  previewFont,
+  onPreviewFontChange,
 }: ResultsSectionProps) {
   return (
     <div className="space-y-6">
@@ -72,6 +80,10 @@ export default function ResultsSection({
         onClearFavorites={onClearFavorites}
         wcagLevel={wcagLevel}
         onWcagLevelChange={onWcagLevelChange}
+        previewFontSize={previewFontSize}
+        onPreviewFontSizeChange={onPreviewFontSizeChange}
+        previewFont={previewFont}
+        onPreviewFontChange={onPreviewFontChange}
       />
     </div>
   );
