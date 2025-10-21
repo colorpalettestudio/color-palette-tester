@@ -25,7 +25,7 @@ export default function HeroSection({
         <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
           <span className="text-foreground">Color Palette </span>
           <span 
-            className="bg-gradient-to-r from-red-500 via-orange-500 via-yellow-500 via-green-500 via-blue-500 via-indigo-500 to-violet-500 text-transparent bg-clip-text"
+            className="bg-gradient-to-r from-[#FF6B35] via-[#F7B801] via-[#95D904] via-[#07D79C] via-[#4C9AFF] to-[#8B5CF6] text-transparent bg-clip-text"
             data-testid="text-rainbow"
           >
             Tester
