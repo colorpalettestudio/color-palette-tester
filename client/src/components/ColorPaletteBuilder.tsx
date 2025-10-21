@@ -149,19 +149,15 @@ export default function ColorPaletteBuilder({
                 onDragStart={() => handleSwatchDragStart(index)}
                 onDragOver={(e) => handleSwatchDragOver(e, index)}
                 onDragEnd={handleSwatchDragEnd}
-                className={`relative w-12 h-12 rounded-lg cursor-move transition-all hover:scale-110 ${
+                className={`w-12 h-12 rounded-lg cursor-move transition-all hover:scale-110 ${
                   isDragging ? 'opacity-50 scale-95' : ''
+                } ${
+                  isLight ? 'border-2 border-gray-300' : 'border-2 border-white/30'
                 }`}
+                style={{ backgroundColor: hexValue }}
                 title={`${hexValue.toUpperCase()} - Drag to reorder`}
                 data-testid={`palette-swatch-${index}`}
-              >
-                <div
-                  className={`w-full h-full rounded-lg ${
-                    isLight ? 'ring-2 ring-gray-300' : 'ring-2 ring-white/20'
-                  }`}
-                  style={{ backgroundColor: hexValue }}
-                />
-              </div>
+              />
             );
           })}
         </div>
