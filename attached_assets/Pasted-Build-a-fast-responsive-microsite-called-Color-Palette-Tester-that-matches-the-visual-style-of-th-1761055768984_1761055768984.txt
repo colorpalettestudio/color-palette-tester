@@ -1,0 +1,72 @@
+Build a fast, responsive microsite called “Color Palette Tester” that matches the visual style of thecolorcodeconverter.com (Inter font, clean white layout, rounded cards, subtle shadows, rainbow accent on key words). The page should include:
+
+HERO
+- Badge: “Free, Instant & No Sign-Up”
+- H1: “Test Your Color Palette for Accessibility”
+  - The words “Color Palette” use a subtle animated rainbow gradient (respect prefers-reduced-motion).
+- Subhead: “Paste HEX, RGB, or HSL — test every pairing against WCAG AA/AAA in one click.”
+- Large textarea for color input with placeholder example (one per line): 
+  #FF6F61, #FDD66F, #8ED6A9, #6FA8FF, #B76FFF, #111827, #FFFFFF
+- Primary button: “Test Contrast”
+- Secondary button: “Try sample colors”
+- WCAG filter options (radio buttons): 
+  AA Small (4.5), AA Large (3.0), AAA Small (7.0), AAA Large (4.5)
+- Ad placeholder below hero (fixed 100px height; looks tasteful)
+
+RESULTS
+- After testing, reveal a “results” section with:
+  - Toolbar (left): “{N} passing pairs”
+  - Toolbar (right) buttons: “Export PNG”, “Export PDF”, “Clear Favorites”
+  - A responsive grid of cards (min width ~280px) showing each passing/failing pair:
+      • Big preview swatch: foreground text over background block
+      • Line 1 bold: “{FG} on {BG}”
+      • Sample text line (“Aa Bb The quick brown fox”) sized per Large/Small selection
+      • Right badge: “{ratio}:1 Pass” (green) or “{ratio}:1 Fail” (red)
+      • Footer row: “{Large/Small} · WCAG ≥ {threshold}:1” and a ☆ / ★ favorite toggle
+  - Mid-page ad placeholder (fixed height; tasteful)
+  - Native CTA card:
+      Title: “Want to fix your palette next?”
+      Copy: “Try Color Palette Fixer — balance hues, saturation, and neutrals in seconds.”
+      Button: “Try Palette Fixer →” (opens in new tab)
+
+HOW IT WORKS (3 steps)
+1) Paste your brand colors  
+   “Enter HEX, RGB, or HSL — one per line or comma-separated.”
+2) Click “Test” — we check every pairing  
+   “We calculate contrast ratios for each foreground/background combo.”
+3) Filter + export your favorites  
+   “Save time by exporting passing pairs to PNG or PDF.”
+
+EDUCATION SECTIONS (for SEO)
+- Section: “What Is a Color Palette Tester?”
+  Short paragraph explaining testing multiple color combinations at once and why contrast matters in branding, UI, and print.
+- Section: “Why Test Color Contrast?”
+  Bullet points: accessibility compliance, readability, brand consistency, faster review with all pairs at once.
+- Section: “WCAG Levels Explained”
+  Short table/paragraph listing thresholds:
+  AA Small: 4.5:1 · AA Large: 3.0:1 · AAA Small: 7.0:1 · AAA Large: 4.5:1
+- Section: “Supported Color Inputs”
+  HEX (#RRGGBB), RGB (rgb(…)), HSL (hsl(…)).
+
+FAQ (accordion)
+- How do I test all pairings?
+- What WCAG levels are supported?
+- Can I export my favorite pairs?
+- Does this work for logos and buttons?
+- Is the tool free and private?
+
+FOOTER
+- Left: “Made with ❤️ by The Color Palette Studio”
+- Right: links → Privacy · Terms · Contact
+- Small subnav: “Explore more free tools → Color Code Converter · Contrast Checker (coming soon) · Harmony Generator (coming soon)”
+
+AD EXPERIENCE
+- Reserve 3 tasteful ad slots: below hero, mid-content, near footer. Fixed heights to prevent layout shift. Keep performance friendly.
+
+PERFORMANCE & ACCESSIBILITY
+- Lighthouse 90+ (mobile/desktop), semantic headings, focus states, ARIA where appropriate, prefers-reduced-motion respected.
+
+INSTRUMENTATION (placeholders only)
+- Plan to track events named: tester_run, export_png, export_pdf, fixer_cta_click.
+
+Deliver all copy blocks, labels, and section content directly on the page, styled to match the Converter (clean, modern, generous spacing).

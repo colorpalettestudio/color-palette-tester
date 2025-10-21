@@ -1,0 +1,99 @@
+2) Exact hero & UI copy (paste to Replit when it asks for text)
+Badge: Free, Instant & No Sign-Up
+H1: Test Your Color Palette for Accessibility
+Subhead: Paste HEX, RGB, or HSL — test every pairing against WCAG AA/AAA in one click.
+Primary button: Test Contrast
+Secondary button: Try sample colors
+WCAG filter labels: 
+  • AA Small (4.5)
+  • AA Large (3.0)
+  • AAA Small (7.0)
+  • AAA Large (4.5)
+Toolbar left: {N} passing pairs
+Toolbar right buttons: Export PNG · Export PDF · Clear Favorites
+Card badge pass: {ratio}:1 Pass
+Card badge fail: {ratio}:1 Fail
+CTA title: Want to fix your palette next?
+CTA body: Try Color Palette Fixer — balance hues, saturation, and neutrals in seconds.
+CTA button: Try Palette Fixer →
+Footer kicker: Explore more free tools → Color Code Converter · Contrast Checker · Harmony Generator
+
+3) SEO brief (meta content for the page)
+Meta title: Free Color Palette Tester | WCAG Contrast Checker (All Pairs in 1 Click)
+Meta description: Test the contrast of all your brand colors in one click. Filter by WCAG AA/AAA for small or large text. Favorite passing pairs and export as PNG/PDF. Free & instant.
+Canonical URL: https://thecolorpalettetester.com/
+OG title: Free Color Palette Tester
+OG description: Test every color pairing against WCAG in one click. Export your favorite passes as PNG/PDF.
+Twitter card: summary_large_image
+Hero H1 must include “Color Palette” and “Accessibility”. Keep an H2 above results that includes “WCAG Contrast Results”.
+
+4) FAQ content (ready to paste)
+Q: How do I test all color pairings?
+A: Paste your brand colors as HEX, RGB, or HSL (one per line or comma-separated) and click “Test.” We build a matrix that checks every foreground/background combination against WCAG contrast ratios.
+
+Q: What WCAG levels are supported?
+A: AA and AAA for Small and Large text. Thresholds: AA Small 4.5:1, AA Large 3.0:1, AAA Small 7.0:1, AAA Large 4.5:1.
+
+Q: Can I export my favorite pairs?
+A: Yes. Star any passing pair and export all favorites as a PNG image or a PDF for quick sharing with your team or clients.
+
+Q: Does this work for logos, buttons, and UI?
+A: Yes. The preview line simulates body text or larger UI elements. Use “Large” mode for headings, buttons, or logos on brand backgrounds.
+
+Q: Is the tool free and private?
+A: Yes—free, instant, and no sign-up. Processing happens in your browser for speed and privacy.
+
+5) Section copy (education blocks)
+What Is a Color Palette Tester?
+A color palette tester lets you evaluate the readability and accessibility of your brand colors. Instead of checking one combination at a time, this tool tests every foreground/background pairing in one click and flags which ones pass WCAG guidelines.
+
+Why Test Color Contrast?
+• Improve readability across web, app, and print
+• Meet accessibility standards (WCAG) with confidence
+• Speed up reviews by seeing all pass/fail results at once
+• Share decisions easily with PNG/PDF exports
+• Keep brand colors consistent across light/dark backgrounds
+
+WCAG Levels Explained
+WCAG defines minimum contrast ratios for legibility:
+- AA Small Text: 4.5:1
+- AA Large Text (≥18pt or ≥14pt bold): 3.0:1
+- AAA Small Text: 7.0:1
+- AAA Large Text: 4.5:1
+Use Small for paragraphs and body text. Use Large for headers, buttons, logos, and large UI labels.
+
+Supported Color Inputs
+Paste colors as:
+- HEX (#RRGGBB)
+- RGB (rgb(255, 111, 97))
+- HSL (hsl(5, 100%, 69%))
+Enter one color per line or separate by commas.
+
+6) Ad experience prompt (so Replit lays them out tastefully)
+Add three tasteful ad placeholders with fixed heights to avoid layout shift:
+- Top: below the hero controls (100px tall)
+- Mid: between the results grid and the CTA card (100px tall)
+- Footer: above the site footer (100px tall)
+
+Style: light dashed border, rounded corners, subtle text like “Ad space — coming soon”. Reserve space even when ads aren’t loaded. Keep at least 24px vertical spacing from other elements.
+
+7) Visual style prompt (to match the Converter)
+Use Inter font, generous white space, max content width 960–1200px, soft shadows, 12–14px corner radii, and muted gray borders. Primary buttons are near-black with white text; secondary are white with 1px gray border. Use a gentle animated rainbow gradient ONLY on the words “Color Palette” in the H1 and respect prefers-reduced-motion. Cards should have clear hierarchy, bold titles, and accessible color badges (green for Pass, red for Fail).
+
+8) Footer & cross-linking prompt
+Footer includes:
+- “Made with ❤️ by The Color Palette Studio” (external link, opens new tab)
+- Links: Privacy · Terms · Contact
+- Small secondary nav: “Explore more free tools → Color Code Converter · Contrast Checker · Harmony Generator”
+Ensure links are crawlable text (not images).
+
+9) Compliance + pages prompt
+Generate simple pages at /privacy-policy, /terms, and /contact using clean headings and plain text. The Privacy page must mention Google Analytics and Google AdSense cookies with opt-out links. Terms should include “as is” warranty disclaimer, acceptable use, and third-party services clause. Contact can be a mailto link to support@thecolorpalettestudio.com. Also create /robots.txt and /sitemap.xml and link the sitemap in robots.txt.
+
+10) Launch checklist prompt (so Replit prepares for deploy)
+Prepare for Vercel:
+- Provide a build suitable for Vite static hosting (dist folder).
+- Include a vercel.json pointing to the output directory.
+- Use semantic headings (H1, H2), meta tags, OG/Twitter tags, and a canonical link.
+- Minimize CLS by reserving ad slot heights.
+- Provide copy and labels exactly as specified above.
