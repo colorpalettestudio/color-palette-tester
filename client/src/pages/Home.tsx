@@ -105,11 +105,24 @@ export default function Home() {
   };
 
   const handleSelectAll = () => {
-    const allPairIds = new Set(pairs.map(pair => pair.id));
-    setFavorites(allPairIds);
+    // Filter pairs based on current wcagLevel
+    const filterThresholds: Record<string, number> = {
+      "all": 0,
+      "aa-large": 3.0,
+      "aa-small": 4.5,
+      "aaa-large": 7.0,
+    };
+    
+    const threshold = filterThresholds[wcagLevel] ?? 0;
+    const filteredPairs = wcagLevel === "all" 
+      ? pairs 
+      : pairs.filter(pair => pair.ratio >= threshold);
+    
+    const filteredPairIds = new Set(filteredPairs.map(pair => pair.id));
+    setFavorites(filteredPairIds);
     toast({
       title: "All pairs selected",
-      description: `${pairs.length} color pairs have been selected.`,
+      description: `${filteredPairs.length} color pair${filteredPairs.length !== 1 ? 's' : ''} have been selected.`,
     });
   };
 
