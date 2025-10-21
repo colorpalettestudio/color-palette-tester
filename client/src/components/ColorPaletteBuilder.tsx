@@ -81,13 +81,14 @@ export default function ColorPaletteBuilder({
     
     setColorItems([]);
     onColorsChange([]);
+    setBulkInput("");
   };
 
-  const handleDragStart = (index: number) => {
+  const handleSwatchDragStart = (index: number) => {
     setDraggedIndex(index);
   };
 
-  const handleDragOver = (e: React.DragEvent, index: number) => {
+  const handleSwatchDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === index) return;
 
@@ -100,9 +101,14 @@ export default function ColorPaletteBuilder({
     setDraggedIndex(index);
   };
 
-  const handleDragEnd = () => {
+  const handleSwatchDragEnd = () => {
+    if (draggedIndex !== null) {
+      // Update the textarea with reordered colors
+      const hexColors = colorItems.map(item => rgbToHex(item.color)).join(', ');
+      setBulkInput(hexColors);
+      onColorsChange(colorItems.map(item => item.color));
+    }
     setDraggedIndex(null);
-    onColorsChange(colorItems.map(item => item.color));
   };
 
   const handleUpdateColorHex = (index: number, value: string) => {
@@ -129,12 +135,19 @@ export default function ColorPaletteBuilder({
         <div className="flex gap-2 flex-wrap" data-testid="palette-swatches">
           {colorItems.map((item, index) => {
             const hexValue = rgbToHex(item.color);
+            const isDragging = draggedIndex === index;
             return (
               <div
                 key={`${hexValue}-${index}`}
-                className="w-8 h-8 rounded-md border border-border shadow-sm"
+                draggable
+                onDragStart={() => handleSwatchDragStart(index)}
+                onDragOver={(e) => handleSwatchDragOver(e, index)}
+                onDragEnd={handleSwatchDragEnd}
+                className={`w-10 h-10 rounded-md border-2 border-border shadow-sm cursor-move transition-all hover:scale-110 ${
+                  isDragging ? 'opacity-50 scale-95' : ''
+                }`}
                 style={{ backgroundColor: hexValue }}
-                title={hexValue.toUpperCase()}
+                title={`${hexValue.toUpperCase()} - Drag to reorder`}
                 data-testid={`palette-swatch-${index}`}
               />
             );
