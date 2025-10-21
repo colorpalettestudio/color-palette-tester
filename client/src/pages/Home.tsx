@@ -188,13 +188,24 @@ export default function Home() {
         backgroundColor: '#ffffff',
         scale: 2,
       });
+      
       const imgData = canvas.toDataURL("image/png");
+      
+      // Calculate dimensions to fit content on page
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      
+      // Use points as unit (72 points = 1 inch)
+      const pdfWidth = imgWidth * 0.75; // Convert pixels to points (assuming 96 DPI)
+      const pdfHeight = imgHeight * 0.75;
+      
       const pdf = new jsPDF({
-        orientation: "landscape",
-        unit: "px",
-        format: [canvas.width, canvas.height],
+        orientation: pdfWidth > pdfHeight ? "landscape" : "portrait",
+        unit: "pt",
+        format: [pdfWidth, pdfHeight],
       });
-      pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+      
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
       pdf.save("color-palette-results.pdf");
 
       toast({
