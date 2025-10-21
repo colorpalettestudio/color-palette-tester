@@ -24,10 +24,10 @@ export default function CTACard() {
         
         <div className="flex-1 min-w-0 space-y-4">
           <h3 className="text-2xl font-bold text-foreground">
-            Want to fix your color palette next?
+            Found colors that don't pass? Try fixing your palette
           </h3>
           <p className="text-base text-muted-foreground">
-            Try <span className="font-semibold">Color Palette Fixer</span> — the only tool that diagnoses your palette and gives one-click fixes in 60 seconds.
+            <span className="font-semibold">Color Palette Fixer</span> diagnoses harmony, saturation, and contrast issues — then gives you one-click fixes in 60 seconds.
           </p>
           <div className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background rounded-md font-medium">
             Try Palette Fixer

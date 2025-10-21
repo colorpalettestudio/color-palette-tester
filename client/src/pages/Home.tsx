@@ -305,14 +305,14 @@ export default function Home() {
             />
 
             <AdPlaceholder className="my-6" />
-
-            <CTACard />
           </div>
         )}
 
         <HowItWorksSection />
 
         <EducationSections />
+
+        <CTACard />
 
         <FAQSection />
 
