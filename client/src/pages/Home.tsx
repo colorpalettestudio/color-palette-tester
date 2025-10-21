@@ -210,6 +210,53 @@ export default function Home() {
     }
   };
 
+  const handleExportStudioCode = () => {
+    if (favorites.size === 0) {
+      toast({
+        title: "No favorites selected",
+        description: "Please check at least one color pair to export.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Get unique colors from favorited pairs
+    const favoritePairs = pairs.filter(pair => favorites.has(pair.id));
+    const uniqueColors = new Map<string, RGB>();
+    
+    favoritePairs.forEach(pair => {
+      const fgHex = rgbToHex(pair.foreground);
+      const bgHex = rgbToHex(pair.background);
+      uniqueColors.set(fgHex, pair.foreground);
+      uniqueColors.set(bgHex, pair.background);
+    });
+
+    // Build studio code format
+    const colorNames = Array.from(uniqueColors.keys()).map((hex, index) => `Color ${index + 1}`);
+    const colorValues = Array.from(uniqueColors.keys());
+    
+    const studioCodeData = {
+      colorNames,
+      colors: colorValues
+    };
+    
+    const studioCodeUrl = `https://thecolorpalettestudio.com/studiocode?${encodeURIComponent(JSON.stringify(studioCodeData))}`;
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(studioCodeUrl).then(() => {
+      toast({
+        title: "Studio code copied!",
+        description: "The studio code URL has been copied to your clipboard.",
+      });
+    }).catch(() => {
+      toast({
+        title: "Copy failed",
+        description: "Could not copy to clipboard. Please try again.",
+        variant: "destructive",
+      });
+    });
+  };
+
 
   const threshold = WCAG_THRESHOLDS[wcagLevel as keyof typeof WCAG_THRESHOLDS];
   const textSize = wcagLevel.includes("large") ? "large" : "small";
@@ -248,6 +295,7 @@ export default function Home() {
               onToggleFavorite={handleToggleFavorite}
               onExportPNG={handleExportPNG}
               onExportPDF={handleExportPDF}
+              onExportStudioCode={handleExportStudioCode}
               onSelectAll={handleSelectAll}
               onClearFavorites={handleClearFavorites}
               wcagLevel={wcagLevel}
