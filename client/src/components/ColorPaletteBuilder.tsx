@@ -135,24 +135,94 @@ export default function ColorPaletteBuilder({
 
   return (
     <div className="space-y-6">
-      {/* Color List */}
-      {colorItems.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
-              <Palette className="w-4 h-4" />
-              Your Palette ({colorItems.length} {colorItems.length === 1 ? 'color' : 'colors'})
-            </h3>
+      {/* Add Colors Section - Now at the top */}
+      <div className="p-6 rounded-lg border-2 border-dashed border-border bg-muted/30 space-y-4">
+        <h3 className="text-sm font-semibold text-foreground">Add Colors to Your Palette</h3>
+        
+        {/* Bulk Import */}
+        <div className="space-y-2">
+          <textarea
+            placeholder="Paste your color palette here (one color per line or comma separated)&#10;&#10;#FF6F61&#10;#FDD66F&#10;#8ED6A9&#10;or: #FF6F61, #FDD66F, rgb(142,214,169)"
+            value={bulkInput}
+            onChange={(e) => setBulkInput(e.target.value)}
+            className="w-full min-h-[120px] px-3 py-2 text-sm rounded-md border border-input bg-background resize-y font-mono"
+            data-testid="input-bulk-colors"
+          />
+          <Button
+            onClick={handleBulkPaste}
+            disabled={!bulkInput.trim()}
+            className="w-full"
+            data-testid="button-add-bulk"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Import Colors
+          </Button>
+        </div>
+
+        {/* Single Color Add */}
+        <div className="space-y-2">
+          <p className="text-xs font-medium text-muted-foreground">Or add colors one at a time:</p>
+          <div className="flex gap-2">
+            <input
+              type="color"
+              value={singleInput.startsWith('#') && singleInput.length === 7 ? singleInput : '#000000'}
+              onChange={(e) => setSingleInput(e.target.value)}
+              className="h-9 w-12 rounded-md border border-input cursor-pointer shrink-0"
+              data-testid="input-color-picker"
+            />
+            <Input
+              placeholder="Type color code: #FF6F61"
+              value={singleInput}
+              onChange={(e) => setSingleInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleAddSingle();
+              }}
+              className="flex-1"
+              data-testid="input-single-color"
+            />
             <Button
-              onClick={handleClearAll}
-              variant="ghost"
-              size="sm"
-              className="h-8"
+              onClick={handleAddSingle}
+              disabled={!singleInput.trim()}
+              data-testid="button-add-single"
             >
-              <Trash2 className="w-3 h-3 mr-1.5" />
-              Clear All
+              <Plus className="w-4 h-4" />
             </Button>
           </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-2 pt-2">
+          <Button
+            onClick={onSampleClick}
+            variant="outline"
+            size="sm"
+            className="flex-1"
+            data-testid="button-try-sample"
+          >
+            Try Sample Palette
+          </Button>
+          {colorItems.length > 0 && (
+            <Button
+              onClick={handleClearAll}
+              variant="outline"
+              size="sm"
+              className="flex-1"
+              data-testid="button-clear-palette"
+            >
+              <Trash2 className="w-4 h-4 mr-2" />
+              Clear Palette
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Color Swatches - Now below */}
+      {colorItems.length > 0 && (
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+            <Palette className="w-4 h-4" />
+            Your Palette ({colorItems.length} {colorItems.length === 1 ? 'color' : 'colors'})
+          </h3>
 
           <div className="space-y-2">
             {colorItems.map((item, index) => {
@@ -220,93 +290,6 @@ export default function ColorPaletteBuilder({
           </div>
         </div>
       )}
-
-      {/* Add Colors Section */}
-      <div className="p-6 rounded-lg border-2 border-dashed border-border bg-muted/30 space-y-5">
-        <h3 className="text-sm font-semibold text-foreground">Add Colors to Your Palette</h3>
-        
-        <div className="grid sm:grid-cols-2 gap-6">
-          {/* Import Multiple Colors */}
-          <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Import Multiple Colors
-            </label>
-            <div className="flex gap-2">
-              <Input
-                placeholder="#FF6F61, #FDD66F, rgb(142,214,169)..."
-                value={bulkInput}
-                onChange={(e) => setBulkInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleBulkPaste();
-                }}
-                className="flex-1"
-                data-testid="input-bulk-colors"
-              />
-              <Button
-                onClick={handleBulkPaste}
-                disabled={!bulkInput.trim()}
-                size="default"
-                data-testid="button-add-bulk"
-              >
-                Import
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Paste multiple colors separated by commas
-            </p>
-          </div>
-
-          {/* Add Single Color */}
-          <div className="space-y-2">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              Add Single Color
-            </label>
-            <div className="flex gap-2">
-              <div className="relative flex-1 flex gap-2">
-                <input
-                  type="color"
-                  value={singleInput.startsWith('#') && singleInput.length === 7 ? singleInput : '#000000'}
-                  onChange={(e) => setSingleInput(e.target.value)}
-                  className="h-9 w-12 rounded-md border border-input cursor-pointer"
-                  data-testid="input-color-picker"
-                />
-                <Input
-                  placeholder="#FF6F61"
-                  value={singleInput}
-                  onChange={(e) => setSingleInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleAddSingle();
-                  }}
-                  className="flex-1"
-                  data-testid="input-single-color"
-                />
-              </div>
-              <Button
-                onClick={handleAddSingle}
-                disabled={!singleInput.trim()}
-                size="default"
-                data-testid="button-add-single"
-              >
-                Add
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Use the picker or type a color code
-            </p>
-          </div>
-        </div>
-
-        <div className="flex justify-center pt-2">
-          <Button
-            onClick={onSampleClick}
-            variant="outline"
-            size="sm"
-            data-testid="button-try-sample"
-          >
-            Try Sample Palette
-          </Button>
-        </div>
-      </div>
 
       {colorItems.length === 0 && (
         <div className="text-center py-6 text-sm text-muted-foreground">
