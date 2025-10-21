@@ -23,18 +23,20 @@ export default function HeroSection({
         </Badge>
         
         <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
-          Test Your{" "}
           <span 
             className="bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 text-transparent bg-clip-text"
             data-testid="text-rainbow"
           >
-            Color Palette
-          </span>{" "}
-          for Accessibility
+            Color Palette Tester
+          </span>
         </h1>
         
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Paste HEX, RGB, or HSL — test every pairing against WCAG AA/AAA in one click.
+          Test your palette for accessibility — paste HEX, RGB, or HSL and test every pairing against WCAG AA/AAA in one click.
+        </p>
+        
+        <p className="text-sm text-muted-foreground/80">
+          Trusted by 2,000+ designers
         </p>
       </div>
 
