@@ -29,48 +29,17 @@ const WCAG_THRESHOLDS = {
 const SAMPLE_COLORS = "#FF6F61, #FDD66F, #8ED6A9, #6FA8FF, #B76FFF, #111827, #FFFFFF";
 
 export default function Home() {
-  const [colorInput, setColorInput] = useState("");
+  const [colors, setColors] = useState<RGB[]>([]);
   const [wcagLevel, setWcagLevel] = useState("all");
   const [pairs, setPairs] = useState<ColorPair[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   const handleTestColors = () => {
-    const colorStrings = parseColorInput(colorInput);
-    
-    if (colorStrings.length === 0) {
-      toast({
-        title: "No colors entered",
-        description: "Please enter at least one color to test.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const colors: RGB[] = [];
-    const invalidColors: string[] = [];
-
-    for (const colorStr of colorStrings) {
-      const rgb = parseColor(colorStr);
-      if (rgb) {
-        colors.push(rgb);
-      } else {
-        invalidColors.push(colorStr);
-      }
-    }
-
-    if (invalidColors.length > 0) {
-      toast({
-        title: "Invalid colors found",
-        description: `Could not parse: ${invalidColors.join(", ")}`,
-        variant: "destructive",
-      });
-    }
-
     if (colors.length < 2) {
       toast({
         title: "Not enough colors",
-        description: "Please enter at least 2 valid colors to compare.",
+        description: "Please add at least 2 colors to compare.",
         variant: "destructive",
       });
       return;
@@ -119,7 +88,17 @@ export default function Home() {
   };
 
   const handleSampleColors = () => {
-    setColorInput(SAMPLE_COLORS);
+    const colorStrings = parseColorInput(SAMPLE_COLORS);
+    const sampleColors: RGB[] = [];
+    
+    for (const colorStr of colorStrings) {
+      const rgb = parseColor(colorStr);
+      if (rgb) {
+        sampleColors.push(rgb);
+      }
+    }
+    
+    setColors(sampleColors);
   };
 
   const handleToggleFavorite = (id: string) => {
@@ -221,8 +200,8 @@ export default function Home() {
         <HeroSection
           onTestClick={handleTestColors}
           onSampleClick={handleSampleColors}
-          colorInput={colorInput}
-          onColorInputChange={setColorInput}
+          colors={colors}
+          onColorsChange={setColors}
           wcagLevel={wcagLevel}
           onWcagLevelChange={setWcagLevel}
         />

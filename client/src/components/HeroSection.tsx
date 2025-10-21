@@ -1,10 +1,12 @@
 import { Badge } from "@/components/ui/badge";
+import ColorPaletteBuilder from "./ColorPaletteBuilder";
+import { type RGB } from "@/lib/colorUtils";
 
 interface HeroSectionProps {
   onTestClick: () => void;
   onSampleClick: () => void;
-  colorInput: string;
-  onColorInputChange: (value: string) => void;
+  colors: RGB[];
+  onColorsChange: (colors: RGB[]) => void;
   wcagLevel: string;
   onWcagLevelChange: (value: string) => void;
 }
@@ -12,8 +14,8 @@ interface HeroSectionProps {
 export default function HeroSection({
   onTestClick,
   onSampleClick,
-  colorInput,
-  onColorInputChange,
+  colors,
+  onColorsChange,
   wcagLevel,
   onWcagLevelChange,
 }: HeroSectionProps) {
@@ -41,15 +43,10 @@ export default function HeroSection({
       </div>
 
       <div className="max-w-3xl mx-auto space-y-6">
-        <div>
-          <textarea
-            className="w-full h-32 px-4 py-3 rounded-md border border-border bg-background text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
-            placeholder="Enter colors (one per line or comma-separated)&#10;Examples: #FF6F61, rgb(255, 111, 97), hsl(5, 100%, 69%)&#10;&#10;○ Tip: You can also paste your entire brand palette here!"
-            value={colorInput}
-            onChange={(e) => onColorInputChange(e.target.value)}
-            data-testid="input-colors"
-          />
-        </div>
+        <ColorPaletteBuilder
+          colors={colors}
+          onColorsChange={onColorsChange}
+        />
 
         <div className="flex flex-wrap gap-3 justify-center">
           <button
