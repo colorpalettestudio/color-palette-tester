@@ -1,5 +1,6 @@
-import { Download, FileDown, XCircle, CheckSquare } from "lucide-react";
+import { Download, FileDown } from "lucide-react";
 import ColorPairTable, { type ColorPair } from "./ColorPairTable";
+import { Button } from "@/components/ui/button";
 
 interface ResultsSectionProps {
   pairs: ColorPair[];
@@ -9,8 +10,6 @@ interface ResultsSectionProps {
   onToggleFavorite: (id: string) => void;
   onExportPNG: () => void;
   onExportPDF: () => void;
-  onClearFavorites: () => void;
-  onSelectAll: () => void;
   wcagLevel: string;
   onWcagLevelChange: (value: string) => void;
 }
@@ -23,51 +22,39 @@ export default function ResultsSection({
   onToggleFavorite,
   onExportPNG,
   onExportPDF,
-  onClearFavorites,
-  onSelectAll,
   wcagLevel,
   onWcagLevelChange,
 }: ResultsSectionProps) {
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold text-foreground">
-          Color Palette Tester
-        </h2>
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-foreground">
+            Contrast Test Results
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            {pairs.length} color pair{pairs.length !== 1 ? 's' : ''} tested
+          </p>
+        </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={onSelectAll}
-            className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover-elevate rounded-md flex items-center gap-1.5"
-            data-testid="button-select-all"
-          >
-            <CheckSquare className="w-4 h-4" />
-            Select All
-          </button>
-          <button
-            onClick={onClearFavorites}
-            className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover-elevate rounded-md flex items-center gap-1.5"
-            data-testid="button-clear-favorites"
-          >
-            <XCircle className="w-4 h-4" />
-            Clear
-          </button>
-          <div className="w-px h-4 bg-border mx-1" />
-          <button
+          <Button
             onClick={onExportPNG}
-            className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover-elevate rounded-md flex items-center gap-1.5"
+            variant="outline"
+            size="sm"
             data-testid="button-export-png"
           >
-            <Download className="w-4 h-4" />
-            PNG
-          </button>
-          <button
+            <Download className="w-4 h-4 mr-2" />
+            Export PNG
+          </Button>
+          <Button
             onClick={onExportPDF}
-            className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover-elevate rounded-md flex items-center gap-1.5"
+            variant="outline"
+            size="sm"
             data-testid="button-export-pdf"
           >
-            <FileDown className="w-4 h-4" />
-            PDF
-          </button>
+            <FileDown className="w-4 h-4 mr-2" />
+            Export PDF
+          </Button>
         </div>
       </div>
 
