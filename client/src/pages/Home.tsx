@@ -30,7 +30,7 @@ const SAMPLE_COLORS = "#FF6F61, #FDD66F, #8ED6A9, #6FA8FF, #B76FFF, #111827, #FF
 
 export default function Home() {
   const [colorInput, setColorInput] = useState("");
-  const [wcagLevel, setWcagLevel] = useState("aa-small");
+  const [wcagLevel, setWcagLevel] = useState("all");
   const [pairs, setPairs] = useState<ColorPair[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const { toast } = useToast();

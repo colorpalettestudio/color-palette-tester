@@ -3,7 +3,7 @@ import ColorPairTable from '../ColorPairTable';
 
 export default function ColorPairTableExample() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [wcagLevel, setWcagLevel] = useState('aa-small');
+  const [wcagLevel, setWcagLevel] = useState('all');
 
   const mockPairs = [
     {
