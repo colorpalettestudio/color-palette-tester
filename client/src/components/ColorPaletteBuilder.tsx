@@ -151,18 +151,18 @@ export default function ColorPaletteBuilder({
 
   return (
     <div className="space-y-4">
-      {/* Preview Swatches */}
-      {previewColors.length > 0 && (
-        <div className="flex gap-2 flex-wrap" data-testid="preview-swatches">
-          {previewColors.map((color, index) => {
-            const hexValue = rgbToHex(color);
+      {/* Palette Swatches - Show colors already in palette */}
+      {colorItems.length > 0 && (
+        <div className="flex gap-2 flex-wrap" data-testid="palette-swatches">
+          {colorItems.map((item, index) => {
+            const hexValue = rgbToHex(item.color);
             return (
               <div
                 key={`${hexValue}-${index}`}
                 className="w-8 h-8 rounded-md border border-border shadow-sm"
                 style={{ backgroundColor: hexValue }}
                 title={hexValue.toUpperCase()}
-                data-testid={`preview-swatch-${index}`}
+                data-testid={`palette-swatch-${index}`}
               />
             );
           })}
