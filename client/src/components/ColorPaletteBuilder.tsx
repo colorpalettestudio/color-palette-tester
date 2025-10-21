@@ -132,10 +132,16 @@ export default function ColorPaletteBuilder({
     <div className="space-y-4">
       {/* Palette Swatches - Show colors already in palette */}
       {colorItems.length > 0 && (
-        <div className="flex gap-2 flex-wrap" data-testid="palette-swatches">
+        <div className="flex gap-3 flex-wrap" data-testid="palette-swatches">
           {colorItems.map((item, index) => {
             const hexValue = rgbToHex(item.color);
             const isDragging = draggedIndex === index;
+            
+            // Calculate luminance to determine if we need a contrasting border
+            const { r, g, b } = item.color;
+            const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+            const isLight = luminance > 0.5;
+            
             return (
               <div
                 key={`${hexValue}-${index}`}
@@ -143,13 +149,19 @@ export default function ColorPaletteBuilder({
                 onDragStart={() => handleSwatchDragStart(index)}
                 onDragOver={(e) => handleSwatchDragOver(e, index)}
                 onDragEnd={handleSwatchDragEnd}
-                className={`w-10 h-10 rounded-md border-2 border-border shadow-sm cursor-move transition-all hover:scale-110 ${
+                className={`relative w-12 h-12 rounded-lg cursor-move transition-all hover:scale-110 ${
                   isDragging ? 'opacity-50 scale-95' : ''
                 }`}
-                style={{ backgroundColor: hexValue }}
                 title={`${hexValue.toUpperCase()} - Drag to reorder`}
                 data-testid={`palette-swatch-${index}`}
-              />
+              >
+                <div
+                  className={`w-full h-full rounded-lg ${
+                    isLight ? 'ring-2 ring-gray-300' : 'ring-2 ring-white/20'
+                  }`}
+                  style={{ backgroundColor: hexValue }}
+                />
+              </div>
             );
           })}
         </div>
