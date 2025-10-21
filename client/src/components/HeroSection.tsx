@@ -43,8 +43,8 @@ export default function HeroSection({
       <div className="max-w-3xl mx-auto space-y-6">
         <div>
           <textarea
-            className="w-full h-32 px-4 py-3 rounded-md border border-border bg-background text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring"
-            placeholder="#FF6F61, #FDD66F, #8ED6A9, #6FA8FF, #B76FFF, #111827, #FFFFFF"
+            className="w-full h-32 px-4 py-3 rounded-md border border-border bg-background text-foreground resize-none focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+            placeholder="Enter colors (one per line or comma-separated)&#10;Examples: #FF6F61, rgb(255, 111, 97), hsl(5, 100%, 69%)&#10;&#10;○ Tip: You can also paste your entire brand palette here!"
             value={colorInput}
             onChange={(e) => onColorInputChange(e.target.value)}
             data-testid="input-colors"
