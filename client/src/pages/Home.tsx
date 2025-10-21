@@ -4,6 +4,7 @@ import jsPDF from "jspdf";
 import HeroSection from "@/components/HeroSection";
 import ResultsSection from "@/components/ResultsSection";
 import { type ColorPair } from "@/components/ColorPairTable";
+import ExportCards from "@/components/ExportCards";
 import AdPlaceholder from "@/components/AdPlaceholder";
 import CTACard from "@/components/CTACard";
 import HowItWorksSection from "@/components/HowItWorksSection";
@@ -129,11 +130,14 @@ export default function Home() {
       return;
     }
 
-    const tableElement = document.getElementById("results-table");
-    if (!tableElement) return;
+    const exportElement = document.getElementById("export-cards");
+    if (!exportElement) return;
 
     try {
-      const canvas = await html2canvas(tableElement);
+      const canvas = await html2canvas(exportElement, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+      });
       const link = document.createElement("a");
       link.download = "color-palette-results.png";
       link.href = canvas.toDataURL();
@@ -162,11 +166,14 @@ export default function Home() {
       return;
     }
 
-    const tableElement = document.getElementById("results-table");
-    if (!tableElement) return;
+    const exportElement = document.getElementById("export-cards");
+    if (!exportElement) return;
 
     try {
-      const canvas = await html2canvas(tableElement);
+      const canvas = await html2canvas(exportElement, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+      });
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
         orientation: "landscape",
@@ -202,6 +209,11 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Hidden export cards for PNG/PDF generation */}
+      <div className="fixed top-0 left-[-9999px]">
+        <ExportCards pairs={pairs} favorites={favorites} />
+      </div>
+
       <main className="max-w-6xl mx-auto px-6 py-16 space-y-24">
         <HeroSection
           onSampleClick={handleSampleColors}
