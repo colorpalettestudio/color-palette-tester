@@ -16,11 +16,11 @@ export default function EducationSections() {
           <div className="space-y-3">
             <div 
               className="p-8 rounded-lg border-2 flex items-center justify-center min-h-[180px]"
-              style={{ backgroundColor: '#652B6B', borderColor: '#652B6B' }}
+              style={{ backgroundColor: '#1858B8', borderColor: '#1858B8' }}
             >
               <p 
                 className="text-3xl font-bold" 
-                style={{ color: '#FFC1EA' }}
+                style={{ color: '#FFFFFF' }}
                 data-testid="text-good-contrast"
               >
                 Can You Read This?
@@ -35,11 +35,11 @@ export default function EducationSections() {
           <div className="space-y-3">
             <div 
               className="p-8 rounded-lg border-2 flex items-center justify-center min-h-[180px]"
-              style={{ backgroundColor: '#652B6B', borderColor: '#652B6B' }}
+              style={{ backgroundColor: '#1858B8', borderColor: '#1858B8' }}
             >
               <p 
                 className="text-3xl font-bold" 
-                style={{ color: '#834178' }}
+                style={{ color: '#4473B8' }}
                 data-testid="text-poor-contrast"
               >
                 Can You Read This?
