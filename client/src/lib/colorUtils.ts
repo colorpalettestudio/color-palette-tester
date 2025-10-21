@@ -98,6 +98,33 @@ export function getContrastRatio(color1: RGB, color2: RGB): number {
 }
 
 export function parseColorInput(input: string): string[] {
+  const trimmed = input.trim();
+  
+  // Check for studio code format
+  if (trimmed.startsWith('studiocode?') || trimmed.includes('colorNames=')) {
+    try {
+      // Parse URL parameters
+      const urlParams = new URLSearchParams(trimmed.replace('studiocode?', ''));
+      const colorNamesParam = urlParams.get('colorNames');
+      
+      if (colorNamesParam) {
+        // Decode and parse the JSON
+        const colorNames = JSON.parse(decodeURIComponent(colorNamesParam));
+        
+        // Extract hex values from the array
+        if (Array.isArray(colorNames)) {
+          return colorNames
+            .map((item: any) => item.hex)
+            .filter((hex: string) => hex && hex.trim().length > 0);
+        }
+      }
+    } catch (e) {
+      // If parsing fails, fall through to default parsing
+      console.warn('Failed to parse studio code:', e);
+    }
+  }
+  
+  // Default parsing for comma/newline separated colors
   const lines = input.split(/[\n,]+/);
   return lines
     .map(line => line.trim())
