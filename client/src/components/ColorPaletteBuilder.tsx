@@ -102,13 +102,17 @@ export default function ColorPaletteBuilder({
   };
 
   const handleSwatchDragEnd = () => {
-    if (draggedIndex !== null) {
+    const wasDragging = draggedIndex !== null;
+    
+    // Clear dragging state immediately to prevent opacity from sticking
+    setDraggedIndex(null);
+    
+    if (wasDragging) {
       // Update the textarea with reordered colors
       const hexColors = colorItems.map(item => rgbToHex(item.color)).join(', ');
       setBulkInput(hexColors);
       onColorsChange(colorItems.map(item => item.color));
     }
-    setDraggedIndex(null);
   };
 
   const handleUpdateColorHex = (index: number, value: string) => {
