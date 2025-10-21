@@ -3,14 +3,12 @@ import ColorPaletteBuilder from "./ColorPaletteBuilder";
 import { type RGB } from "@/lib/colorUtils";
 
 interface HeroSectionProps {
-  onTestClick: () => void;
   onSampleClick: () => void;
   colors: RGB[];
   onColorsChange: (colors: RGB[]) => void;
 }
 
 export default function HeroSection({
-  onTestClick,
   onSampleClick,
   colors,
   onColorsChange,
@@ -38,28 +36,12 @@ export default function HeroSection({
         </p>
       </div>
 
-      <div className="max-w-3xl mx-auto space-y-6">
+      <div className="max-w-5xl mx-auto">
         <ColorPaletteBuilder
           colors={colors}
           onColorsChange={onColorsChange}
+          onSampleClick={onSampleClick}
         />
-
-        <div className="flex flex-wrap gap-3 justify-center">
-          <button
-            onClick={onTestClick}
-            className="px-6 py-2.5 bg-primary text-primary-foreground rounded-md font-medium hover-elevate active-elevate-2 border border-primary-border"
-            data-testid="button-test-contrast"
-          >
-            Test Contrast
-          </button>
-          <button
-            onClick={onSampleClick}
-            className="px-6 py-2.5 bg-background text-foreground rounded-md font-medium border border-border hover-elevate active-elevate-2"
-            data-testid="button-try-sample"
-          >
-            Try sample colors
-          </button>
-        </div>
       </div>
     </div>
   );

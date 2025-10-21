@@ -85,21 +85,6 @@ export default function Home() {
     setPairs(newPairs);
   }, [colors, wcagLevel]);
 
-  const handleTestColors = () => {
-    // Manual test button - just scroll to results if they exist
-    if (pairs.length > 0) {
-      const resultsElement = document.getElementById("results-table");
-      if (resultsElement) {
-        resultsElement.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-    } else {
-      toast({
-        title: "Not enough colors",
-        description: "Please add at least 2 colors to compare.",
-        variant: "destructive",
-      });
-    }
-  };
 
   const handleSampleColors = () => {
     const colorStrings = parseColorInput(SAMPLE_COLORS);
@@ -212,7 +197,6 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <main className="max-w-6xl mx-auto px-6 py-16 space-y-24">
         <HeroSection
-          onTestClick={handleTestColors}
           onSampleClick={handleSampleColors}
           colors={colors}
           onColorsChange={setColors}
