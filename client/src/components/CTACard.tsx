@@ -13,11 +13,11 @@ export default function CTACard() {
         data-testid="link-palette-fixer"
       >
         <div className="flex-shrink-0">
-          <div className="w-72 h-48 bg-[#6B9FD1] rounded-lg overflow-hidden shadow-md">
+          <div className="w-64 h-64 bg-[#6B9FD1] rounded-lg overflow-hidden shadow-md">
             <img 
               src={paletteFixer} 
               alt="Color Palette Fixer" 
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           </div>
         </div>
