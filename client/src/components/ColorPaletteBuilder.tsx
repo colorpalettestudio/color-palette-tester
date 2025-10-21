@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, X, Trash2, Palette, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,17 +14,44 @@ interface ColorPaletteBuilderProps {
   colors: RGB[];
   onColorsChange: (colors: RGB[]) => void;
   onSampleClick: () => void;
+  onTestPalette: () => void;
 }
 
 export default function ColorPaletteBuilder({
   colors,
   onColorsChange,
   onSampleClick,
+  onTestPalette,
 }: ColorPaletteBuilderProps) {
   const [colorItems, setColorItems] = useState<ColorItem[]>([]);
   const [bulkInput, setBulkInput] = useState("");
+  const [previewColors, setPreviewColors] = useState<RGB[]>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const { toast } = useToast();
+
+  // Parse preview colors from textarea in real-time
+  useEffect(() => {
+    if (!bulkInput.trim()) {
+      setPreviewColors([]);
+      return;
+    }
+
+    const colorStrings = parseColorInput(bulkInput);
+    const validColors: RGB[] = [];
+    
+    colorStrings.forEach(colorStr => {
+      const rgb = parseColor(colorStr);
+      if (rgb) {
+        const hexValue = rgbToHex(rgb);
+        const isDuplicate = validColors.some(c => rgbToHex(c) === hexValue);
+        if (!isDuplicate) {
+          validColors.push(rgb);
+        }
+      }
+    });
+    
+    setPreviewColors(validColors);
+  }, [bulkInput]);
 
   // Sync colors with colorItems
   const syncColors = (items: ColorItem[]) => {
@@ -120,43 +147,76 @@ export default function ColorPaletteBuilder({
     syncColors(newItems);
   };
 
-  return (
-    <div className="p-6 rounded-lg border border-border bg-card space-y-4">
-      <div className="space-y-2">
-        <textarea
-          placeholder="Paste your colors here (HEX, RGB, HSL)&#10;e.g., #FF6F61, rgb(142,214,169), hsl(220 30% 11%)&#10;Separate with commas or new lines"
-          value={bulkInput}
-          onChange={(e) => setBulkInput(e.target.value)}
-          className="w-full min-h-[120px] px-3 py-2 text-sm rounded-md border border-input bg-background resize-y font-mono"
-          data-testid="input-bulk-colors"
-        />
-      </div>
+  const hasColors = colorItems.length >= 2;
 
-      <div className="flex gap-2">
-        <Button
-          onClick={handleBulkPaste}
-          disabled={!bulkInput.trim()}
-          className="flex-1"
-          data-testid="button-import-palette"
-        >
-          Add Colors
-        </Button>
-        <Button
-          onClick={onSampleClick}
-          variant="outline"
-          className="flex-1"
-          data-testid="button-try-sample"
-        >
-          Try Sample Palette
-        </Button>
-        {colorItems.length > 0 && (
+  return (
+    <div className="space-y-4">
+      {/* Preview Swatches */}
+      {previewColors.length > 0 && (
+        <div className="flex gap-2 flex-wrap" data-testid="preview-swatches">
+          {previewColors.map((color, index) => {
+            const hexValue = rgbToHex(color);
+            return (
+              <div
+                key={`${hexValue}-${index}`}
+                className="w-8 h-8 rounded-md border border-border shadow-sm"
+                style={{ backgroundColor: hexValue }}
+                title={hexValue.toUpperCase()}
+                data-testid={`preview-swatch-${index}`}
+              />
+            );
+          })}
+        </div>
+      )}
+
+      <div className="p-6 rounded-lg border border-border bg-card space-y-4">
+        <div className="space-y-2">
+          <textarea
+            placeholder="Paste your colors here (HEX, RGB, HSL)&#10;e.g., #FF6F61, rgb(142,214,169), hsl(220 30% 11%)&#10;Separate with commas or new lines"
+            value={bulkInput}
+            onChange={(e) => setBulkInput(e.target.value)}
+            className="w-full min-h-[120px] px-3 py-2 text-sm rounded-md border border-input bg-background resize-y font-mono"
+            data-testid="input-bulk-colors"
+          />
+        </div>
+
+        <div className="flex gap-2">
           <Button
-            onClick={handleClearAll}
-            variant="ghost"
-            size="icon"
-            data-testid="button-clear-palette"
+            onClick={handleBulkPaste}
+            disabled={!bulkInput.trim()}
+            className="flex-1"
+            data-testid="button-import-palette"
           >
-            <Trash2 className="w-4 h-4" />
+            Add Colors
+          </Button>
+          <Button
+            onClick={onSampleClick}
+            variant="outline"
+            className="flex-1"
+            data-testid="button-try-sample"
+          >
+            Try Sample Palette
+          </Button>
+          {colorItems.length > 0 && (
+            <Button
+              onClick={handleClearAll}
+              variant="ghost"
+              size="icon"
+              data-testid="button-clear-palette"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
+
+        {hasColors && (
+          <Button
+            onClick={onTestPalette}
+            size="lg"
+            className="w-full"
+            data-testid="button-test-palette"
+          >
+            Test Palette
           </Button>
         )}
       </div>

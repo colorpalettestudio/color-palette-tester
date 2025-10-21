@@ -6,12 +6,14 @@ interface HeroSectionProps {
   onSampleClick: () => void;
   colors: RGB[];
   onColorsChange: (colors: RGB[]) => void;
+  onTestPalette: () => void;
 }
 
 export default function HeroSection({
   onSampleClick,
   colors,
   onColorsChange,
+  onTestPalette,
 }: HeroSectionProps) {
   return (
     <div className="text-center space-y-8">
@@ -41,6 +43,7 @@ export default function HeroSection({
           colors={colors}
           onColorsChange={onColorsChange}
           onSampleClick={onSampleClick}
+          onTestPalette={onTestPalette}
         />
       </div>
     </div>
