@@ -173,6 +173,17 @@ export default function ColorPaletteBuilder({
           >
             Try Sample Palette
           </Button>
+          
+          {hasColors && (
+            <Button
+              onClick={onTestPalette}
+              className="flex-1"
+              data-testid="button-test-palette"
+            >
+              Test Palette
+            </Button>
+          )}
+          
           {colorItems.length > 0 && (
             <Button
               onClick={handleClearAll}
@@ -184,17 +195,6 @@ export default function ColorPaletteBuilder({
             </Button>
           )}
         </div>
-
-        {hasColors && (
-          <Button
-            onClick={onTestPalette}
-            size="lg"
-            className="w-full"
-            data-testid="button-test-palette"
-          >
-            Test Palette
-          </Button>
-        )}
       </div>
     </div>
   );
