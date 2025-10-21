@@ -99,7 +99,17 @@ export default function Home() {
       }
     }
 
-    newPairs.sort((a, b) => b.ratio - a.ratio);
+    // Sort by background color first, then foreground color
+    newPairs.sort((a, b) => {
+      const bgA = rgbToHex(a.background);
+      const bgB = rgbToHex(b.background);
+      if (bgA !== bgB) {
+        return bgA.localeCompare(bgB);
+      }
+      const fgA = rgbToHex(a.foreground);
+      const fgB = rgbToHex(b.foreground);
+      return fgA.localeCompare(fgB);
+    });
     setPairs(newPairs);
 
     toast({
