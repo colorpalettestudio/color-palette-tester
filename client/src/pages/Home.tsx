@@ -203,6 +203,17 @@ export default function Home() {
   const threshold = WCAG_THRESHOLDS[wcagLevel as keyof typeof WCAG_THRESHOLDS];
   const textSize = wcagLevel.includes("large") ? "large" : "small";
 
+  const handleTestPalette = () => {
+    const resultsElement = document.getElementById("results-section");
+    if (resultsElement) {
+      resultsElement.scrollIntoView({ behavior: "smooth", block: "start" });
+      toast({
+        title: "Test complete",
+        description: "See results below 👇",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <main className="max-w-6xl mx-auto px-6 py-16 space-y-24">
@@ -210,12 +221,13 @@ export default function Home() {
           onSampleClick={handleSampleColors}
           colors={colors}
           onColorsChange={setColors}
+          onTestPalette={handleTestPalette}
         />
 
         <AdPlaceholder className="my-6" />
 
         {pairs.length > 0 && (
-          <>
+          <div id="results-section">
             <ResultsSection
               pairs={pairs}
               threshold={threshold}
@@ -233,7 +245,7 @@ export default function Home() {
             <AdPlaceholder className="my-6" />
 
             <CTACard />
-          </>
+          </div>
         )}
 
         <HowItWorksSection />

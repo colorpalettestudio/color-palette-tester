@@ -1,0 +1,158 @@
+Replit Build Brief — “Palette Import” UI for Color Palette Tester
+Objective
+
+Create an intuitive “Palette Import” section at the top of the page that lets users:
+
+import a full palette (paste list or our Studio Code),
+
+add individual colors by code or eyedropper,
+
+view swatches, rename, re-order (drag), and delete,
+
+and clearly proceed to TEST the palette, which renders results below.
+
+Layout (desktop first, responsive to mobile)
+
+Sticky Page Header:
+
+Title: “Test Your Color Palette for Accessibility”
+
+Sub: “Paste HEX, RGB, or HSL — test every pairing against WCAG AA/AAA in one click.”
+
+Small badge: “Free, Instant & No Sign-Up”
+
+Section A: Palette Import (card with soft shadow, rounded 2xl)
+
+Tabs (or segmented control):
+
+Import | Add Color
+
+Import tab contents (stacked on mobile):
+
+Multiline textarea with placeholder examples:
+“#FF6F61, #FDD66F, rgb(142,214,169), hsl(210 50% 40%)
+or paste Studio Code: CPS[#111827,#FFFFFF,…]”
+
+Inline help: “Separate with commas, spaces, or new lines. We’ll auto-detect formats.”
+
+Primary button: Import Palette
+
+Secondary link-button: “Try Sample Palette”
+
+Ghost icon-button (trash): “Clear Palette”
+
+Add Color tab contents:
+
+Single-line input for HEX/RGB/HSL with live validation (✓/! icon)
+
+Native color picker input and an Eyedropper button (use the browser picker API; fall back gracefully)
+
+Button: Add Color
+
+Section B: Your Palette (sortable list)
+
+Each row is a swatch chip with:
+
+Drag handle (grip icon)
+
+Square color preview
+
+Editable label (default “Color 1”, “Color 2”, …)
+
+HEX input (auto-formats short to long; accepts rgb()/hsl() and converts to hex in the field)
+
+Delete (X)
+
+Limit hint: “Up to 12 colors recommended for fast testing.”
+
+Sticky Action Bar pinned to bottom of the import card (and as a sticky footer on mobile):
+
+Primary CTA: Test Palette
+
+Subtext: “We’ll test every foreground/background pairing below.”
+
+Behavior & Interactions
+
+Paste parsing
+
+Accept hex (#abc, #aabbcc), rgb(), rgba(), hsl(), hsla().
+
+Accept Studio Code like CPS[#111827,#FFFFFF,#FF6F61].
+
+Ignore invalid tokens and surface a small inline list of which entries were skipped.
+
+Validation
+
+Show inline error for invalid values; disable “Add Color” if invalid.
+
+Auto-uppercase hex; strip whitespace; prevent exact duplicates (nudge: “Already in palette”).
+
+Reordering
+
+Drag-and-drop with keyboard support (up/down to move; aria-live announcement).
+
+Labels
+
+Editable inline; persist with the color object.
+
+Clear Palette
+
+Confirm if > 0 colors; also available in kebab menu on mobile.
+
+Try Sample Palette
+
+Inserts 6–8 well-spaced demo colors instantly and focuses the Test Palette button.
+
+Test Palette CTA
+
+On click:
+
+Scroll the page to the Tester section (smooth scroll).
+
+Button becomes “Testing…” with spinner until results render.
+
+Optional small success toast: “Test complete — see results below 👇”.
+
+States
+
+Empty:
+
+Show an illustration and two big actions: “Paste a list” or “Add a color.”
+
+Partial (1–2 colors):
+
+Nudge banner: “Add at least 2 colors to test pairings.” (Disable Test)
+
+Overflow (>12):
+
+Non-blocking tip: “Large palettes may take longer. Consider testing subsets.”
+
+Errors:
+
+Inline list of invalid entries with the exact token and why it failed.
+
+Accessibility (must-have)
+
+Every interactive element is focusable, labeled, and has visible focus rings.
+
+Drag list supports keyboard reordering with instructions (“Press space to pick up, arrows to move, space to drop”).
+
+Color swatches include text labels; inputs have aria-describedby for format hints.
+
+Contrast of UI components themselves meets AA.
+
+Microcopy (use this verbatim)
+
+Textarea placeholder: “Paste colors like #FF6F61, rgb(142,214,169), or CPS[#111827,#FFFFFF,…]”
+
+Help text under textarea: “Separate with commas, spaces, or new lines. We’ll convert everything to HEX.”
+
+Add input placeholder: “#111827 or rgb(17,24,39) or hsl(220 30% 11%)”
+
+Duplicate warning: “That color is already in your palette.”
+
+Invalid token list title: “We skipped these because they aren’t valid colors:”
+
+Sticky CTA: Test Palette
+
+Nudge when <2 colors: “Add one more color to start testing pairings.”
