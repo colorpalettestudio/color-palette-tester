@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { Plus, X, Trash2, Palette, GripVertical, Pipette } from "lucide-react";
+import { Plus, X, Trash2, Palette, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { parseColor, rgbToHex, type RGB, parseColorInput } from "@/lib/colorUtils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -15,19 +14,15 @@ interface ColorPaletteBuilderProps {
   colors: RGB[];
   onColorsChange: (colors: RGB[]) => void;
   onSampleClick: () => void;
-  onTestPalette: () => void;
 }
 
 export default function ColorPaletteBuilder({
   colors,
   onColorsChange,
   onSampleClick,
-  onTestPalette,
 }: ColorPaletteBuilderProps) {
   const [colorItems, setColorItems] = useState<ColorItem[]>([]);
   const [bulkInput, setBulkInput] = useState("");
-  const [singleInput, setSingleInput] = useState("");
-  const [invalidTokens, setInvalidTokens] = useState<string[]>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const { toast } = useToast();
 
@@ -52,7 +47,6 @@ export default function ColorPaletteBuilder({
 
     const colorStrings = parseColorInput(bulkInput);
     const newItems = [...colorItems];
-    const failed: string[] = [];
     
     colorStrings.forEach(colorStr => {
       const rgb = parseColor(colorStr);
@@ -65,53 +59,11 @@ export default function ColorPaletteBuilder({
             name: `Color ${newItems.length + 1}`,
           });
         }
-      } else {
-        failed.push(colorStr);
       }
     });
     
     syncColors(newItems);
     setBulkInput("");
-    setInvalidTokens(failed);
-    
-    if (failed.length > 0) {
-      toast({
-        title: "Some colors were skipped",
-        description: `${failed.length} invalid color ${failed.length === 1 ? 'code' : 'codes'}. See details below.`,
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleAddSingle = () => {
-    if (!singleInput.trim()) return;
-    
-    const rgb = parseColor(singleInput.trim());
-    if (rgb) {
-      const hexValue = rgbToHex(rgb);
-      const isDuplicate = colorItems.some(item => rgbToHex(item.color) === hexValue);
-      
-      if (isDuplicate) {
-        toast({
-          title: "That color is already in your palette.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const newItems = [...colorItems, {
-        color: rgb,
-        name: `Color ${colorItems.length + 1}`,
-      }];
-      syncColors(newItems);
-      setSingleInput("");
-    } else {
-      toast({
-        title: "Invalid color code",
-        description: "Please enter a valid HEX, RGB, or HSL color.",
-        variant: "destructive",
-      });
-    }
   };
 
   const handleRemove = (index: number) => {
@@ -129,11 +81,6 @@ export default function ColorPaletteBuilder({
     
     setColorItems([]);
     onColorsChange([]);
-    setInvalidTokens([]);
-    toast({
-      title: "Palette cleared",
-      description: "All colors have been removed.",
-    });
   };
 
   const handleDragStart = (index: number) => {
@@ -173,136 +120,46 @@ export default function ColorPaletteBuilder({
     syncColors(newItems);
   };
 
-  const canTest = colorItems.length >= 2;
-
   return (
     <div className="space-y-6">
-      {/* Palette Import Card */}
-      <div className="rounded-2xl border border-border bg-card shadow-lg relative">
-        <Tabs defaultValue="import" className="w-full">
-          <div className="border-b border-border px-6 pt-6">
-            <TabsList className="w-full sm:w-auto">
-              <TabsTrigger value="import" className="flex-1 sm:flex-initial" data-testid="tab-import">
-                Import
-              </TabsTrigger>
-              <TabsTrigger value="add" className="flex-1 sm:flex-initial" data-testid="tab-add-color">
-                Add Color
-              </TabsTrigger>
-            </TabsList>
-          </div>
+      {/* Import Section */}
+      <div className="p-6 rounded-lg border border-border bg-card space-y-4">
+        <div className="space-y-2">
+          <textarea
+            placeholder="Paste your colors here (HEX, RGB, HSL)&#10;e.g., #FF6F61, rgb(142,214,169), hsl(220 30% 11%)&#10;Separate with commas or new lines"
+            value={bulkInput}
+            onChange={(e) => setBulkInput(e.target.value)}
+            className="w-full min-h-[120px] px-3 py-2 text-sm rounded-md border border-input bg-background resize-y font-mono"
+            data-testid="input-bulk-colors"
+          />
+        </div>
 
-          <TabsContent value="import" className="p-6 pb-24 space-y-4 mt-0">
-            <div className="space-y-2">
-              <textarea
-                placeholder="Paste colors like #FF6F61, rgb(142,214,169), or CPS[#111827,#FFFFFF,…]"
-                value={bulkInput}
-                onChange={(e) => setBulkInput(e.target.value)}
-                className="w-full min-h-[120px] px-3 py-2 text-sm rounded-md border border-input bg-background resize-y font-mono"
-                data-testid="input-bulk-colors"
-              />
-              <p className="text-xs text-muted-foreground">
-                Separate with commas, spaces, or new lines. We'll convert everything to HEX.
-              </p>
-            </div>
-
-            <div className="flex gap-2">
-              <Button
-                onClick={handleBulkPaste}
-                disabled={!bulkInput.trim()}
-                className="flex-1"
-                data-testid="button-import-palette"
-              >
-                Import Palette
-              </Button>
-              <Button
-                onClick={onSampleClick}
-                variant="outline"
-                className="flex-1"
-                data-testid="button-try-sample"
-              >
-                Try Sample Palette
-              </Button>
-              {colorItems.length > 0 && (
-                <Button
-                  onClick={handleClearAll}
-                  variant="ghost"
-                  size="icon"
-                  data-testid="button-clear-palette"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              )}
-            </div>
-
-            {invalidTokens.length > 0 && (
-              <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20">
-                <p className="text-sm font-semibold text-destructive mb-2">
-                  We skipped these because they aren't valid colors:
-                </p>
-                <ul className="text-xs text-destructive/80 space-y-1">
-                  {invalidTokens.map((token, i) => (
-                    <li key={i} className="font-mono">{token}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="add" className="p-6 pb-24 space-y-4 mt-0">
-            <div className="space-y-2">
-              <div className="flex gap-2">
-                <input
-                  type="color"
-                  value={singleInput.startsWith('#') && singleInput.length === 7 ? singleInput : '#000000'}
-                  onChange={(e) => setSingleInput(e.target.value)}
-                  className="h-10 w-16 rounded-md border border-input cursor-pointer shrink-0"
-                  data-testid="input-color-picker"
-                />
-                <Input
-                  placeholder="#111827 or rgb(17,24,39) or hsl(220 30% 11%)"
-                  value={singleInput}
-                  onChange={(e) => setSingleInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') handleAddSingle();
-                  }}
-                  className="flex-1"
-                  data-testid="input-single-color"
-                />
-              </div>
-            </div>
-
-            <Button
-              onClick={handleAddSingle}
-              disabled={!singleInput.trim()}
-              className="w-full"
-              data-testid="button-add-color"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Color
-            </Button>
-          </TabsContent>
-        </Tabs>
-
-        {/* Sticky Action Bar - Inside Card */}
-        <div className="absolute bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border p-4 rounded-b-2xl">
+        <div className="flex gap-2">
           <Button
-            onClick={onTestPalette}
-            disabled={!canTest}
-            size="lg"
-            className="w-full"
-            data-testid="button-test-palette"
+            onClick={handleBulkPaste}
+            disabled={!bulkInput.trim()}
+            className="flex-1"
+            data-testid="button-import-palette"
           >
-            Test Palette
+            Add Colors
           </Button>
-          {!canTest && colorItems.length === 1 && (
-            <p className="text-xs text-muted-foreground text-center mt-2">
-              Add one more color to start testing pairings.
-            </p>
-          )}
-          {canTest && (
-            <p className="text-xs text-muted-foreground text-center mt-2">
-              We'll test every foreground/background pairing below.
-            </p>
+          <Button
+            onClick={onSampleClick}
+            variant="outline"
+            className="flex-1"
+            data-testid="button-try-sample"
+          >
+            Try Sample Palette
+          </Button>
+          {colorItems.length > 0 && (
+            <Button
+              onClick={handleClearAll}
+              variant="ghost"
+              size="icon"
+              data-testid="button-clear-palette"
+            >
+              <Trash2 className="w-4 h-4" />
+            </Button>
           )}
         </div>
       </div>
@@ -315,11 +172,6 @@ export default function ColorPaletteBuilder({
               <Palette className="w-4 h-4" />
               Your Palette ({colorItems.length} {colorItems.length === 1 ? 'color' : 'colors'})
             </h3>
-            {colorItems.length > 12 && (
-              <p className="text-xs text-muted-foreground">
-                Large palettes may take longer. Consider testing subsets.
-              </p>
-            )}
           </div>
 
           <div className="space-y-2">
@@ -370,10 +222,6 @@ export default function ColorPaletteBuilder({
               );
             })}
           </div>
-
-          <p className="text-xs text-muted-foreground text-center">
-            Up to 12 colors recommended for fast testing.
-          </p>
         </div>
       )}
     </div>
