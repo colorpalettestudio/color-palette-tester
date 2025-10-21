@@ -32,6 +32,8 @@ export default function ColorPaletteBuilder({
   // Auto-add colors from textarea in real-time
   useEffect(() => {
     if (!bulkInput.trim()) {
+      setColorItems([]);
+      onColorsChange([]);
       return;
     }
 
@@ -52,9 +54,8 @@ export default function ColorPaletteBuilder({
       }
     });
     
-    if (newItems.length > 0) {
-      syncColors(newItems);
-    }
+    setColorItems(newItems);
+    onColorsChange(newItems.map(item => item.color));
   }, [bulkInput]);
 
   // Sync colors with colorItems
@@ -63,15 +64,6 @@ export default function ColorPaletteBuilder({
     onColorsChange(items.map(item => item.color));
   };
 
-  // Initialize colorItems when colors prop changes externally
-  if (colors.length !== colorItems.length || 
-      colors.some((c, i) => rgbToHex(c) !== rgbToHex(colorItems[i]?.color))) {
-    const newItems = colors.map((color, index) => ({
-      color,
-      name: colorItems[index]?.name || `Color ${index + 1}`,
-    }));
-    setColorItems(newItems);
-  }
 
 
   const handleRemove = (index: number) => {
@@ -150,33 +142,22 @@ export default function ColorPaletteBuilder({
         </div>
       )}
 
-      <div className="p-6 rounded-lg border border-border bg-card space-y-4">
+      <div className="p-6 rounded-lg border-2 border-border bg-card space-y-4">
         <div className="space-y-2">
           <textarea
-            placeholder="Paste your colors here (HEX, RGB, HSL)&#10;e.g., #FF6F61, rgb(142,214,169), hsl(220 30% 11%)&#10;Separate with commas or new lines"
+            placeholder="Enter colors (one per line or comma-separated)&#10;Examples: #FF6F61, rgb(255, 111, 97), hsl(5, 100%, 69%)&#10;&#10;💡 Tip: You can also paste studio code directly here!"
             value={bulkInput}
             onChange={(e) => setBulkInput(e.target.value)}
-            className="w-full min-h-[120px] px-3 py-2 text-sm rounded-md border border-input bg-background resize-y font-mono"
+            className="w-full min-h-[120px] px-4 py-3 text-sm rounded-lg border-2 border-input bg-background resize-y font-mono focus:border-primary focus:outline-none transition-colors"
             data-testid="input-bulk-colors"
           />
         </div>
 
-        <div className="flex gap-2">
-          <Button
-            onClick={() => {
-              const sampleText = onSampleClick();
-              setBulkInput(sampleText);
-            }}
-            variant="outline"
-            className="flex-1"
-            data-testid="button-try-sample"
-          >
-            Try Sample Palette
-          </Button>
-          
+        <div className="flex flex-col sm:flex-row gap-3">
           {hasColors && (
             <Button
               onClick={onTestPalette}
+              size="lg"
               className="flex-1"
               data-testid="button-test-palette"
             >
@@ -184,11 +165,25 @@ export default function ColorPaletteBuilder({
             </Button>
           )}
           
+          <Button
+            onClick={() => {
+              const sampleText = onSampleClick();
+              setBulkInput(sampleText);
+            }}
+            variant="outline"
+            size="lg"
+            className={hasColors ? "" : "flex-1"}
+            data-testid="button-try-sample"
+          >
+            ✨ Try Sample Palette
+          </Button>
+          
           {colorItems.length > 0 && (
             <Button
               onClick={handleClearAll}
               variant="ghost"
               size="icon"
+              className="self-center sm:self-auto"
               data-testid="button-clear-palette"
             >
               <Trash2 className="w-4 h-4" />
