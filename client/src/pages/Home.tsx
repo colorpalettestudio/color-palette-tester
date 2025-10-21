@@ -112,7 +112,33 @@ export default function Home() {
     });
   };
 
+  const handleSelectAll = () => {
+    const allPairIds = new Set(pairs.map(pair => pair.id));
+    setFavorites(allPairIds);
+    toast({
+      title: "All pairs selected",
+      description: `${pairs.length} color pairs have been selected.`,
+    });
+  };
+
+  const handleClearFavorites = () => {
+    setFavorites(new Set());
+    toast({
+      title: "Favorites cleared",
+      description: "All favorite selections have been removed.",
+    });
+  };
+
   const handleExportPNG = async () => {
+    if (favorites.size === 0) {
+      toast({
+        title: "No favorites selected",
+        description: "Please check at least one color pair to export.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const tableElement = document.getElementById("results-table");
     if (!tableElement) return;
 
@@ -137,6 +163,15 @@ export default function Home() {
   };
 
   const handleExportPDF = async () => {
+    if (favorites.size === 0) {
+      toast({
+        title: "No favorites selected",
+        description: "Please check at least one color pair to export.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const tableElement = document.getElementById("results-table");
     if (!tableElement) return;
 
@@ -189,6 +224,8 @@ export default function Home() {
               onToggleFavorite={handleToggleFavorite}
               onExportPNG={handleExportPNG}
               onExportPDF={handleExportPDF}
+              onSelectAll={handleSelectAll}
+              onClearFavorites={handleClearFavorites}
               wcagLevel={wcagLevel}
               onWcagLevelChange={setWcagLevel}
             />

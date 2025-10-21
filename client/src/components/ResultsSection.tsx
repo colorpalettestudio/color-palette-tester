@@ -1,4 +1,4 @@
-import { Download, FileDown } from "lucide-react";
+import { Download, FileDown, CheckSquare, XCircle } from "lucide-react";
 import ColorPairTable, { type ColorPair } from "./ColorPairTable";
 import { Button } from "@/components/ui/button";
 
@@ -10,6 +10,8 @@ interface ResultsSectionProps {
   onToggleFavorite: (id: string) => void;
   onExportPNG: () => void;
   onExportPDF: () => void;
+  onSelectAll: () => void;
+  onClearFavorites: () => void;
   wcagLevel: string;
   onWcagLevelChange: (value: string) => void;
 }
@@ -22,6 +24,8 @@ export default function ResultsSection({
   onToggleFavorite,
   onExportPNG,
   onExportPDF,
+  onSelectAll,
+  onClearFavorites,
   wcagLevel,
   onWcagLevelChange,
 }: ResultsSectionProps) {
@@ -64,6 +68,8 @@ export default function ResultsSection({
         textSize={textSize}
         favorites={favorites}
         onToggleFavorite={onToggleFavorite}
+        onSelectAll={onSelectAll}
+        onClearFavorites={onClearFavorites}
         wcagLevel={wcagLevel}
         onWcagLevelChange={onWcagLevelChange}
       />
