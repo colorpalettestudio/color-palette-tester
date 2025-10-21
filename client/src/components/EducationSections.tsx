@@ -13,37 +13,41 @@ export default function EducationSections() {
         
         {/* Contrast Visualization */}
         <div className="grid sm:grid-cols-2 gap-4 mt-8">
-          <div 
-            className="p-8 rounded-lg border-2 flex flex-col items-center justify-center min-h-[180px]"
-            style={{ backgroundColor: '#652B6B', borderColor: '#652B6B' }}
-          >
-            <p 
-              className="text-3xl font-bold mb-3" 
-              style={{ color: '#FFC1EA' }}
-              data-testid="text-good-contrast"
+          <div className="space-y-3">
+            <div 
+              className="p-8 rounded-lg border-2 flex items-center justify-center min-h-[180px]"
+              style={{ backgroundColor: '#652B6B', borderColor: '#652B6B' }}
             >
-              Can You Read This?
-            </p>
-            <div className="text-center">
-              <p className="text-sm font-semibold" style={{ color: '#FFC1EA' }}>✓ 6.7:1 Contrast</p>
-              <p className="text-xs mt-1" style={{ color: '#FFC1EA', opacity: 0.8 }}>Passes WCAG AA & AAA</p>
+              <p 
+                className="text-3xl font-bold" 
+                style={{ color: '#FFC1EA' }}
+                data-testid="text-good-contrast"
+              >
+                Can You Read This?
+              </p>
+            </div>
+            <div className="text-center space-y-1">
+              <p className="text-sm font-semibold text-green-600">✓ 6.7:1 Contrast</p>
+              <p className="text-xs text-muted-foreground">Passes WCAG AA & AAA</p>
             </div>
           </div>
           
-          <div 
-            className="p-8 rounded-lg border-2 flex flex-col items-center justify-center min-h-[180px]"
-            style={{ backgroundColor: '#652B6B', borderColor: '#652B6B' }}
-          >
-            <p 
-              className="text-3xl font-bold mb-3" 
-              style={{ color: '#834178' }}
-              data-testid="text-poor-contrast"
+          <div className="space-y-3">
+            <div 
+              className="p-8 rounded-lg border-2 flex items-center justify-center min-h-[180px]"
+              style={{ backgroundColor: '#652B6B', borderColor: '#652B6B' }}
             >
-              Can You Read This?
-            </p>
-            <div className="text-center">
-              <p className="text-sm font-semibold" style={{ color: '#FFC1EA' }}>✗ 1.4:1 Contrast</p>
-              <p className="text-xs mt-1" style={{ color: '#FFC1EA', opacity: 0.8 }}>Fails all WCAG standards</p>
+              <p 
+                className="text-3xl font-bold" 
+                style={{ color: '#834178' }}
+                data-testid="text-poor-contrast"
+              >
+                Can You Read This?
+              </p>
+            </div>
+            <div className="text-center space-y-1">
+              <p className="text-sm font-semibold text-red-600">✗ 1.4:1 Contrast</p>
+              <p className="text-xs text-muted-foreground">Fails all WCAG standards</p>
             </div>
           </div>
         </div>
