@@ -1,4 +1,4 @@
-import { Download, FileDown, XCircle } from "lucide-react";
+import { Download, FileDown, XCircle, CheckSquare } from "lucide-react";
 import ColorPairTable, { type ColorPair } from "./ColorPairTable";
 
 interface ResultsSectionProps {
@@ -10,6 +10,7 @@ interface ResultsSectionProps {
   onExportPNG: () => void;
   onExportPDF: () => void;
   onClearFavorites: () => void;
+  onSelectAll: () => void;
   wcagLevel: string;
   onWcagLevelChange: (value: string) => void;
 }
@@ -23,6 +24,7 @@ export default function ResultsSection({
   onExportPNG,
   onExportPDF,
   onClearFavorites,
+  onSelectAll,
   wcagLevel,
   onWcagLevelChange,
 }: ResultsSectionProps) {
@@ -33,6 +35,23 @@ export default function ResultsSection({
           Color Palette Tester
         </h2>
         <div className="flex items-center gap-2">
+          <button
+            onClick={onSelectAll}
+            className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover-elevate rounded-md flex items-center gap-1.5"
+            data-testid="button-select-all"
+          >
+            <CheckSquare className="w-4 h-4" />
+            Select All
+          </button>
+          <button
+            onClick={onClearFavorites}
+            className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover-elevate rounded-md flex items-center gap-1.5"
+            data-testid="button-clear-favorites"
+          >
+            <XCircle className="w-4 h-4" />
+            Clear
+          </button>
+          <div className="w-px h-4 bg-border mx-1" />
           <button
             onClick={onExportPNG}
             className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover-elevate rounded-md flex items-center gap-1.5"
@@ -48,15 +67,6 @@ export default function ResultsSection({
           >
             <FileDown className="w-4 h-4" />
             PDF
-          </button>
-          <div className="w-px h-4 bg-border mx-1" />
-          <button
-            onClick={onClearFavorites}
-            className="px-3 py-1.5 text-sm text-muted-foreground hover:text-foreground hover-elevate rounded-md flex items-center gap-1.5"
-            data-testid="button-clear-favorites"
-          >
-            <XCircle className="w-4 h-4" />
-            Clear
           </button>
         </div>
       </div>

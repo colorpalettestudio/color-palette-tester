@@ -190,6 +190,15 @@ export default function Home() {
     });
   };
 
+  const handleSelectAll = () => {
+    const allPairIds = new Set(pairs.map(pair => pair.id));
+    setFavorites(allPairIds);
+    toast({
+      title: "All pairs selected",
+      description: `${pairs.length} color pairs have been selected.`,
+    });
+  };
+
   const threshold = WCAG_THRESHOLDS[wcagLevel as keyof typeof WCAG_THRESHOLDS];
   const textSize = wcagLevel.includes("large") ? "large" : "small";
 
@@ -215,6 +224,7 @@ export default function Home() {
               onExportPNG={handleExportPNG}
               onExportPDF={handleExportPDF}
               onClearFavorites={handleClearFavorites}
+              onSelectAll={handleSelectAll}
               wcagLevel={wcagLevel}
               onWcagLevelChange={setWcagLevel}
             />
