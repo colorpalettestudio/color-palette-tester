@@ -29,28 +29,32 @@ export default function ColorPaletteBuilder({
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const { toast } = useToast();
 
-  // Parse preview colors from textarea in real-time
+  // Auto-add colors from textarea in real-time
   useEffect(() => {
     if (!bulkInput.trim()) {
-      setPreviewColors([]);
       return;
     }
 
     const colorStrings = parseColorInput(bulkInput);
-    const validColors: RGB[] = [];
+    const newItems: ColorItem[] = [];
     
     colorStrings.forEach(colorStr => {
       const rgb = parseColor(colorStr);
       if (rgb) {
         const hexValue = rgbToHex(rgb);
-        const isDuplicate = validColors.some(c => rgbToHex(c) === hexValue);
+        const isDuplicate = newItems.some(item => rgbToHex(item.color) === hexValue);
         if (!isDuplicate) {
-          validColors.push(rgb);
+          newItems.push({
+            color: rgb,
+            name: `Color ${newItems.length + 1}`,
+          });
         }
       }
     });
     
-    setPreviewColors(validColors);
+    if (newItems.length > 0) {
+      syncColors(newItems);
+    }
   }, [bulkInput]);
 
   // Sync colors with colorItems
@@ -69,29 +73,6 @@ export default function ColorPaletteBuilder({
     setColorItems(newItems);
   }
 
-  const handleBulkPaste = () => {
-    if (!bulkInput.trim()) return;
-
-    const colorStrings = parseColorInput(bulkInput);
-    const newItems = [...colorItems];
-    
-    colorStrings.forEach(colorStr => {
-      const rgb = parseColor(colorStr);
-      if (rgb) {
-        const hexValue = rgbToHex(rgb);
-        const isDuplicate = newItems.some(item => rgbToHex(item.color) === hexValue);
-        if (!isDuplicate) {
-          newItems.push({
-            color: rgb,
-            name: `Color ${newItems.length + 1}`,
-          });
-        }
-      }
-    });
-    
-    syncColors(newItems);
-    setBulkInput("");
-  };
 
   const handleRemove = (index: number) => {
     const newItems = colorItems.filter((_, i) => i !== index);
@@ -181,14 +162,6 @@ export default function ColorPaletteBuilder({
         </div>
 
         <div className="flex gap-2">
-          <Button
-            onClick={handleBulkPaste}
-            disabled={!bulkInput.trim()}
-            className="flex-1"
-            data-testid="button-import-palette"
-          >
-            Add Colors
-          </Button>
           <Button
             onClick={onSampleClick}
             variant="outline"
