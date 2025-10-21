@@ -152,8 +152,8 @@ export default function ColorPaletteBuilder({
                 onDragStart={() => handleSwatchDragStart(index)}
                 onDragOver={(e) => handleSwatchDragOver(e, index)}
                 onDragEnd={handleSwatchDragEnd}
-                className={`w-12 h-12 rounded-lg cursor-move transition-all hover:scale-110 ${
-                  isDragging ? 'opacity-50 scale-95' : ''
+                className={`w-12 h-12 rounded-lg cursor-move transition-transform hover:scale-110 ${
+                  isDragging ? 'scale-90 ring-4 ring-primary/50' : ''
                 } ${
                   isLight ? 'border-2 border-gray-300' : 'border-2 border-white/30'
                 }`}
