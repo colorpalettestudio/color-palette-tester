@@ -4,13 +4,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { CheckSquare, XCircle, HelpCircle } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -36,8 +29,6 @@ interface ColorPairTableProps {
   onWcagLevelChange: (value: string) => void;
   previewFontSize: number;
   onPreviewFontSizeChange: (size: number) => void;
-  previewFont: string;
-  onPreviewFontChange: (font: string) => void;
 }
 
 export default function ColorPairTable({
@@ -52,25 +43,12 @@ export default function ColorPairTable({
   onWcagLevelChange,
   previewFontSize,
   onPreviewFontSizeChange,
-  previewFont,
-  onPreviewFontChange,
 }: ColorPairTableProps) {
   const filterOptions = [
     { value: "all", label: "All Pairs", threshold: 0 },
     { value: "aa-large", label: "WCAG AA Large (3:1+)", threshold: 3.0 },
     { value: "aa-small", label: "WCAG AA Normal (4.5:1+)", threshold: 4.5 },
     { value: "aaa-large", label: "WCAG AAA Normal (7:1+)", threshold: 7.0 },
-  ];
-
-  const fontOptions = [
-    { value: "Inter", label: "Inter" },
-    { value: "Roboto", label: "Roboto" },
-    { value: "Open Sans", label: "Open Sans" },
-    { value: "Lato", label: "Lato" },
-    { value: "Montserrat", label: "Montserrat" },
-    { value: "Poppins", label: "Poppins" },
-    { value: "Source Sans 3", label: "Source Sans 3" },
-    { value: "Raleway", label: "Raleway" },
   ];
 
   const getFilteredPairs = (filterValue: string) => {
@@ -109,38 +87,19 @@ export default function ColorPairTable({
           <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-start pb-3 border-b border-border">
             <div>
               <h3 className="text-sm font-bold text-foreground mb-3">Pairing Preview</h3>
-              <div className="flex flex-wrap gap-4 items-center">
-                <div className="flex items-center gap-3">
-                  <label className="text-xs text-muted-foreground whitespace-nowrap">
-                    Text Size: {previewFontSize}px
-                  </label>
-                  <Slider
-                    value={[previewFontSize]}
-                    onValueChange={(values) => onPreviewFontSizeChange(values[0])}
-                    min={10}
-                    max={32}
-                    step={1}
-                    className="w-32"
-                    data-testid="slider-preview-font-size"
-                  />
-                </div>
-                <div className="flex items-center gap-3">
-                  <label className="text-xs text-muted-foreground whitespace-nowrap">
-                    Font:
-                  </label>
-                  <Select value={previewFont} onValueChange={onPreviewFontChange}>
-                    <SelectTrigger className="w-40" data-testid="select-preview-font">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {fontOptions.map((font) => (
-                        <SelectItem key={font.value} value={font.value}>
-                          {font.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+              <div className="flex items-center gap-3">
+                <label className="text-xs text-muted-foreground whitespace-nowrap">
+                  Text Size: {previewFontSize}px
+                </label>
+                <Slider
+                  value={[previewFontSize]}
+                  onValueChange={(values) => onPreviewFontSizeChange(values[0])}
+                  min={10}
+                  max={32}
+                  step={1}
+                  className="w-32"
+                  data-testid="slider-preview-font-size"
+                />
               </div>
             </div>
             
@@ -217,7 +176,6 @@ export default function ColorPairTable({
                   style={{ 
                     backgroundColor: bgHex, 
                     color: fgHex,
-                    fontFamily: previewFont,
                     fontSize: `${previewFontSize}px`
                   }}
                 >

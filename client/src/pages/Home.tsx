@@ -35,7 +35,6 @@ export default function Home() {
   const [pairs, setPairs] = useState<ColorPair[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [previewFontSize, setPreviewFontSize] = useState(14);
-  const [previewFont, setPreviewFont] = useState("Inter");
   const { toast } = useToast();
 
   // Automatically test colors whenever the palette changes
@@ -242,8 +241,6 @@ export default function Home() {
               onWcagLevelChange={setWcagLevel}
               previewFontSize={previewFontSize}
               onPreviewFontSizeChange={setPreviewFontSize}
-              previewFont={previewFont}
-              onPreviewFontChange={setPreviewFont}
             />
 
             <AdPlaceholder className="my-6" />

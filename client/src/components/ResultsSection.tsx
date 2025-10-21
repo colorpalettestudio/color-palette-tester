@@ -16,8 +16,6 @@ interface ResultsSectionProps {
   onWcagLevelChange: (value: string) => void;
   previewFontSize: number;
   onPreviewFontSizeChange: (size: number) => void;
-  previewFont: string;
-  onPreviewFontChange: (font: string) => void;
 }
 
 export default function ResultsSection({
@@ -34,8 +32,6 @@ export default function ResultsSection({
   onWcagLevelChange,
   previewFontSize,
   onPreviewFontSizeChange,
-  previewFont,
-  onPreviewFontChange,
 }: ResultsSectionProps) {
   return (
     <div className="space-y-6">
@@ -82,8 +78,6 @@ export default function ResultsSection({
         onWcagLevelChange={onWcagLevelChange}
         previewFontSize={previewFontSize}
         onPreviewFontSizeChange={onPreviewFontSizeChange}
-        previewFont={previewFont}
-        onPreviewFontChange={onPreviewFontChange}
       />
     </div>
   );
