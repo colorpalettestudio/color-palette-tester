@@ -3,7 +3,7 @@ import ColorPaletteBuilder from "./ColorPaletteBuilder";
 import { type RGB } from "@/lib/colorUtils";
 
 interface HeroSectionProps {
-  onSampleClick: () => void;
+  onSampleClick: () => string;
   colors: RGB[];
   onColorsChange: (colors: RGB[]) => void;
   onTestPalette: () => void;

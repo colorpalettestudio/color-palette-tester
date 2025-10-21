@@ -13,7 +13,7 @@ interface ColorItem {
 interface ColorPaletteBuilderProps {
   colors: RGB[];
   onColorsChange: (colors: RGB[]) => void;
-  onSampleClick: () => void;
+  onSampleClick: () => string;
   onTestPalette: () => void;
 }
 
@@ -163,7 +163,10 @@ export default function ColorPaletteBuilder({
 
         <div className="flex gap-2">
           <Button
-            onClick={onSampleClick}
+            onClick={() => {
+              const sampleText = onSampleClick();
+              setBulkInput(sampleText);
+            }}
             variant="outline"
             className="flex-1"
             data-testid="button-try-sample"

@@ -87,17 +87,7 @@ export default function Home() {
 
 
   const handleSampleColors = () => {
-    const colorStrings = parseColorInput(SAMPLE_COLORS);
-    const sampleColors: RGB[] = [];
-    
-    for (const colorStr of colorStrings) {
-      const rgb = parseColor(colorStr);
-      if (rgb) {
-        sampleColors.push(rgb);
-      }
-    }
-    
-    setColors(sampleColors);
+    return SAMPLE_COLORS;
   };
 
   const handleToggleFavorite = (id: string) => {
