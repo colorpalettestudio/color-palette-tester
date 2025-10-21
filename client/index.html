@@ -3,24 +3,79 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Color Palette Tester | WCAG Accessibility Checker (All Pairs in 1 Click)</title>
-    <meta name="description" content="Trusted by 2,000+ designers. Test the contrast of all your brand colors in one click. Filter by WCAG AA/AAA for small or large text. Export as PNG/PDF. Free & instant." />
-    <link rel="canonical" href="https://thecolorpalettetester.com/" />
+    <title>Free Color Palette Tester | WCAG Color Contrast Checker (All Pairs in 1 Click)</title>
+    <meta name="description" content="Test the contrast of all your brand colors in one click. Check every color combination against WCAG AA/AAA standards. Export passing pairs as PNG or PDF. Free & instant." />
+    <link rel="canonical" href="https://www.colorpalettetester.com/" />
     
-    <!-- Open Graph tags -->
-    <meta property="og:title" content="Color Palette Tester | Trusted by 2,000+ Designers" />
-    <meta property="og:description" content="Test your palette for accessibility. Test every color pairing against WCAG AA/AAA in one click. Export as PNG/PDF. Free & instant." />
+    <!-- Open Graph -->
+    <meta property="og:title" content="Free Color Palette Tester" />
+    <meta property="og:description" content="Test every color pairing in one click. Check WCAG contrast, filter by AA/AAA, and export as PNG/PDF." />
+    <meta property="og:url" content="https://www.colorpalettetester.com/" />
+    <meta property="og:image" content="https://www.colorpalettetester.com/og-image.png" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://thecolorpalettetester.com/" />
     
-    <!-- Twitter Card tags -->
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Color Palette Tester | Trusted by 2,000+ Designers" />
-    <meta name="twitter:description" content="Test your palette for accessibility. Test every color pairing against WCAG AA/AAA in one click. Free & instant." />
+    <meta name="twitter:title" content="Free Color Palette Tester" />
+    <meta name="twitter:description" content="Check every color combination for accessibility in seconds — free & fast." />
+    <meta name="twitter:image" content="https://www.colorpalettetester.com/og-image.png" />
     
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <!-- Favicon + Color -->
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="theme-color" content="#0f1120" />
+    
+    <!-- Preconnects -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Lato:wght@400;700&family=Montserrat:wght@400;600;700&family=Poppins:wght@400;600;700&family=Source+Sans+3:wght@400;600;700&family=Raleway:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Structured Data - SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Color Palette Tester",
+      "description": "Test color palettes for accessibility. Compare all color pairings at once and check WCAG AA/AAA compliance. Export favorites as PNG or PDF.",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "Web",
+      "url": "https://www.colorpalettetester.com/",
+      "author": {
+        "@type": "Organization",
+        "name": "The Color Palette Studio",
+        "url": "https://thecolorpalettestudio.com"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
+    
+    <!-- Structured Data - FAQPage -->
+    <script type="application/ld+json">
+    {
+      "@context":"https://schema.org",
+      "@type":"FAQPage",
+      "mainEntity":[
+        {
+          "@type":"Question",
+          "name":"How do I test all color pairings?",
+          "acceptedAnswer":{"@type":"Answer","text":"Paste your brand colors as HEX, RGB, or HSL — one per line — and click 'Test'. The app checks every foreground/background combination against WCAG standards."}
+        },
+        {
+          "@type":"Question",
+          "name":"What WCAG levels are supported?",
+          "acceptedAnswer":{"@type":"Answer","text":"AA and AAA for Small and Large text, following WCAG 2.1 standards (4.5:1 for small text, 3.0:1 for large text)."}
+        },
+        {
+          "@type":"Question",
+          "name":"Can I export my favorite color pairs?",
+          "acceptedAnswer":{"@type":"Answer","text":"Yes. Star any passing pair, then export them all as a PNG image or PDF for easy sharing."}
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

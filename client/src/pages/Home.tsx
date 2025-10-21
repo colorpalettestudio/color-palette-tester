@@ -11,6 +11,8 @@ import HowItWorksSection from "@/components/HowItWorksSection";
 import EducationSections from "@/components/EducationSections";
 import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
+import SEOContent from "@/components/SEOContent";
+import RelatedTools from "@/components/RelatedTools";
 import {
   parseColor,
   parseColorInput,
@@ -326,6 +328,10 @@ export default function Home() {
         <CTACard />
 
         <FAQSection />
+
+        <SEOContent />
+
+        <RelatedTools />
 
         <AdPlaceholder className="my-6" />
       </main>
