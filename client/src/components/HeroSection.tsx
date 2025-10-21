@@ -22,12 +22,13 @@ export default function HeroSection({
           Free, Instant & No Sign-Up
         </Badge>
         
-        <h1 className="text-4xl md:text-5xl font-bold text-foreground leading-tight">
+        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
+          <span className="text-foreground">Color Palette </span>
           <span 
-            className="bg-gradient-to-r from-red-500 via-yellow-500 via-green-500 via-blue-500 to-purple-500 text-transparent bg-clip-text"
+            className="bg-gradient-to-r from-red-500 via-orange-500 via-yellow-500 via-green-500 via-blue-500 via-indigo-500 to-violet-500 text-transparent bg-clip-text"
             data-testid="text-rainbow"
           >
-            Color Palette Tester
+            Tester
           </span>
         </h1>
         
