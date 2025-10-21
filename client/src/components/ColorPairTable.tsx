@@ -1,7 +1,12 @@
 import { type RGB, rgbToHex } from "@/lib/colorUtils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CheckSquare, XCircle } from "lucide-react";
+import { CheckSquare, XCircle, HelpCircle } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export interface ColorPair {
   foreground: RGB;
@@ -73,15 +78,42 @@ export default function ColorPairTable({
       </div>
 
       <div id="results-table" className="space-y-6">
-        <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-center pb-3 border-b border-border">
+        <div className="grid grid-cols-[1fr_auto_auto] gap-4 items-start pb-3 border-b border-border">
           <h3 className="text-sm font-bold text-foreground">Pairing Preview</h3>
-          <h3 className="text-sm font-bold text-foreground text-center min-w-[120px]">Contrast Score</h3>
-          <div className="flex items-center justify-center gap-2 min-w-[140px]">
-            <h3 className="text-sm font-bold text-foreground">Approved Pair?</h3>
-            <div className="flex items-center gap-1 ml-2">
+          
+          <div className="flex flex-col items-center min-w-[120px]">
+            <h3 className="text-sm font-bold text-foreground text-center">Contrast Score</h3>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  className="mt-1 p-1 text-muted-foreground hover:text-foreground hover-elevate rounded"
+                  data-testid="button-contrast-help"
+                >
+                  <HelpCircle className="w-3.5 h-3.5" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80">
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-sm">What is a Contrast Score?</h4>
+                  <p className="text-sm text-muted-foreground">
+                    The contrast ratio measures the difference in brightness between text and background colors, ranging from 1:1 (no contrast) to 21:1 (maximum contrast).
+                  </p>
+                  <div className="space-y-1 text-xs">
+                    <p><strong>WCAG AA Large:</strong> Requires 3:1 for large text (18pt+)</p>
+                    <p><strong>WCAG AA Normal:</strong> Requires 4.5:1 for normal text</p>
+                    <p><strong>WCAG AAA:</strong> Requires 7:1 for enhanced accessibility</p>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+          
+          <div className="flex flex-col items-center min-w-[140px]">
+            <h3 className="text-sm font-bold text-foreground text-center">Approved Pair?</h3>
+            <div className="flex items-center gap-1 mt-1">
               <button
                 onClick={onSelectAll}
-                className="p-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate rounded flex items-center gap-1"
+                className="p-1 text-muted-foreground hover:text-foreground hover-elevate rounded"
                 data-testid="button-select-all"
                 title="Select All"
               >
@@ -89,7 +121,7 @@ export default function ColorPairTable({
               </button>
               <button
                 onClick={onClearFavorites}
-                className="p-1.5 text-xs text-muted-foreground hover:text-foreground hover-elevate rounded flex items-center gap-1"
+                className="p-1 text-muted-foreground hover:text-foreground hover-elevate rounded"
                 data-testid="button-clear-favorites"
                 title="Clear All"
               >
