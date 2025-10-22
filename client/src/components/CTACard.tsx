@@ -35,7 +35,7 @@ export default function CTACard() {
           </h3>
           
           <p className="text-xl font-semibold text-foreground/90">
-            Using math, not AI
+            The Color Palette Fixer uses math, not AI.
           </p>
 
           <div className="space-y-3">
@@ -60,7 +60,7 @@ export default function CTACard() {
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-foreground text-background rounded-lg font-bold text-lg hover-elevate active-elevate-2 shadow-lg w-fit"
             data-testid="link-palette-fixer"
           >
-            Try Palette Fixer
+            Fix Your Color Palette
             <ArrowRight className="w-5 h-5" />
           </a>
         </div>
