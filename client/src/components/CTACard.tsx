@@ -14,11 +14,22 @@ export default function CTACard() {
       >
         <div className="flex-shrink-0">
           <div className="w-64 h-64 bg-[#6B9FD1] rounded-lg overflow-hidden shadow-md">
-            <img 
-              src={paletteFixer} 
-              alt="Color Palette Fixer" 
+            <video 
+              autoPlay 
+              loop 
+              muted 
+              playsInline
               className="w-full h-full object-contain"
-            />
+              poster={paletteFixer}
+            >
+              <source src="/palette-fixer-demo.mp4" type="video/mp4" />
+              <source src="/palette-fixer-demo.webm" type="video/webm" />
+              <img 
+                src={paletteFixer} 
+                alt="Color Palette Fixer" 
+                className="w-full h-full object-contain"
+              />
+            </video>
           </div>
         </div>
         
