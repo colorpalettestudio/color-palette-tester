@@ -74,6 +74,10 @@ export default function ColorPaletteBuilder({
       name: `Color ${i + 1}`,
     }));
     syncColors(renumbered);
+    
+    // Update textarea to reflect removed color
+    const hexColors = renumbered.map(item => rgbToHex(item.color)).join(', ');
+    setBulkInput(hexColors);
   };
 
   const handleClearAll = () => {
@@ -148,19 +152,34 @@ export default function ColorPaletteBuilder({
             return (
               <div
                 key={`${hexValue}-${index}`}
-                draggable
-                onDragStart={() => handleSwatchDragStart(index)}
-                onDragOver={(e) => handleSwatchDragOver(e, index)}
-                onDragEnd={handleSwatchDragEnd}
-                className={`w-12 h-12 rounded-lg cursor-move transition-transform hover:scale-110 ${
-                  isDragging ? 'scale-90 ring-4 ring-primary/50' : ''
-                } ${
-                  isLight ? 'border-2 border-gray-300' : 'border-2 border-white/30'
-                }`}
-                style={{ backgroundColor: hexValue }}
-                title={`${hexValue.toUpperCase()} - Drag to reorder`}
-                data-testid={`palette-swatch-${index}`}
-              />
+                className="relative group"
+              >
+                <div
+                  draggable
+                  onDragStart={() => handleSwatchDragStart(index)}
+                  onDragOver={(e) => handleSwatchDragOver(e, index)}
+                  onDragEnd={handleSwatchDragEnd}
+                  className={`w-12 h-12 rounded-lg cursor-move transition-transform hover:scale-110 ${
+                    isDragging ? 'scale-90 ring-4 ring-primary/50' : ''
+                  } ${
+                    isLight ? 'border border-gray-300' : 'border border-white/30'
+                  }`}
+                  style={{ backgroundColor: hexValue }}
+                  title={`${hexValue.toUpperCase()} - Drag to reorder`}
+                  data-testid={`palette-swatch-${index}`}
+                />
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemove(index);
+                  }}
+                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-red-600 shadow-md"
+                  title="Remove color"
+                  data-testid={`button-remove-swatch-${index}`}
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </div>
             );
           })}
         </div>
