@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { ArrowRight, Calculator, Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import paletteFixer from "@assets/palette-fixer-product.png";
 
 export default function CTACard() {
@@ -30,17 +30,12 @@ export default function CTACard() {
 
         {/* Right: Content */}
         <div className="p-8 md:p-12 flex flex-col justify-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-foreground/10 rounded-full w-fit text-sm font-medium text-foreground">
-            <Calculator className="w-4 h-4" />
-            Uses Math, Not AI
-          </div>
-
           <h3 className="text-3xl md:text-4xl font-bold leading-tight text-foreground">
-            Found colors that don't pass?
+            Ready to fix your color palette in 60 seconds?
           </h3>
           
           <p className="text-xl font-semibold text-foreground/90">
-            Try fixing your palette automatically
+            Using math, not AI
           </p>
 
           <div className="space-y-3">
