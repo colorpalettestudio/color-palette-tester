@@ -8,7 +8,6 @@ import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import Terms from "@/pages/Terms";
 import Contact from "@/pages/Contact";
 import CookiePreferences from "@/pages/CookiePreferences";
-import CookieConsent from "@/components/CookieConsent";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -29,7 +28,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <CookieConsent />
         <Router />
       </TooltipProvider>
     </QueryClientProvider>
