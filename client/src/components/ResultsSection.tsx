@@ -110,27 +110,13 @@ export default function ResultsSection({
         </div>
       </div>
 
-      <ColorPairTable
-        pairs={pairs}
-        threshold={threshold}
-        textSize={textSize}
-        favorites={favorites}
-        onToggleFavorite={onToggleFavorite}
-        onSelectAll={onSelectAll}
-        onClearFavorites={onClearFavorites}
-        wcagLevel={wcagLevel}
-        onWcagLevelChange={onWcagLevelChange}
-        previewFontSize={previewFontSize}
-        onPreviewFontSizeChange={onPreviewFontSizeChange}
-      />
-
       {hasNoHighContrastPairs && (
-        <Alert id="contrast-alert" className="border-orange-500/50 bg-orange-50/50 dark:bg-orange-950/20" data-testid="alert-no-contrast">
-          <AlertCircle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-          <AlertTitle className="text-2xl font-bold text-orange-900 dark:text-orange-100" data-testid="text-alert-title">
+        <Alert id="contrast-alert" className="border-red-600/50 bg-red-100 dark:bg-red-950/40" data-testid="alert-no-contrast">
+          <AlertCircle className="h-5 w-5 text-red-700 dark:text-red-400" />
+          <AlertTitle className="text-2xl font-bold text-red-900 dark:text-red-100" data-testid="text-alert-title">
             Uh-oh! No High Contrast Pairs
           </AlertTitle>
-          <AlertDescription className="text-orange-800 dark:text-orange-200" data-testid="text-alert-description">
+          <AlertDescription className="text-red-800 dark:text-red-200" data-testid="text-alert-description">
             <p className="mb-3">
               Your palette doesn't have any color pairings that meet the <strong>WCAG AA</strong> standard for text contrast (4.5:1 ratio). You need to fix your palette to ensure readability and accessibility.
             </p>
@@ -171,6 +157,20 @@ export default function ResultsSection({
           </AlertDescription>
         </Alert>
       )}
+
+      <ColorPairTable
+        pairs={pairs}
+        threshold={threshold}
+        textSize={textSize}
+        favorites={favorites}
+        onToggleFavorite={onToggleFavorite}
+        onSelectAll={onSelectAll}
+        onClearFavorites={onClearFavorites}
+        wcagLevel={wcagLevel}
+        onWcagLevelChange={onWcagLevelChange}
+        previewFontSize={previewFontSize}
+        onPreviewFontSizeChange={onPreviewFontSizeChange}
+      />
     </div>
   );
 }
