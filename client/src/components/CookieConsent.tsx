@@ -18,7 +18,6 @@ export default function CookieConsent() {
     const preferences = {
       necessary: true,
       analytics: true,
-      advertising: true,
     };
     localStorage.setItem("cookiePreferences", JSON.stringify(preferences));
     localStorage.setItem("cookieConsentGiven", "true");
@@ -29,7 +28,6 @@ export default function CookieConsent() {
     const preferences = {
       necessary: true,
       analytics: false,
-      advertising: false,
     };
     localStorage.setItem("cookiePreferences", JSON.stringify(preferences));
     localStorage.setItem("cookieConsentGiven", "true");
@@ -49,9 +47,8 @@ export default function CookieConsent() {
                   We Value Your Privacy
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  We use cookies to enhance your experience, analyze site traffic, and serve personalized advertisements. 
-                  By clicking "Accept All," you consent to our use of cookies. Third-party vendors, including Google, 
-                  may set cookies or use web beacons to serve ads based on your browsing activity.
+                  We use cookies to enhance your experience and analyze site traffic. 
+                  By clicking "Accept All," you consent to our use of cookies for analytics purposes.
                 </p>
               </div>
               <Button

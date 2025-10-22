@@ -5,7 +5,6 @@ import HeroSection from "@/components/HeroSection";
 import ResultsSection from "@/components/ResultsSection";
 import { type ColorPair } from "@/components/ColorPairTable";
 import ExportCards from "@/components/ExportCards";
-import AdPlaceholder from "@/components/AdPlaceholder";
 import CTACard from "@/components/CTACard";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import EducationSections from "@/components/EducationSections";
@@ -296,8 +295,6 @@ export default function Home() {
           onTestPalette={handleTestPalette}
         />
 
-        <AdPlaceholder className="my-6" />
-
         {pairs.length > 0 && (
           <div id="results-section">
             <ResultsSection
@@ -316,8 +313,6 @@ export default function Home() {
               previewFontSize={previewFontSize}
               onPreviewFontSizeChange={setPreviewFontSize}
             />
-
-            <AdPlaceholder className="my-6" />
           </div>
         )}
 
@@ -332,8 +327,6 @@ export default function Home() {
         <SEOContent />
 
         <RelatedTools />
-
-        <AdPlaceholder className="my-6" />
       </main>
 
       <Footer />

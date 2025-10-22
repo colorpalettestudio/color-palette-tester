@@ -26,47 +26,8 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-2xl font-bold text-foreground mb-3">Cookies and Tracking</h2>
             <p>
-              This website uses Google Analytics and Google AdSense, which may set cookies to analyze 
-              site traffic and display relevant advertisements. These services collect anonymous usage 
-              data to help us improve the tool.
-            </p>
-            
-            <h3 className="text-xl font-semibold text-foreground mt-4 mb-2">Third-Party Advertising (Google AdSense)</h3>
-            <p>
-              We use Google AdSense to display advertisements on our site. Google and its partners may use cookies 
-              and web beacons to serve ads based on your prior visits to this website or other websites. These 
-              technologies allow Google and its partners to recognize your browser and collect information about 
-              your browsing behavior.
-            </p>
-            <p>
-              Third-party vendors, including Google, use cookies to serve ads based on your prior visits to our 
-              website. Google's use of advertising cookies enables it and its partners to serve ads to you based 
-              on your visit to our sites and/or other sites on the Internet.
-            </p>
-            <p>
-              You can opt out of personalized advertising by visiting{" "}
-              <a
-                href="https://www.google.com/settings/ads"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Google Ad Settings
-              </a>{" "}
-              or by visiting{" "}
-              <a
-                href="http://www.aboutads.info"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                www.aboutads.info
-              </a>
-              . You can also manage your cookie preferences through our{" "}
-              <Link href="/cookie-preferences" className="text-primary hover:underline">
-                Cookie Preferences
-              </Link>{" "}
-              page.
+              This website uses Google Analytics, which may set cookies to analyze site traffic. 
+              This service collects anonymous usage data to help us improve the tool.
             </p>
             
             <h3 className="text-xl font-semibold text-foreground mt-4 mb-2">Google Analytics</h3>
@@ -80,16 +41,12 @@ export default function PrivacyPolicy() {
                 className="text-primary hover:underline"
               >
                 Google Analytics Opt-out Browser Add-on
-              </a>
-              .
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-2xl font-bold text-foreground mb-3">Third-Party Services</h2>
-            <p>
-              We use third-party services for analytics and advertising. These services have their own 
-              privacy policies governing how they collect and process data.
+              </a>{" "}
+              or by managing your preferences through our{" "}
+              <Link href="/cookie-preferences" className="text-primary hover:underline">
+                Cookie Preferences
+              </Link>{" "}
+              page.
             </p>
           </section>
 
@@ -114,7 +71,7 @@ export default function PrivacyPolicy() {
           </section>
 
           <p className="text-sm">
-            <strong>Last updated:</strong> October 21, 2025
+            <strong>Last updated:</strong> October 22, 2025
           </p>
         </div>
       </main>

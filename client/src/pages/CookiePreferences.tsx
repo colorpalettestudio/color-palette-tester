@@ -11,7 +11,6 @@ export default function CookiePreferences() {
   const [preferences, setPreferences] = useState({
     necessary: true,
     analytics: false,
-    advertising: false,
   });
 
   useEffect(() => {
@@ -84,24 +83,6 @@ export default function CookiePreferences() {
             </div>
           </Card>
 
-          <Card className="p-6 space-y-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-foreground mb-2">Advertising Cookies</h3>
-                <p className="text-sm text-muted-foreground">
-                  These cookies are used by Google AdSense and its partners to display relevant ads based on your browsing behavior. Third parties may set and read cookies or use web beacons.
-                </p>
-              </div>
-              <Switch
-                checked={preferences.advertising}
-                onCheckedChange={(checked) =>
-                  setPreferences({ ...preferences, advertising: checked })
-                }
-                data-testid="switch-advertising"
-              />
-            </div>
-          </Card>
-
           <div className="flex gap-3">
             <Button onClick={handleSave} size="lg" data-testid="button-save-preferences">
               Save Preferences
@@ -111,7 +92,6 @@ export default function CookiePreferences() {
                 setPreferences({
                   necessary: true,
                   analytics: true,
-                  advertising: true,
                 });
               }}
               variant="outline"
