@@ -18,7 +18,7 @@ export default function HeroSection({
   return (
     <div className="text-center space-y-8">
       <div className="space-y-4">
-        <Badge variant="secondary" className="text-xs" data-testid="badge-hero">
+        <Badge variant="secondary" className="text-base px-6 py-2" data-testid="badge-hero">
           Free, Instant & No Sign-Up
         </Badge>
         
