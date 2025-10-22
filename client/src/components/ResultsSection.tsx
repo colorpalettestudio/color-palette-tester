@@ -25,6 +25,7 @@ interface ResultsSectionProps {
   previewFontSize: number;
   onPreviewFontSizeChange: (size: number) => void;
   hasNoHighContrastPairs?: boolean;
+  hasLowHighContrastPairs?: boolean;
 }
 
 export default function ResultsSection({
@@ -43,6 +44,7 @@ export default function ResultsSection({
   previewFontSize,
   onPreviewFontSizeChange,
   hasNoHighContrastPairs = false,
+  hasLowHighContrastPairs = false,
 }: ResultsSectionProps) {
   return (
     <div className="space-y-6">
@@ -118,6 +120,30 @@ export default function ResultsSection({
             >
               <Button className="bg-foreground text-background hover:bg-foreground/90" data-testid="button-fix-palette">
                 Fix Your Palette Now
+              </Button>
+            </a>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {hasLowHighContrastPairs && (
+        <Alert className="border-blue-500/50 bg-blue-50/50 dark:bg-blue-950/20" data-testid="alert-low-contrast">
+          <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+          <AlertTitle className="text-lg font-semibold text-blue-900 dark:text-blue-100" data-testid="text-alert-low-title">
+            Your Palette Is Good, But Could Be More Accessible
+          </AlertTitle>
+          <AlertDescription className="text-blue-800 dark:text-blue-200" data-testid="text-alert-low-description">
+            <p className="mb-3">
+              Less than half of your color pairs meet high contrast standards. Fix your color palette for better readability and accessibility with your brand colors.
+            </p>
+            <a
+              href="https://thecolorpalettestudio.com/products/color-palette-fixer"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="link-improve-palette"
+            >
+              <Button className="bg-foreground text-background hover:bg-foreground/90" data-testid="button-improve-palette">
+                Improve Your Palette
               </Button>
             </a>
           </AlertDescription>

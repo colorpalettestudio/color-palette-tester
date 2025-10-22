@@ -273,8 +273,11 @@ export default function Home() {
   const threshold = WCAG_THRESHOLDS[wcagLevel as keyof typeof WCAG_THRESHOLDS];
   const textSize = wcagLevel.includes("large") ? "large" : "small";
   
-  // Check if there are no high contrast pairs (AA Small threshold - 4.5:1)
-  const hasNoHighContrastPairs = pairs.length > 0 && !pairs.some(pair => pair.ratio >= 4.5);
+  // Check high contrast pair percentage (AA Small threshold - 4.5:1)
+  const highContrastPairs = pairs.filter(pair => pair.ratio >= 4.5);
+  const highContrastPercentage = pairs.length > 0 ? (highContrastPairs.length / pairs.length) * 100 : 100;
+  const hasNoHighContrastPairs = pairs.length > 0 && highContrastPairs.length === 0;
+  const hasLowHighContrastPairs = pairs.length > 0 && highContrastPercentage > 0 && highContrastPercentage < 50;
 
   const handleTestPalette = () => {
     const resultsElement = document.getElementById("results-section");
@@ -316,6 +319,7 @@ export default function Home() {
               previewFontSize={previewFontSize}
               onPreviewFontSizeChange={setPreviewFontSize}
               hasNoHighContrastPairs={hasNoHighContrastPairs}
+              hasLowHighContrastPairs={hasLowHighContrastPairs}
             />
           </div>
         )}
