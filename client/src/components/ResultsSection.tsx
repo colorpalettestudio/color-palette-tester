@@ -46,16 +46,38 @@ export default function ResultsSection({
   hasNoHighContrastPairs = false,
   hasLowHighContrastPairs = false,
 }: ResultsSectionProps) {
+  const showAlert = hasNoHighContrastPairs || hasLowHighContrastPairs;
+  
+  const scrollToAlert = () => {
+    const alertElement = document.getElementById("contrast-alert");
+    if (alertElement) {
+      alertElement.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-foreground">
-            Contrast Test Results
-          </h2>
-          <p className="text-sm text-muted-foreground mt-1">
-            {pairs.length} color pair{pairs.length !== 1 ? 's' : ''} tested
-          </p>
+        <div className="flex items-center gap-3">
+          <div>
+            <h2 className="text-2xl font-bold text-foreground">
+              Contrast Test Results
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              {pairs.length} color pair{pairs.length !== 1 ? 's' : ''} tested
+            </p>
+          </div>
+          {showAlert && (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={scrollToAlert}
+              className="text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300"
+              data-testid="button-alert-icon"
+            >
+              <AlertCircle className="h-6 w-6" />
+            </Button>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <DropdownMenu>
@@ -103,9 +125,9 @@ export default function ResultsSection({
       />
 
       {hasNoHighContrastPairs && (
-        <Alert className="border-orange-500/50 bg-orange-50/50 dark:bg-orange-950/20" data-testid="alert-no-contrast">
+        <Alert id="contrast-alert" className="border-orange-500/50 bg-orange-50/50 dark:bg-orange-950/20" data-testid="alert-no-contrast">
           <AlertCircle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-          <AlertTitle className="text-lg font-semibold text-orange-900 dark:text-orange-100" data-testid="text-alert-title">
+          <AlertTitle className="text-2xl font-bold text-orange-900 dark:text-orange-100" data-testid="text-alert-title">
             Uh-oh! No High Contrast Pairs
           </AlertTitle>
           <AlertDescription className="text-orange-800 dark:text-orange-200" data-testid="text-alert-description">
@@ -127,9 +149,9 @@ export default function ResultsSection({
       )}
 
       {hasLowHighContrastPairs && (
-        <Alert className="border-blue-500/50 bg-blue-50/50 dark:bg-blue-950/20" data-testid="alert-low-contrast">
+        <Alert id="contrast-alert" className="border-blue-500/50 bg-blue-50/50 dark:bg-blue-950/20" data-testid="alert-low-contrast">
           <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-          <AlertTitle className="text-lg font-semibold text-blue-900 dark:text-blue-100" data-testid="text-alert-low-title">
+          <AlertTitle className="text-2xl font-bold text-blue-900 dark:text-blue-100" data-testid="text-alert-low-title">
             Your Palette Is Good, But Could Be More Accessible
           </AlertTitle>
           <AlertDescription className="text-blue-800 dark:text-blue-200" data-testid="text-alert-low-description">
