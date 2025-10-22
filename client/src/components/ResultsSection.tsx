@@ -1,4 +1,4 @@
-import { Download, FileDown, Code, ChevronDown } from "lucide-react";
+import { Download, FileDown, Code, ChevronDown, AlertCircle } from "lucide-react";
 import ColorPairTable, { type ColorPair } from "./ColorPairTable";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,6 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface ResultsSectionProps {
   pairs: ColorPair[];
@@ -23,6 +24,7 @@ interface ResultsSectionProps {
   onWcagLevelChange: (value: string) => void;
   previewFontSize: number;
   onPreviewFontSizeChange: (size: number) => void;
+  hasNoHighContrastPairs?: boolean;
 }
 
 export default function ResultsSection({
@@ -40,6 +42,7 @@ export default function ResultsSection({
   onWcagLevelChange,
   previewFontSize,
   onPreviewFontSizeChange,
+  hasNoHighContrastPairs = false,
 }: ResultsSectionProps) {
   return (
     <div className="space-y-6">
@@ -96,6 +99,30 @@ export default function ResultsSection({
         previewFontSize={previewFontSize}
         onPreviewFontSizeChange={onPreviewFontSizeChange}
       />
+
+      {hasNoHighContrastPairs && (
+        <Alert className="border-orange-500/50 bg-orange-50/50 dark:bg-orange-950/20" data-testid="alert-no-contrast">
+          <AlertCircle className="h-5 w-5 text-orange-600 dark:text-orange-400" />
+          <AlertTitle className="text-lg font-semibold text-orange-900 dark:text-orange-100" data-testid="text-alert-title">
+            Uh-oh! No High Contrast Pairs
+          </AlertTitle>
+          <AlertDescription className="text-orange-800 dark:text-orange-200" data-testid="text-alert-description">
+            <p className="mb-3">
+              Your palette doesn't have any color pairings that meet the <strong>WCAG AA</strong> standard for text contrast (4.5:1 ratio). You need to fix your palette to ensure readability and accessibility.
+            </p>
+            <a
+              href="https://thecolorpalettestudio.com/products/color-palette-fixer"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-testid="link-fix-palette"
+            >
+              <Button className="bg-foreground text-background hover:bg-foreground/90" data-testid="button-fix-palette">
+                Fix Your Palette Now
+              </Button>
+            </a>
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 }

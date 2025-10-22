@@ -20,16 +20,6 @@ import {
   rgbToHex,
 } from "@/lib/colorUtils";
 import { useToast } from "@/hooks/use-toast";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 
 const WCAG_THRESHOLDS = {
   "aa-small": 4.5,
@@ -46,7 +36,6 @@ export default function Home() {
   const [pairs, setPairs] = useState<ColorPair[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [previewFontSize, setPreviewFontSize] = useState(14);
-  const [showNoContrastDialog, setShowNoContrastDialog] = useState(false);
   const { toast } = useToast();
 
   // Automatically test colors whenever the palette changes
@@ -97,12 +86,6 @@ export default function Home() {
       return fgIndexA - fgIndexB;
     });
     setPairs(newPairs);
-    
-    // Check if there are no high contrast pairs (AA Small threshold - 4.5:1)
-    const hasHighContrastPairs = newPairs.some(pair => pair.ratio >= 4.5);
-    if (colors.length >= 2 && !hasHighContrastPairs) {
-      setShowNoContrastDialog(true);
-    }
   }, [colors, wcagLevel]);
 
 
@@ -289,6 +272,9 @@ export default function Home() {
 
   const threshold = WCAG_THRESHOLDS[wcagLevel as keyof typeof WCAG_THRESHOLDS];
   const textSize = wcagLevel.includes("large") ? "large" : "small";
+  
+  // Check if there are no high contrast pairs (AA Small threshold - 4.5:1)
+  const hasNoHighContrastPairs = pairs.length > 0 && !pairs.some(pair => pair.ratio >= 4.5);
 
   const handleTestPalette = () => {
     const resultsElement = document.getElementById("results-section");
@@ -329,6 +315,7 @@ export default function Home() {
               onWcagLevelChange={setWcagLevel}
               previewFontSize={previewFontSize}
               onPreviewFontSizeChange={setPreviewFontSize}
+              hasNoHighContrastPairs={hasNoHighContrastPairs}
             />
           </div>
         )}
@@ -347,36 +334,6 @@ export default function Home() {
       </main>
 
       <Footer />
-
-      {/* No Contrast Dialog */}
-      <AlertDialog open={showNoContrastDialog} onOpenChange={setShowNoContrastDialog}>
-        <AlertDialogContent className="max-w-md" data-testid="dialog-no-contrast">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-2xl" data-testid="text-dialog-title">
-              Uh-oh! No High Contrast Pairs
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-base pt-2" data-testid="text-dialog-description">
-              Your palette doesn't have any color pairings that meet the <strong>WCAG AA</strong> standard for text contrast (4.5:1 ratio). You need to fix your palette to ensure readability and accessibility.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex-col sm:flex-col gap-2">
-            <a
-              href="https://thecolorpalettestudio.com/products/color-palette-fixer"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full"
-              data-testid="link-fix-palette"
-            >
-              <AlertDialogAction className="w-full bg-foreground text-background hover:bg-foreground/90" data-testid="button-fix-palette">
-                Fix Your Palette Now
-              </AlertDialogAction>
-            </a>
-            <AlertDialogCancel className="w-full m-0" data-testid="button-continue-anyway">
-              Continue Anyway
-            </AlertDialogCancel>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }
