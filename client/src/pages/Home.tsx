@@ -275,9 +275,18 @@ export default function Home() {
   
   // Check high contrast pair percentage (AA Small threshold - 4.5:1)
   const highContrastPairs = pairs.filter(pair => pair.ratio >= 4.5);
-  const highContrastPercentage = pairs.length > 0 ? (highContrastPairs.length / pairs.length) * 100 : 100;
   const hasNoHighContrastPairs = pairs.length > 0 && highContrastPairs.length === 0;
-  const hasLowHighContrastPairs = pairs.length > 0 && highContrastPercentage > 0 && highContrastPercentage < 50;
+  
+  // Check how many colors have at least one high contrast pair
+  const colorsWithHighContrast = new Set<string>();
+  highContrastPairs.forEach(pair => {
+    colorsWithHighContrast.add(rgbToHex(pair.foreground));
+    colorsWithHighContrast.add(rgbToHex(pair.background));
+  });
+  const colorsWithHighContrastCount = colorsWithHighContrast.size;
+  const totalColors = colors.length;
+  const colorHighContrastPercentage = totalColors > 0 ? (colorsWithHighContrastCount / totalColors) * 100 : 100;
+  const hasLowHighContrastPairs = totalColors > 0 && colorsWithHighContrastCount > 0 && colorHighContrastPercentage < 50;
 
   const handleTestPalette = () => {
     const resultsElement = document.getElementById("results-section");
