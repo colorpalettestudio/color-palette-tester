@@ -88,12 +88,18 @@ export default function ColorPaletteBuilder({
     setBulkInput("");
   };
 
-  const handleSwatchDragStart = (index: number) => {
+  const handleSwatchDragStart = (e: React.DragEvent, index: number) => {
     setDraggedIndex(index);
+    // Create a transparent drag image to prevent browser default styling
+    const img = new Image();
+    img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    e.dataTransfer.setDragImage(img, 0, 0);
+    e.dataTransfer.effectAllowed = 'move';
   };
 
   const handleSwatchDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
     if (draggedIndex === null || draggedIndex === index) return;
 
     const newItems = [...colorItems];
@@ -112,10 +118,7 @@ export default function ColorPaletteBuilder({
       setBulkInput(hexColors);
     }
     
-    // Use requestAnimationFrame to ensure drag state clears after browser's drag animation
-    requestAnimationFrame(() => {
-      setDraggedIndex(null);
-    });
+    setDraggedIndex(null);
   };
 
   const handleUpdateColorHex = (index: number, value: string) => {
@@ -156,11 +159,11 @@ export default function ColorPaletteBuilder({
               >
                 <div
                   draggable
-                  onDragStart={() => handleSwatchDragStart(index)}
+                  onDragStart={(e) => handleSwatchDragStart(e, index)}
                   onDragOver={(e) => handleSwatchDragOver(e, index)}
                   onDragEnd={handleSwatchDragEnd}
-                  className={`w-12 h-12 rounded-lg cursor-move transition-transform hover:scale-110 outline-none focus:outline-none ${
-                    isDragging ? 'scale-90 ring-2 ring-primary/50' : ''
+                  className={`w-12 h-12 rounded-lg cursor-move transition-all hover:scale-110 outline-none focus:outline-none select-none ${
+                    isDragging ? 'scale-90 opacity-50' : ''
                   } ${
                     isLight ? 'border border-gray-300' : 'border border-white/30'
                   }`}
