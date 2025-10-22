@@ -134,5 +134,5 @@ Built with ❤️ by [The Color Palette Studio](https://thecolorpalettestudio.co
 
 ## 📞 Support
 
-Email: support@thecolorpalettestudio.com  
-Location: San Francisco, California
+Email: sam@thecolorpalettestudio.com  
+Location: Nolensville, Tennessee

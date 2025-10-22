@@ -50,7 +50,7 @@ export default function Terms() {
           <section>
             <h2 className="text-2xl font-bold text-foreground mb-3">Third-Party Services</h2>
             <p>
-              This tool may use third-party services such as Google Analytics and Google AdSense. 
+              This tool may use third-party services such as Google Analytics. 
               Your use of these services is subject to their respective terms of service and privacy policies.
             </p>
           </section>
@@ -76,15 +76,15 @@ export default function Terms() {
             <h2 className="text-2xl font-bold text-foreground mb-3">Contact</h2>
             <p>
               For questions about these terms, contact us at{" "}
-              <a href="mailto:support@thecolorpalettestudio.com" className="text-primary hover:underline">
-                support@thecolorpalettestudio.com
+              <a href="mailto:sam@thecolorpalettestudio.com" className="text-primary hover:underline">
+                sam@thecolorpalettestudio.com
               </a>
               .
             </p>
           </section>
 
           <p className="text-sm">
-            <strong>Last updated:</strong> October 21, 2025
+            <strong>Last updated:</strong> October 22, 2025
           </p>
         </div>
       </main>

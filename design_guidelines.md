@@ -153,5 +153,5 @@
 
 - /privacy-policy: Clean headings, mentions Analytics/AdSense cookies
 - /terms: "As is" warranty, acceptable use, third-party services
-- /contact: Mailto link to support@thecolorpalettestudio.com
+- /contact: Mailto link to sam@thecolorpalettestudio.com, address in Nolensville, TN
 - All use same clean Inter typography and layout

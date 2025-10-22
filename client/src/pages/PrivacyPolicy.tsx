@@ -63,8 +63,8 @@ export default function PrivacyPolicy() {
             <h2 className="text-2xl font-bold text-foreground mb-3">Contact Us</h2>
             <p>
               If you have questions about this privacy policy, please contact us at{" "}
-              <a href="mailto:support@thecolorpalettestudio.com" className="text-primary hover:underline">
-                support@thecolorpalettestudio.com
+              <a href="mailto:sam@thecolorpalettestudio.com" className="text-primary hover:underline">
+                sam@thecolorpalettestudio.com
               </a>
               .
             </p>

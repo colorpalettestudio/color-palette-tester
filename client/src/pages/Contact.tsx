@@ -30,12 +30,12 @@ export default function Contact() {
             </p>
             
             <a
-              href="mailto:support@thecolorpalettestudio.com"
+              href="mailto:sam@thecolorpalettestudio.com"
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-md font-medium hover-elevate active-elevate-2 border border-primary-border"
               data-testid="button-email"
             >
               <Mail className="w-4 h-4" />
-              support@thecolorpalettestudio.com
+              sam@thecolorpalettestudio.com
             </a>
           </div>
 
@@ -65,7 +65,8 @@ export default function Contact() {
             <h3 className="font-bold text-foreground">Our Location</h3>
             <p className="text-muted-foreground">
               The Color Palette Studio<br />
-              San Francisco, California
+              923 Oldham Dr #202<br />
+              Nolensville, TN 37135
             </p>
           </div>
 

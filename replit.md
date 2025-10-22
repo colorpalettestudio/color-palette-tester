@@ -177,4 +177,4 @@ Preferred communication style: Simple, everyday language.
 **Legal Pages**
 - Privacy Policy: Details Google Analytics and AdSense data collection
 - Terms of Service: "As is" warranty disclaimer and acceptable use policy
-- Contact page: Email support at support@thecolorpalettestudio.com
+- Contact page: Email support at sam@thecolorpalettestudio.com, located in Nolensville, TN
