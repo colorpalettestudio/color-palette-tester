@@ -30,20 +30,21 @@ export default function PrivacyPolicy() {
               site traffic and display relevant advertisements. These services collect anonymous usage 
               data to help us improve the tool.
             </p>
+            
+            <h3 className="text-xl font-semibold text-foreground mt-4 mb-2">Third-Party Advertising (Google AdSense)</h3>
             <p>
-              You can opt out of Google Analytics tracking by installing the{" "}
-              <a
-                href="https://tools.google.com/dlpage/gaoptout"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                Google Analytics Opt-out Browser Add-on
-              </a>
-              .
+              We use Google AdSense to display advertisements on our site. Google and its partners may use cookies 
+              and web beacons to serve ads based on your prior visits to this website or other websites. These 
+              technologies allow Google and its partners to recognize your browser and collect information about 
+              your browsing behavior.
             </p>
             <p>
-              You can manage your advertising preferences through{" "}
+              Third-party vendors, including Google, use cookies to serve ads based on your prior visits to our 
+              website. Google's use of advertising cookies enables it and its partners to serve ads to you based 
+              on your visit to our sites and/or other sites on the Internet.
+            </p>
+            <p>
+              You can opt out of personalized advertising by visiting{" "}
               <a
                 href="https://www.google.com/settings/ads"
                 target="_blank"
@@ -51,6 +52,34 @@ export default function PrivacyPolicy() {
                 className="text-primary hover:underline"
               >
                 Google Ad Settings
+              </a>{" "}
+              or by visiting{" "}
+              <a
+                href="http://www.aboutads.info"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                www.aboutads.info
+              </a>
+              . You can also manage your cookie preferences through our{" "}
+              <Link href="/cookie-preferences" className="text-primary hover:underline">
+                Cookie Preferences
+              </Link>{" "}
+              page.
+            </p>
+            
+            <h3 className="text-xl font-semibold text-foreground mt-4 mb-2">Google Analytics</h3>
+            <p>
+              We use Google Analytics to understand how visitors use our site. You can opt out of Google Analytics 
+              tracking by installing the{" "}
+              <a
+                href="https://tools.google.com/dlpage/gaoptout"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                Google Analytics Opt-out Browser Add-on
               </a>
               .
             </p>

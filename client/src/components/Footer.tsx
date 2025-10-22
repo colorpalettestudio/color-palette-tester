@@ -27,6 +27,10 @@ export default function Footer() {
               Terms
             </Link>
             <span className="text-border">·</span>
+            <Link href="/cookie-preferences" className="text-muted-foreground hover:text-foreground" data-testid="link-cookies">
+              Cookies
+            </Link>
+            <span className="text-border">·</span>
             <Link href="/contact" className="text-muted-foreground hover:text-foreground" data-testid="link-contact">
               Contact
             </Link>

@@ -61,6 +61,14 @@ export default function Contact() {
             </ul>
           </div>
 
+          <div className="bg-card border border-card-border rounded-md p-6 space-y-3">
+            <h3 className="font-bold text-foreground">Our Location</h3>
+            <p className="text-muted-foreground">
+              The Color Palette Studio<br />
+              San Francisco, California
+            </p>
+          </div>
+
           <p className="text-sm text-muted-foreground">
             We typically respond within 24-48 hours during business days.
           </p>
