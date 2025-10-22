@@ -7,7 +7,13 @@ export default function CTACard() {
     <Card className="overflow-hidden bg-[#cbedfc]">
       <div className="grid md:grid-cols-2 gap-0">
         {/* Left: Visual */}
-        <div className="relative bg-[#b3e0f7] p-8 flex items-center justify-center min-h-[400px]">
+        <a
+          href="https://thecolorpalettestudio.com/products/color-palette-fixer"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative bg-[#b3e0f7] p-8 flex items-center justify-center min-h-[400px] hover-elevate active-elevate-2 cursor-pointer"
+          data-testid="link-palette-fixer-image"
+        >
           <div className="w-full max-w-md">
             <video 
               autoPlay 
@@ -26,7 +32,7 @@ export default function CTACard() {
               />
             </video>
           </div>
-        </div>
+        </a>
 
         {/* Right: Content */}
         <div className="p-8 md:p-12 flex flex-col justify-center space-y-6">
