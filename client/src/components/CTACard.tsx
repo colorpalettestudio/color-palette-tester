@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { ArrowRight, Check } from "lucide-react";
-import paletteFixer from "@assets/palette-fixer-product.png";
+import paletteFixer from "@assets/Color Palette FIXER Product Photos (3)_1761170991272.png";
 
 export default function CTACard() {
   return (
