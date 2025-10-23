@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Plus, X, Trash2, Palette, GripVertical } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { parseColor, rgbToHex, type RGB, parseColorInput } from "@/lib/colorUtils";
 import { useToast } from "@/hooks/use-toast";
 
@@ -27,6 +28,8 @@ export default function ColorPaletteBuilder({
   const [bulkInput, setBulkInput] = useState("");
   const [previewColors, setPreviewColors] = useState<RGB[]>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [newColorInput, setNewColorInput] = useState("#000000");
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { toast } = useToast();
 
   // Initialize textarea with default colors on mount
@@ -94,6 +97,43 @@ export default function ColorPaletteBuilder({
     setColorItems([]);
     onColorsChange([]);
     setBulkInput("");
+  };
+
+  const handleAddColor = () => {
+    const rgb = parseColor(newColorInput);
+    if (!rgb) {
+      toast({
+        title: "Invalid color",
+        description: "Please enter a valid color code.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const hexValue = rgbToHex(rgb);
+    const isDuplicate = colorItems.some(item => rgbToHex(item.color) === hexValue);
+    
+    if (isDuplicate) {
+      toast({
+        title: "Duplicate color",
+        description: "This color is already in your palette.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Add to textarea
+    const currentColors = bulkInput ? bulkInput + ', ' : '';
+    setBulkInput(currentColors + hexValue);
+    
+    // Reset input and close popover
+    setNewColorInput("#000000");
+    setIsPopoverOpen(false);
+    
+    toast({
+      title: "Color added",
+      description: `${hexValue.toUpperCase()} has been added to your palette.`,
+    });
   };
 
   const handleSwatchDragStart = (index: number) => {
@@ -228,6 +268,53 @@ export default function ColorPaletteBuilder({
           >
             ✨ Try Sample Palette
           </Button>
+
+          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                size="lg"
+                data-testid="button-add-color"
+              >
+                <Plus className="w-4 h-4" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" data-testid="popover-add-color">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <h4 className="font-medium text-sm">Add New Color</h4>
+                  <p className="text-xs text-muted-foreground">
+                    Use the color picker or enter a hex code
+                  </p>
+                </div>
+                
+                <div className="flex gap-3">
+                  <input
+                    type="color"
+                    value={newColorInput}
+                    onChange={(e) => setNewColorInput(e.target.value)}
+                    className="w-16 h-10 rounded-md cursor-pointer border border-input"
+                    data-testid="input-color-picker"
+                  />
+                  <Input
+                    value={newColorInput}
+                    onChange={(e) => setNewColorInput(e.target.value)}
+                    placeholder="#000000"
+                    className="flex-1 font-mono"
+                    data-testid="input-color-hex"
+                  />
+                </div>
+                
+                <Button
+                  onClick={handleAddColor}
+                  className="w-full"
+                  data-testid="button-confirm-add-color"
+                >
+                  Add Color
+                </Button>
+              </div>
+            </PopoverContent>
+          </Popover>
           
           {colorItems.length > 0 && (
             <Button
