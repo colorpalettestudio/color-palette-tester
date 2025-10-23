@@ -29,6 +29,14 @@ export default function ColorPaletteBuilder({
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const { toast } = useToast();
 
+  // Initialize textarea with default colors on mount
+  useEffect(() => {
+    if (colors.length > 0 && !bulkInput) {
+      const hexColors = colors.map(c => rgbToHex(c)).join(', ');
+      setBulkInput(hexColors);
+    }
+  }, []);
+
   // Auto-add colors from textarea in real-time
   useEffect(() => {
     if (!bulkInput.trim()) {

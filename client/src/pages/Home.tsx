@@ -28,10 +28,16 @@ const WCAG_THRESHOLDS = {
   "aaa-large": 4.5,
 };
 
-const SAMPLE_COLORS = "#ffb2f1, #8135fc, #c6b0f5, #b5e5fa";
+const SAMPLE_COLORS = "#f91d71, #fd806a, #ffd025, #74d551, #76c4f4, #7c70ff";
+
+// Parse default colors on page load
+const parseDefaultColors = () => {
+  const colorStrings = parseColorInput(SAMPLE_COLORS);
+  return colorStrings.map(str => parseColor(str)).filter((c): c is RGB => c !== null);
+};
 
 export default function Home() {
-  const [colors, setColors] = useState<RGB[]>([]);
+  const [colors, setColors] = useState<RGB[]>(parseDefaultColors());
   const [wcagLevel, setWcagLevel] = useState("all");
   const [pairs, setPairs] = useState<ColorPair[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
