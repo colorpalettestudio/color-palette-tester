@@ -28,7 +28,7 @@ const WCAG_THRESHOLDS = {
   "aaa-large": 4.5,
 };
 
-const SAMPLE_COLORS = "#FF6F61, #FDD66F, #8ED6A9, #6FA8FF, #B76FFF, #111827, #FFFFFF";
+const SAMPLE_COLORS = "#b7d8d6, #f9f6f1, #dcbd3e, #f668b8, #f0474d";
 
 export default function Home() {
   const [colors, setColors] = useState<RGB[]>([]);
