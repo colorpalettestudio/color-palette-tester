@@ -2,7 +2,7 @@ import { Palette, ExternalLink, Heart, ArrowRight } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="border-t py-12 px-4 bg-background">
+    <footer className="border-t py-12 px-6 bg-background">
       <div className="container mx-auto max-w-6xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* Left Column - Branding */}
