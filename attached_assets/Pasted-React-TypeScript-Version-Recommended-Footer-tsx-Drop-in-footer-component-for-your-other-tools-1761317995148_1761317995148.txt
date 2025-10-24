@@ -1,6 +1,7 @@
+React/TypeScript Version (Recommended)
+// Footer.tsx - Drop-in footer component for your other tools
 import { Palette, ExternalLink, Heart, ArrowRight } from "lucide-react";
-
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="border-t py-12 px-4 bg-background">
       <div className="container mx-auto max-w-6xl">
@@ -21,7 +22,6 @@ export default function Footer() {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-foreground hover:underline font-medium"
-                data-testid="link-creator"
               >
                 Color Palette Studio
               </a>
@@ -31,7 +31,6 @@ export default function Footer() {
               target="_blank" 
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4 py-2"
-              data-testid="button-explore-tools"
             >
               Explore More Tools
               <ArrowRight className="ml-2 h-3 w-3" />
@@ -48,7 +47,6 @@ export default function Footer() {
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-                  data-testid="link-palette-fixer"
                 >
                   Color Palette Fixer
                   <ExternalLink className="h-3 w-3" />
@@ -60,7 +58,6 @@ export default function Footer() {
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-                  data-testid="link-contrast-checker"
                 >
                   Contrast Checker
                   <ExternalLink className="h-3 w-3" />
@@ -72,7 +69,6 @@ export default function Footer() {
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-                  data-testid="link-converter"
                 >
                   Color Code Converter
                   <ExternalLink className="h-3 w-3" />
@@ -91,7 +87,6 @@ export default function Footer() {
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-                  data-testid="link-workshop"
                 >
                   Free Workshop
                   <ExternalLink className="h-3 w-3" />
@@ -103,7 +98,6 @@ export default function Footer() {
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-                  data-testid="link-videos"
                 >
                   Videos
                   <ExternalLink className="h-3 w-3" />
@@ -113,7 +107,6 @@ export default function Footer() {
                 <a 
                   href="mailto:sam@thecolorpalettestudio.com" 
                   className="text-muted-foreground hover:text-foreground transition-colors"
-                  data-testid="link-contact"
                 >
                   Contact
                 </a>
@@ -124,7 +117,6 @@ export default function Footer() {
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-muted-foreground hover:text-foreground transition-colors"
-                  data-testid="link-privacy"
                 >
                   Privacy Policy
                 </a>
@@ -135,7 +127,6 @@ export default function Footer() {
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-muted-foreground hover:text-foreground transition-colors"
-                  data-testid="link-terms"
                 >
                   Terms of Service
                 </a>
@@ -152,3 +143,24 @@ export default function Footer() {
     </footer>
   );
 }
+What You'll Need:
+Install lucide-react (for icons):
+
+npm install lucide-react
+Tailwind CSS - The footer uses Tailwind utility classes. Make sure your other projects have Tailwind configured.
+
+Optional: If you want the exact same styling for primary/foreground colors, you'll need similar Tailwind color variables in your CSS.
+
+Key Changes Made:
+✅ Removed wouter dependency - All links are now standard <a> tags
+✅ Added Color Code Converter to the "More Tools" section
+✅ Changed Contact/Privacy/Terms to absolute URLs (or mailto: for contact)
+✅ No SEO tags - Just the visual footer
+✅ No AdSense code - Clean and portable
+✅ Standalone - No dependencies on other components except icons
+
+To Use in Your Other Tools:
+Copy the code above into a new file Footer.tsx
+Import it: import { Footer } from './Footer'
+Use it: <Footer />
+The footer will automatically cross-promote all your tools and maintain a consistent brand presence across all your Replit projects!
