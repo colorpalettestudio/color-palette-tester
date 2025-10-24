@@ -3,8 +3,8 @@ import { Palette, ExternalLink, Heart, ArrowRight } from "lucide-react";
 export default function Footer() {
   return (
     <footer className="border-t py-12 px-6 bg-background">
-      <div className="container mx-auto max-w-6xl">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-8 max-w-5xl mx-auto">
           {/* Left Column - Branding */}
           <div>
             <div className="flex items-center gap-2 mb-4">
