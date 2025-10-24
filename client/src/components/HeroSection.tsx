@@ -38,9 +38,32 @@ export default function HeroSection({
           </span>
         </h1>
         
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Test your palette for accessibility — paste HEX, RGB, or HSL and test every pairing against WCAG AA/AAA in one click.
-        </p>
+        {/* Answer-First Content */}
+        <div className="max-w-3xl mx-auto space-y-4">
+          <p className="text-lg text-foreground font-medium" data-testid="text-answer-first">
+            A color palette tester instantly checks all color combinations in your brand palette for WCAG accessibility compliance. Instead of manually testing pairs one by one, paste your colors and see every foreground/background pairing tested at once.
+          </p>
+          
+          {/* Problem/Solution Statements */}
+          <div className="bg-card/50 border border-card-border rounded-lg p-6 text-left space-y-3">
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-muted-foreground">Problem:</p>
+              <p className="text-base text-foreground">
+                Manually testing color contrast takes hours and you might miss critical accessibility issues that affect readability.
+              </p>
+            </div>
+            <div className="space-y-1">
+              <p className="text-sm font-semibold text-muted-foreground">Solution:</p>
+              <p className="text-base text-foreground">
+                Test all pairings instantly with our free tool. Get WCAG AA/AAA results in seconds, filter by compliance level, and export passing combinations as PNG or PDF.
+              </p>
+            </div>
+          </div>
+          
+          <p className="text-base text-muted-foreground">
+            Paste HEX, RGB, or HSL colors below and click "Test Contrast" to check every pairing against WCAG standards.
+          </p>
+        </div>
         
         <p className="text-sm text-muted-foreground/80">
           Trusted by 2,000+ designers
