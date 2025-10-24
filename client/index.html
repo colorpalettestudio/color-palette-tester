@@ -67,6 +67,79 @@
       ]
     }
     </script>
+    
+    <!-- Structured Data - HowTo -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Test Color Palette Accessibility",
+      "description": "Step-by-step guide to test all color combinations in your brand palette for WCAG contrast compliance",
+      "step": [
+        {
+          "@type": "HowToStep",
+          "position": 1,
+          "name": "Add Your Brand Colors",
+          "text": "Paste your brand colors as HEX, RGB, or HSL values. You can enter them one per line or separated by commas. For example: #FF6B35, rgb(255, 107, 53), or hsl(14, 100%, 61%).",
+          "itemListElement": {
+            "@type": "HowToDirection",
+            "text": "Enter colors in any format: HEX (#RRGGBB), RGB (rgb(r,g,b)), or HSL (hsl(h,s%,l%))"
+          }
+        },
+        {
+          "@type": "HowToStep",
+          "position": 2,
+          "name": "Choose WCAG Level",
+          "text": "Select your target accessibility standard: AA Small Text (4.5:1), AA Large Text (3.0:1), AAA Small Text (7.0:1), or AAA Large Text (4.5:1). Most websites target AA compliance for body text.",
+          "itemListElement": {
+            "@type": "HowToDirection",
+            "text": "Use Small for paragraphs and body text. Use Large for headers, buttons, and large UI elements."
+          }
+        },
+        {
+          "@type": "HowToStep",
+          "position": 3,
+          "name": "Test All Color Combinations",
+          "text": "Click the 'Test Contrast' button. The tool instantly calculates contrast ratios for every possible foreground/background pairing from your palette and displays pass/fail results.",
+          "itemListElement": {
+            "@type": "HowToDirection",
+            "text": "The tool automatically tests every color combination at once, saving you hours of manual testing"
+          }
+        },
+        {
+          "@type": "HowToStep",
+          "position": 4,
+          "name": "Review and Export Results",
+          "text": "Star your favorite passing combinations and export them as PNG images or PDF documents. Filter results by WCAG level to see only the pairs that meet your accessibility requirements.",
+          "itemListElement": {
+            "@type": "HowToDirection",
+            "text": "Export selected pairs to share with your design team or include in brand style guides"
+          }
+        }
+      ],
+      "totalTime": "PT2M",
+      "tool": {
+        "@type": "HowToTool",
+        "name": "Color Palette Tester"
+      }
+    }
+    </script>
+    
+    <!-- Structured Data - BreadcrumbList -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://www.colorpalettetester.com/"
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
