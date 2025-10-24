@@ -10,7 +10,7 @@ export default function RelatedTools() {
     },
     {
       name: "Color Palette Generator",
-      url: "https://thecolorpalettegenerator.com/",
+      url: "https://colorpalettegenerator.co/",
       description: "Create and shuffle random color palettes."
     },
     {
