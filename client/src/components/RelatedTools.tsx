@@ -23,7 +23,7 @@ export default function RelatedTools() {
   return (
     <section className="space-y-6">
       <h2 className="text-3xl font-bold text-foreground text-center">
-        Explore More Free Design Tools
+        Explore More Design Tools
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {tools.map((tool) => (
