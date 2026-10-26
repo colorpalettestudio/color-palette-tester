@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { ArrowRight, Check } from "lucide-react";
 import paletteFixer from "@assets/Color Palette FIXER Product Photos (3)_1761170991272.png";
+import { trackEvent } from "@/lib/analytics";
 
 export default function CTACard() {
   return (
@@ -11,6 +12,9 @@ export default function CTACard() {
           href="https://thecolorpalettestudio.com/products/color-palette-fixer"
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() =>
+            trackEvent("palette_fixer_cta_clicked", { location: "product_image" })
+          }
           className="relative bg-[#b3e0f7] p-8 flex items-center justify-center min-h-[400px] hover-elevate active-elevate-2 cursor-pointer"
           data-testid="link-palette-fixer-image"
         >
@@ -63,6 +67,9 @@ export default function CTACard() {
             href="https://thecolorpalettestudio.com/products/color-palette-fixer"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() =>
+              trackEvent("palette_fixer_cta_clicked", { location: "cta_button" })
+            }
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-foreground text-background rounded-lg font-bold text-lg hover-elevate active-elevate-2 shadow-lg w-fit"
             data-testid="link-palette-fixer"
           >

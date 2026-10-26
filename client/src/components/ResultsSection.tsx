@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { trackEvent } from "@/lib/analytics";
 
 interface ResultsSectionProps {
   pairs: ColorPair[];
@@ -124,6 +125,11 @@ export default function ResultsSection({
                 href="https://thecolorpalettestudio.com/products/color-palette-fixer"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent("palette_fixer_cta_clicked", {
+                    location: "no_contrast_alert",
+                  })
+                }
                 className="font-semibold underline hover:no-underline"
                 data-testid="link-fix-palette"
               >
@@ -141,6 +147,11 @@ export default function ResultsSection({
                 href="https://thecolorpalettestudio.com/products/color-palette-fixer"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() =>
+                  trackEvent("palette_fixer_cta_clicked", {
+                    location: "low_contrast_alert",
+                  })
+                }
                 className="font-semibold underline hover:no-underline"
                 data-testid="link-improve-palette"
               >

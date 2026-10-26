@@ -18,6 +18,7 @@ import {
   type RGB,
   rgbToHex,
 } from "@/lib/colorUtils";
+import { trackEvent } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
 
 const WCAG_THRESHOLDS = {
@@ -95,10 +96,15 @@ export default function Home() {
 
 
   const handleSampleColors = () => {
+    trackEvent("sample_palette_loaded", {
+      source: "built_in",
+      color_count: parseColorInput(SAMPLE_COLORS).length,
+    });
     return SAMPLE_COLORS;
   };
 
   const handleToggleFavorite = (id: string) => {
+    const wasFavorite = favorites.has(id);
     setFavorites((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -107,6 +113,10 @@ export default function Home() {
         next.add(id);
       }
       return next;
+    });
+    trackEvent("favorite_pair_toggled", {
+      action: wasFavorite ? "removed" : "added",
+      favorite_count: favorites.size + (wasFavorite ? -1 : 1),
     });
   };
 
@@ -126,6 +136,10 @@ export default function Home() {
     
     const filteredPairIds = new Set(filteredPairs.map(pair => pair.id));
     setFavorites(filteredPairIds);
+    trackEvent("all_pairs_selected", {
+      wcag_level: wcagLevel,
+      selected_pair_count: filteredPairs.length,
+    });
     toast({
       title: "All pairs selected",
       description: `${filteredPairs.length} color pair${filteredPairs.length !== 1 ? 's' : ''} have been selected.`,
@@ -133,7 +147,11 @@ export default function Home() {
   };
 
   const handleClearFavorites = () => {
+    const clearedPairCount = favorites.size;
     setFavorites(new Set());
+    trackEvent("favorites_cleared", {
+      cleared_pair_count: clearedPairCount,
+    });
     toast({
       title: "Favorites cleared",
       description: "All favorite selections have been removed.",
@@ -162,12 +180,17 @@ export default function Home() {
       link.download = "color-palette-results.png";
       link.href = canvas.toDataURL();
       link.click();
+      trackEvent("palette_exported", {
+        format: "png",
+        selected_pair_count: favorites.size,
+      });
 
       toast({
         title: "Export successful",
         description: "Your color pairs have been exported as PNG.",
       });
     } catch (error) {
+      trackEvent("palette_export_failed", { format: "png" });
       toast({
         title: "Export failed",
         description: "Could not export to PNG. Please try again.",
@@ -213,12 +236,17 @@ export default function Home() {
       
       pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
       pdf.save("color-palette-results.pdf");
+      trackEvent("palette_exported", {
+        format: "pdf",
+        selected_pair_count: favorites.size,
+      });
 
       toast({
         title: "Export successful",
         description: "Your color pairs have been exported as PDF.",
       });
     } catch (error) {
+      trackEvent("palette_export_failed", { format: "pdf" });
       toast({
         title: "Export failed",
         description: "Could not export to PDF. Please try again.",
@@ -261,11 +289,16 @@ export default function Home() {
     
     // Copy to clipboard
     navigator.clipboard.writeText(studioCodeUrl).then(() => {
+      trackEvent("palette_exported", {
+        format: "studio_code",
+        selected_pair_count: favorites.size,
+      });
       toast({
         title: "Studio code copied!",
         description: "The studio code URL has been copied to your clipboard.",
       });
     }).catch(() => {
+      trackEvent("palette_export_failed", { format: "studio_code" });
       toast({
         title: "Copy failed",
         description: "Could not copy to clipboard. Please try again.",
@@ -294,10 +327,21 @@ export default function Home() {
   const hasLowHighContrastPairs = totalColors > 0 && colorsWithHighContrastCount > 0 && colorHighContrastPercentage < 50;
 
   const handleTestPalette = () => {
+    trackEvent("palette_tested", {
+      color_count: colors.length,
+      wcag_level: wcagLevel,
+      pair_count: pairs.length,
+      passing_pair_count: pairs.filter(pair => pair.ratio >= threshold).length,
+    });
     const resultsElement = document.getElementById("results-section");
     if (resultsElement) {
       resultsElement.scrollIntoView({ behavior: "smooth", block: "start" });
     }
+  };
+
+  const handleWcagLevelChange = (value: string) => {
+    setWcagLevel(value);
+    trackEvent("wcag_level_changed", { wcag_level: value });
   };
 
   return (
@@ -329,7 +373,7 @@ export default function Home() {
               onSelectAll={handleSelectAll}
               onClearFavorites={handleClearFavorites}
               wcagLevel={wcagLevel}
-              onWcagLevelChange={setWcagLevel}
+              onWcagLevelChange={handleWcagLevelChange}
               previewFontSize={previewFontSize}
               onPreviewFontSizeChange={setPreviewFontSize}
               hasNoHighContrastPairs={hasNoHighContrastPairs}
