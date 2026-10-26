@@ -120,7 +120,7 @@ export default function Footer() {
               </li>
               <li>
                 <a 
-                  href="https://thecolorpalettestudio.com/pages/privacy-policy" 
+                  href="https://thecolorpalettestudio.com/policies/privacy-policy"
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-muted-foreground hover:text-foreground transition-colors"
@@ -131,7 +131,7 @@ export default function Footer() {
               </li>
               <li>
                 <a 
-                  href="https://thecolorpalettestudio.com/pages/terms-of-service" 
+                  href="https://thecolorpalettestudio.com/policies/terms-of-service"
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="text-muted-foreground hover:text-foreground transition-colors"

@@ -78,9 +78,14 @@ export default function CookieConsent() {
 
             <p className="text-xs text-muted-foreground">
               Learn more in our{" "}
-              <Link href="/privacy-policy" className="text-primary hover:underline">
+              <a
+                href="https://thecolorpalettestudio.com/policies/privacy-policy"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
                 Privacy Policy
-              </Link>
+              </a>
               {" "}and{" "}
               <Link href="/cookie-preferences" className="text-primary hover:underline">
                 Cookie Policy

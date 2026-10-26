@@ -107,9 +107,14 @@ export default function CookiePreferences() {
             <div className="space-y-3 text-sm text-muted-foreground">
               <p>
                 For more information about how we use cookies and protect your privacy, please visit our{" "}
-                <Link href="/privacy-policy" className="text-primary hover:underline">
+                <a
+                  href="https://thecolorpalettestudio.com/policies/privacy-policy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
                   Privacy Policy
-                </Link>
+                </a>
                 .
               </p>
               <p>
