@@ -46,9 +46,10 @@ Then follow step 2 from Option 1 above.
 
 The project is pre-configured with:
 
+- **Install Command**: `npm ci --include=dev`
 - **Build Command**: `npm run build`
-- **Output Directory**: `dist/client`
-- **Start Command**: `npm start` (for production)
+- **Output Directory**: `dist/public`
+- Vercel serves this app as a static site. `npm start` is only needed for the Express deployment, not Vercel.
 
 ### Build Scripts
 
@@ -110,6 +111,8 @@ Once connected, every push to your `main` branch will automatically deploy to Ve
 - Check the Vercel build logs
 - Ensure all dependencies are in `package.json`
 - Verify Node version compatibility (20.x recommended)
+- If installation fails with `Exit handler never called`, check that dependency download URLs in `package-lock.json` use public npm URLs rather than a private development-environment host. Preserve locked versions and integrity hashes.
+- After syncing the fix to GitHub, deploy the latest commit with **Use existing Build Cache** unchecked. Retrying the old commit will not include the fix.
 
 **404 errors?**
 - Check `vercel.json` rewrites configuration
