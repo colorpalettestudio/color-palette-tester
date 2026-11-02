@@ -69,7 +69,7 @@ export default function ColorPairTable({
         </div>
       </section>
 
-      <div className="grid grid-cols-1 gap-3 border-b border-border pb-3 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:items-end sm:gap-4">
+      <div className="grid grid-cols-1 gap-3 border-b border-border pb-3 sm:mx-[13px] sm:grid-cols-[minmax(0,1fr)_120px_200px] sm:items-end sm:gap-4">
         <div>
           <h3 className="mb-2 text-sm font-semibold text-foreground">Pairing preview</h3>
           <div className="flex items-center gap-3">
@@ -86,7 +86,7 @@ export default function ColorPairTable({
             />
           </div>
         </div>
-        <div className="text-sm font-semibold text-foreground sm:text-center">Contrast score</div>
+        <div data-testid="contrast-score-heading" className="text-sm font-semibold text-foreground sm:text-center">Contrast score</div>
         <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 sm:justify-end">
           <span className="w-full text-sm font-semibold text-foreground sm:text-right">Add to chosen pairings</span>
           <button type="button" onClick={onSelectAll} disabled={filteredPairs.length === 0} className="rounded px-1.5 py-1 text-xs font-medium text-primary underline underline-offset-2 hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50" data-testid="button-select-all">Choose all shown</button>
@@ -126,7 +126,7 @@ export default function ColorPairTable({
             const fgHex = rgbToHex(pair.foreground).toUpperCase();
             const bgHex = rgbToHex(pair.background).toUpperCase();
             return (
-              <div key={pair.id} className="grid min-w-0 grid-cols-1 items-center gap-2.5 rounded-xl border border-border/80 bg-card/45 p-2.5 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:gap-4 sm:p-3" data-testid={`row-pair-${pair.id}`}>
+              <div key={pair.id} className="grid min-w-0 grid-cols-1 items-center gap-2.5 rounded-xl border border-border/80 bg-card/45 p-2.5 sm:grid-cols-[minmax(0,1fr)_120px_200px] sm:gap-4 sm:p-3" data-testid={`row-pair-${pair.id}`}>
                 <div
                   className="min-w-0 overflow-hidden rounded-md border border-black/10 px-3 py-4 sm:px-4"
                   style={{ backgroundColor: bgHex, color: fgHex, fontSize: `${previewFontSize}px` }}
@@ -134,7 +134,9 @@ export default function ColorPairTable({
                   <span className="break-words font-medium">Text {fgHex} on background {bgHex}</span>
                 </div>
                 <div className="flex items-center justify-between gap-3 sm:min-w-[120px] sm:justify-center">
-                  <span className="font-mono text-base font-bold tabular-nums text-foreground">{pair.ratio.toFixed(2)}:1</span>
+                  <span aria-label={`${pair.ratio.toFixed(2)}:1`} className="font-mono text-base font-bold tabular-nums text-foreground">
+                    <span data-testid="contrast-score">{pair.ratio.toFixed(2)}</span><span className="ml-0.5 font-sans text-sm font-normal text-muted-foreground">:1</span>
+                  </span>
                 </div>
                 <label className="flex items-center justify-between gap-3 border-t border-border/60 pt-2 text-xs text-muted-foreground sm:min-w-[130px] sm:justify-center sm:border-0 sm:pt-0">
                   <span>{favorites.has(pair.id) ? "Added" : "Add"}</span>
