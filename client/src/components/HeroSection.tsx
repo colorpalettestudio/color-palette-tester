@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import ColorPaletteBuilder from "./ColorPaletteBuilder";
 import { type RGB } from "@/lib/colorUtils";
 
@@ -18,10 +17,6 @@ export default function HeroSection({
   return (
     <div className="text-center space-y-8">
       <div className="space-y-4">
-        <Badge variant="secondary" className="text-base px-6 py-2" data-testid="badge-hero">
-          Free, Instant & No Sign-Up
-        </Badge>
-        
         <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
           <span className="text-foreground">Color Palette </span>
           <span 
@@ -41,7 +36,7 @@ export default function HeroSection({
         {/* Answer-First Content */}
         <div className="max-w-3xl mx-auto space-y-4">
           <p className="text-lg text-foreground font-medium" data-testid="text-answer-first">
-            A color palette tester instantly checks all color combinations in your brand palette for WCAG accessibility compliance. Instead of manually testing pairs one by one, paste your colors and see every foreground/background pairing tested at once.
+            A color palette tester checks all color combinations in your brand palette for WCAG accessibility compliance. Instead of manually testing pairs one by one, paste your colors and see every foreground/background pairing tested at once.
           </p>
           
           {/* Problem/Solution Statements */}
@@ -55,7 +50,7 @@ export default function HeroSection({
             <div className="space-y-1">
               <p className="text-sm font-semibold text-muted-foreground">Solution:</p>
               <p className="text-base text-foreground">
-                Test all pairings instantly with our free tool. Get WCAG AA/AAA results in seconds, filter by compliance level, and export passing combinations as PNG or PDF.
+                Test all pairings for WCAG AA/AAA compliance, filter results by level, and export passing combinations as PNG or PDF.
               </p>
             </div>
           </div>

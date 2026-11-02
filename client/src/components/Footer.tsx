@@ -87,18 +87,6 @@ export default function Footer() {
             <ul className="space-y-2 text-sm">
               <li>
                 <a 
-                  href="https://thecolorpalettestudio.com/pages/live-workshop-how-to-fix-a-color-palette" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1"
-                  data-testid="link-workshop"
-                >
-                  Free Workshop
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </li>
-              <li>
-                <a 
                   href="https://www.youtube.com/@color.palette.studio/videos" 
                   target="_blank" 
                   rel="noopener noreferrer" 

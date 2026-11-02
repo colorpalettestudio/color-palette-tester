@@ -28,9 +28,9 @@ export default function FAQSection() {
         'Yes. The preview line simulates body text or larger UI elements. Use "Large" mode for headings, buttons, or logos on brand backgrounds.',
     },
     {
-      question: "Is the tool free and private?",
+      question: "Does my palette stay private?",
       answer:
-        "Yes—free, instant, and no sign-up. Processing happens in your browser for speed and privacy.",
+        "Color palette processing happens in your browser. The color values you enter are not sent to our servers.",
     },
   ];
 
