@@ -29,7 +29,7 @@ export default function SEOContent() {
         <ol className="space-y-2 text-base text-muted-foreground list-decimal list-inside">
           <li>Paste your brand colors as HEX, RGB, or HSL values — separated by spaces, line breaks, or commas.</li>
           <li>Choose a numeric benchmark: 3:1, 4.5:1, or 7:1.</li>
-          <li>Click "Test Contrast" to instantly view all pass/fail results.</li>
+          <li>Scores update automatically. Compare pairings that meet or fall below your target.</li>
           <li>Select your favorite pairs, then open Download and choose colors only or colors and pairings.</li>
         </ol>
       </div>

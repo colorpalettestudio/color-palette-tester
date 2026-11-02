@@ -1,4 +1,4 @@
-import { Palette, X } from "lucide-react";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type RGB, rgbToHex } from "@/lib/colorUtils";
 import type { ColorPair } from "./ColorPairTable";
@@ -36,18 +36,9 @@ export default function PaletteDownloads({
       data-testid="palette-downloads"
     >
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-border/70 bg-muted/35 px-4 py-3.5 sm:px-5">
-        <div className="flex min-w-0 items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border/80 bg-background text-foreground">
-            <Palette className="h-4 w-4" aria-hidden="true" />
-          </span>
-          <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-              Color kit
-            </p>
-            <h2 id="palette-downloads-title" className="truncate text-base font-semibold text-foreground">
-              Your palette
-            </h2>
-          </div>
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Step 3</p>
+          <h2 id="palette-downloads-title" className="text-xl font-bold text-foreground">Download your palette</h2>
         </div>
         <div className="flex shrink-0 items-center gap-1.5 text-xs" aria-live="polite" aria-atomic="true">
           <span className="rounded-full bg-background px-2.5 py-1 font-medium text-foreground ring-1 ring-border/80" data-testid="palette-color-count">
@@ -82,48 +73,18 @@ export default function PaletteDownloads({
           </p>
         )}
 
-        <section aria-labelledby="palette-colors-title">
-          <div className="mb-2 flex items-baseline justify-between gap-2">
-            <h3 id="palette-colors-title" className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              Palette colors
-            </h3>
-            {!hasColors && <span className="text-[11px] text-muted-foreground">Add colors to start</span>}
-          </div>
-          {hasColors ? (
-            <div className="grid grid-cols-2 gap-2">
-              {colors.map((color, index) => {
-                const colorHex = hex(color);
-                return (
-                  <div
-                    key={`${colorHex}-${index}`}
-                    className="flex min-w-0 items-center gap-2 rounded-lg border border-border/70 bg-background p-2"
-                    data-testid={`palette-color-${index}`}
-                  >
-                    <span
-                      className="h-7 w-7 shrink-0 rounded-md border border-black/10"
-                      style={{ backgroundColor: colorHex }}
-                      aria-hidden="true"
-                    />
-                    <span className="truncate font-mono text-[11px] font-medium tracking-wide text-foreground" aria-label={`Color ${colorHex}`}>
-                      {colorHex}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="rounded-lg border border-dashed border-border bg-background/60 px-3 py-4 text-center">
-              <p className="text-xs text-muted-foreground">Your palette colors will appear here.</p>
-            </div>
-          )}
-        </section>
+        {hasColors && (
+          <p className="break-words font-mono text-[11px] leading-relaxed text-muted-foreground">
+            {colors.map(hex).join(" · ")}
+          </p>
+        )}
 
         <section aria-labelledby="selected-pairs-title" className="border-t border-border/70 pt-3">
           <div className="mb-2 flex items-center justify-between gap-2">
             <h3 id="selected-pairs-title" className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
               Chosen pairings
             </h3>
-            {hasPairs && <span className="text-[11px] text-muted-foreground">Selected for export</span>}
+            {hasPairs && <span className="text-[11px] text-muted-foreground">Kept for export</span>}
           </div>
           {hasPairs ? (
             <ul className="space-y-2" data-testid="selected-pair-list">

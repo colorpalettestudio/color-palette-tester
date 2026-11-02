@@ -8,7 +8,6 @@ export default function HeroSectionExample() {
   return (
     <div className="p-8">
       <HeroSection
-        onTestPalette={() => console.log('Test clicked')}
         onSampleClick={() => "#000000 #ffffff"}
         colors={colorsFromInput(input)}
         bulkInput={input}

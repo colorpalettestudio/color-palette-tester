@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from "react";
-import { X, Trash2 } from "lucide-react";
+import { useState, useEffect, useRef, type DragEvent } from "react";
+import { X, Trash2, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { parseColor, rgbToHex, type RGB, parseColorInput } from "@/lib/colorUtils";
+import { parseColor, parseStudioCode, rgbToHex, type RGB } from "@/lib/colorUtils";
 
 interface ColorItem {
   color: RGB;
-  name: string;
 }
 
 interface ColorPaletteBuilderProps {
@@ -13,7 +12,6 @@ interface ColorPaletteBuilderProps {
   bulkInput: string;
   onInputChange: (input: string) => void;
   onSampleClick: () => string;
-  onTestPalette: () => void;
 }
 
 export default function ColorPaletteBuilder({
@@ -21,33 +19,51 @@ export default function ColorPaletteBuilder({
   bulkInput,
   onInputChange: setBulkInput,
   onSampleClick,
-  onTestPalette,
 }: ColorPaletteBuilderProps) {
   const [colorItems, setColorItems] = useState<ColorItem[]>(() =>
-    colors.map((color, i) => ({ color, name: `Color ${i + 1}` })));
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+    colors.map(color => ({ color })));
   const [quickAddInput, setQuickAddInput] = useState("");
   const [quickAddError, setQuickAddError] = useState("");
   const [pickerPreview, setPickerPreview] = useState("#000000");
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const quickAddInputRef = useRef<HTMLInputElement>(null);
   const colorPickerRef = useRef<HTMLInputElement>(null);
 
   // The parent owns the input and parsed colors, including restored drafts.
   useEffect(() => {
-    setColorItems(colors.map((color, i) => ({ color, name: `Color ${i + 1}` })));
+    setColorItems(colors.map(color => ({ color })));
   }, [colors]);
 
   const handleRemove = (index: number) => {
     const newItems = colorItems.filter((_, i) => i !== index);
-    // Renumber remaining colors
-    const renumbered = newItems.map((item, i) => ({
-      ...item,
-      name: `Color ${i + 1}`,
-    }));
-    
     // Update textarea to reflect removed color
-    const hexColors = renumbered.map(item => rgbToHex(item.color)).join(', ');
+    const hexColors = newItems.map(item => rgbToHex(item.color)).join(", ");
     setBulkInput(hexColors);
+  };
+
+  const handleEditColor = (index: number, value: string) => {
+    const next = [...colorItems];
+    const color = parseColor(value);
+    if (!color) return;
+    next[index] = { ...next[index], color };
+    setBulkInput(next.map(item => rgbToHex(item.color)).join(", "));
+  };
+
+  const handleSwatchDragOver = (event: DragEvent, index: number) => {
+    event.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+    const reordered = [...colorItems];
+    const [moving] = reordered.splice(draggedIndex, 1);
+    reordered.splice(index, 0, moving);
+    setColorItems(reordered);
+    setDraggedIndex(index);
+  };
+
+  const handleSwatchDragEnd = () => {
+    if (draggedIndex !== null) {
+      setBulkInput(colorItems.map(item => rgbToHex(item.color)).join(", "));
+    }
+    setDraggedIndex(null);
   };
 
   const handleClearAll = () => {
@@ -69,14 +85,12 @@ export default function ColorPaletteBuilder({
       return false;
     }
 
-    {
-      // Normalize imported Studio Code and mixed input before appending.
-      const existing = parseColorInput(bulkInput)
-        .map(parseColor)
-        .filter((color): color is RGB => color !== null)
-        .map(rgbToHex);
-      setBulkInput(Array.from(new Set([...existing, hexValue])).join(", "));
-    }
+    // Studio Code is structured data, not an editable list: normalize it before
+    // appending, while preserving ordinary unfinished input drafts as written.
+    const existing = parseStudioCode(bulkInput)
+      ? colors.map(rgbToHex).join(" ")
+      : bulkInput.trim();
+    setBulkInput(existing ? `${existing} ${hexValue}` : hexValue);
     setQuickAddError("");
     if (source === "text") {
       setQuickAddInput("");
@@ -102,49 +116,18 @@ export default function ColorPaletteBuilder({
       picker.removeEventListener("input", handleInput);
       picker.removeEventListener("change", handleChange);
     };
-  }, [colorItems]);
-
-  const handleSwatchDragStart = (index: number) => {
-    setDraggedIndex(index);
-  };
-
-  const handleSwatchDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    if (draggedIndex === null || draggedIndex === index) return;
-
-    const newItems = [...colorItems];
-    const draggedItem = newItems[draggedIndex];
-    newItems.splice(draggedIndex, 1);
-    newItems.splice(index, 0, draggedItem);
-    
-    setColorItems(newItems);
-    setDraggedIndex(index);
-  };
-
-  const handleSwatchDragEnd = () => {
-    // Update the textarea with reordered colors
-    if (draggedIndex !== null) {
-      const hexColors = colorItems.map(item => rgbToHex(item.color)).join(', ');
-      setBulkInput(hexColors);
-    }
-    
-    // Use requestAnimationFrame to ensure drag state clears after browser's drag animation
-    requestAnimationFrame(() => {
-      setDraggedIndex(null);
-    });
-  };
-
-  const hasColors = colorItems.length >= 2;
+  }, [colorItems, bulkInput]);
 
   return (
     <div className="space-y-4">
+      {bulkInput === "#f91d71, #fd806a, #ffd025, #74d551, #76c4f4, #7c70ff" && (
+        <p className="text-xs text-muted-foreground">These are sample colors. Edit or replace them with your own.</p>
+      )}
       {/* Palette Swatches - Show colors already in palette */}
       {colorItems.length > 0 && (
-        <div className="flex gap-3 flex-wrap" data-testid="palette-swatches">
+      <div className="flex flex-wrap gap-3" data-testid="palette-swatches">
           {colorItems.map((item, index) => {
             const hexValue = rgbToHex(item.color);
-            const isDragging = draggedIndex === index;
-            
             // Calculate luminance to determine if we need a contrasting border
             const { r, g, b } = item.color;
             const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
@@ -152,30 +135,40 @@ export default function ColorPaletteBuilder({
             
             return (
               <div
-                key={`${hexValue}-${index}`}
+                key={index}
                 className="relative group"
+                onDragOver={event => handleSwatchDragOver(event, index)}
+                onDragEnd={handleSwatchDragEnd}
               >
-                <div
+                <label
                   draggable
-                  onDragStart={() => handleSwatchDragStart(index)}
-                  onDragOver={(e) => handleSwatchDragOver(e, index)}
-                  onDragEnd={handleSwatchDragEnd}
-                  className={`w-12 h-12 rounded-lg cursor-move transition-transform hover:scale-110 outline-none focus:outline-none ${
-                    isDragging ? 'scale-90 ring-2 ring-primary/50' : ''
-                  } ${
-                    isLight ? 'border border-gray-300' : 'border border-white/30'
-                  }`}
+                  onDragStart={() => setDraggedIndex(index)}
+                  className={`relative block h-12 w-12 cursor-grab overflow-hidden rounded-lg transition-transform hover:scale-105 active:cursor-grabbing focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ${draggedIndex === index ? "scale-90" : ""} ${isLight ? "border border-black/20" : "border border-white/30"}`}
                   style={{ backgroundColor: hexValue }}
-                  title={`${hexValue.toUpperCase()} - Drag to reorder`}
+                  title={`${hexValue.toUpperCase()} — click to edit, drag to reorder`}
                   data-testid={`palette-swatch-${index}`}
-                />
+                >
+                  <span className="sr-only">Edit color {index + 1}, {hexValue}</span>
+                  <input
+                    type="color"
+                    value={hexValue}
+                    onChange={(event) => handleEditColor(index, event.currentTarget.value)}
+                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                    aria-label={`Edit color ${index + 1}, ${hexValue}`}
+                    data-testid={`edit-color-${index}`}
+                  />
+                </label>
+                <span className="mt-1 block text-center font-mono text-[10px] text-muted-foreground">
+                  {hexValue.toUpperCase()}
+                </span>
                 <button
+                  type="button"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleRemove(index);
                   }}
-                  className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-red-600 shadow-md"
-                  title="Remove color"
+                  className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background text-foreground shadow-sm transition-colors hover:bg-destructive hover:text-destructive-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  aria-label={`Remove color ${index + 1}, ${hexValue}`}
                   data-testid={`button-remove-swatch-${index}`}
                 >
                   <X className="w-3 h-3" />
@@ -248,6 +241,7 @@ export default function ColorPaletteBuilder({
             </span>
           </div>
         </div>
+        <p className="mt-2 text-xs text-muted-foreground">Enter a color value, then press Enter to keep adding.</p>
         {quickAddError && (
           <p id="quick-add-error" role="alert" className="mt-2 text-sm text-destructive">
             {quickAddError}
@@ -255,53 +249,39 @@ export default function ColorPaletteBuilder({
         )}
       </section>
 
-      <div className="p-6 rounded-lg border-2 border-border bg-card space-y-4">
-        <div className="space-y-2">
+      <div className="space-y-3">
+        <details className="group rounded-lg border border-border bg-card/60">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5 text-sm font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+            <span>Paste colors or Studio Code</span>
+            <ChevronDown className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-180" aria-hidden="true" />
+          </summary>
+          <div className="space-y-3 border-t border-border px-3 py-3">
           <textarea
             placeholder="Enter colors separated by spaces, line breaks, or commas&#10;Examples: #FF6F61 #000000 #FFFFFF&#10;Also accepts rgb(255, 111, 97), hsl(5, 100%, 69%), and studio code."
             value={bulkInput}
             onChange={(e) => setBulkInput(e.target.value)}
-            className="w-full min-h-[120px] px-4 py-3 text-sm rounded-lg border-2 border-input bg-background resize-y font-mono focus:border-primary focus:outline-none transition-colors"
+            aria-label="Paste palette colors or Studio Code"
+            className="min-h-[88px] w-full resize-y rounded-md border border-input bg-background px-3 py-2.5 font-mono text-sm outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/20"
             data-testid="input-bulk-colors"
           />
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-3">
-          {hasColors && (
-            <Button
-              onClick={onTestPalette}
-              size="lg"
-              className="flex-1"
-              data-testid="button-test-palette"
-            >
-              Test Palette
-            </Button>
-          )}
-          
+          <p className="text-xs text-muted-foreground">Accepts HEX, RGB, HSL, mixed whitespace, and Studio Code pairings.</p>
+          </div>
+        </details>
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <Button
-            onClick={() => {
-              const sampleText = onSampleClick();
-              setBulkInput(sampleText);
-            }}
-            variant="outline"
-            size="lg"
-            className={hasColors ? "" : "flex-1"}
+            type="button"
+            onClick={() => setBulkInput(onSampleClick())}
+            variant="ghost"
+            size="sm"
+            className="h-8 px-2 text-xs text-muted-foreground"
             data-testid="button-try-sample"
           >
-            Try Sample Palette
+            Load sample palette
           </Button>
-
           {bulkInput.length > 0 && (
-            <Button
-              onClick={handleClearAll}
-              variant="ghost"
-              size="icon"
-              className="self-center sm:self-auto"
-              data-testid="button-clear-palette"
-              aria-label="Clear palette input and selected pairings"
-              title="Clear palette input and selected pairings"
-            >
-              <Trash2 className="w-4 h-4" />
+            <Button type="button" onClick={handleClearAll} variant="ghost" size="sm" className="h-8 px-2 text-xs" data-testid="button-clear-palette">
+              <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+              Clear palette
             </Button>
           )}
         </div>

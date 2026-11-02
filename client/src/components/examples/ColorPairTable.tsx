@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import ColorPairTable from '../ColorPairTable';
+import ColorPairTable, { type PairFilter } from '../ColorPairTable';
 
 export default function ColorPairTableExample() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [threshold, setThreshold] = useState(4.5);
-  const [displayFilter, setDisplayFilter] = useState<"all" | "passing">("all");
+  const [displayFilter, setDisplayFilter] = useState<PairFilter>("all");
   const [fontSize, setFontSize] = useState(14);
 
   const mockPairs = [
@@ -53,7 +53,7 @@ export default function ColorPairTableExample() {
         onToggleFavorite={toggleFavorite}
         displayFilter={displayFilter}
         onDisplayFilterChange={setDisplayFilter}
-        onSelectAll={() => setFavorites(new Set(mockPairs.filter(pair => displayFilter === "all" || pair.ratio >= threshold).map(pair => pair.id)))}
+        onSelectAll={() => setFavorites(previous => new Set([...Array.from(previous), ...mockPairs.filter(pair => displayFilter === "all" || (displayFilter === "meets" ? pair.ratio >= threshold : pair.ratio < threshold)).map(pair => pair.id)]))}
         onClearFavorites={() => setFavorites(new Set())}
         previewFontSize={fontSize}
         onPreviewFontSizeChange={setFontSize}

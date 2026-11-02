@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import { PaletteIntroduction } from "@/components/HeroSection";
 import ColorPaletteBuilder from "@/components/ColorPaletteBuilder";
 import ResultsSection from "@/components/ResultsSection";
-import { type ColorPair } from "@/components/ColorPairTable";
+import { type ColorPair, type PairFilter } from "@/components/ColorPairTable";
 import PaletteDownloads from "@/components/PaletteDownloads";
 import PaletteExportDialog from "@/components/PaletteExportDialog";
 import { downloadPalettePNG, paletteHexText, createStudioCode } from "@/lib/paletteDownload";
@@ -32,7 +32,7 @@ export default function Home() {
   const [storageWarning, setStorageWarning] = useState(initial.warning);
   const [saveFailed, setSaveFailed] = useState(false);
   const [threshold, setThreshold] = useState(4.5);
-  const [displayFilter, setDisplayFilter] = useState<"all" | "passing">("all");
+  const [displayFilter, setDisplayFilter] = useState<PairFilter>("all");
   const [pairs, setPairs] = useState<ColorPair[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set(initial.draft.favorites));
   const [previewFontSize, setPreviewFontSize] = useState(14);
@@ -76,6 +76,13 @@ export default function Home() {
   useEffect(() => {
     if (colors.length < 2) {
       setPairs([]);
+      trackEvent("palette_tested", {
+        color_count: colors.length,
+        contrast_benchmark: threshold,
+        display_filter: displayFilter,
+        pair_count: 0,
+        passing_pair_count: 0,
+      });
       return;
     }
 
@@ -119,7 +126,14 @@ export default function Home() {
       return fgIndexA - fgIndexB;
     });
     setPairs(newPairs);
-  }, [colors, threshold]);
+    trackEvent("palette_tested", {
+      color_count: colors.length,
+      contrast_benchmark: threshold,
+      display_filter: displayFilter,
+      pair_count: newPairs.length,
+      passing_pair_count: newPairs.filter(pair => pair.ratio >= threshold).length,
+    });
+  }, [colors, threshold, displayFilter]);
 
 
   const handleSampleColors = () => {
@@ -150,10 +164,11 @@ export default function Home() {
   const handleSelectAll = () => {
     const filteredPairs = displayFilter === "all"
       ? pairs 
-      : pairs.filter(pair => pair.ratio >= threshold);
+      : pairs.filter(pair => displayFilter === "meets"
+        ? pair.ratio >= threshold
+        : pair.ratio < threshold);
     
-    const filteredPairIds = new Set(filteredPairs.map(pair => pair.id));
-    setFavorites(filteredPairIds);
+    setFavorites(previous => new Set([...Array.from(previous), ...filteredPairs.map(pair => pair.id)]));
     trackEvent("all_pairs_selected", {
       contrast_benchmark: threshold,
       display_filter: displayFilter,
@@ -218,41 +233,12 @@ export default function Home() {
     }
   };
 
-  // All summaries and warnings follow the user's selected benchmark.
-  const highContrastPairs = pairs.filter(pair => pair.ratio >= threshold);
-  const hasNoHighContrastPairs = pairs.length > 0 && highContrastPairs.length === 0;
-  
-  // Check how many colors have at least one high contrast pair
-  const colorsWithHighContrast = new Set<string>();
-  highContrastPairs.forEach(pair => {
-    colorsWithHighContrast.add(rgbToHex(pair.foreground));
-    colorsWithHighContrast.add(rgbToHex(pair.background));
-  });
-  const colorsWithHighContrastCount = colorsWithHighContrast.size;
-  const totalColors = colors.length;
-  const colorHighContrastPercentage = totalColors > 0 ? (colorsWithHighContrastCount / totalColors) * 100 : 100;
-  const hasLowHighContrastPairs = totalColors > 0 && colorsWithHighContrastCount > 0 && colorHighContrastPercentage < 50;
-
-  const handleTestPalette = () => {
-    trackEvent("palette_tested", {
-      color_count: colors.length,
-      contrast_benchmark: threshold,
-      display_filter: displayFilter,
-      pair_count: pairs.length,
-      passing_pair_count: pairs.filter(pair => pair.ratio >= threshold).length,
-    });
-    const resultsElement = document.getElementById("results-section");
-    if (resultsElement) {
-      resultsElement.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
-
   const handleThresholdChange = (value: number) => {
     setThreshold(value);
     trackEvent("contrast_benchmark_changed", { contrast_benchmark: value });
   };
 
-  const handleDisplayFilterChange = (value: "all" | "passing") => {
+  const handleDisplayFilterChange = (value: PairFilter) => {
     setDisplayFilter(value);
     trackEvent("contrast_filter_changed", { display_filter: value, contrast_benchmark: threshold });
   };
@@ -270,33 +256,22 @@ export default function Home() {
         onCopyStudio={includePairings => handleCopy(includePairings, "studio_code")}
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-16 space-y-16">
+      <main className="mx-auto max-w-7xl space-y-12 px-4 py-8 sm:px-6 sm:py-10">
         <PaletteIntroduction />
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-8 items-start">
-          <div className="min-w-0 lg:col-start-1 lg:row-start-1">
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-8">
+          <section id="add-colors" aria-labelledby="add-colors-title" className="min-w-0 scroll-mt-6 lg:col-start-1 lg:row-start-1">
+            <div className="mb-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Step 1</p>
+              <h2 id="add-colors-title" className="text-2xl font-bold text-foreground">Add your colors</h2>
+            </div>
             <ColorPaletteBuilder
               onSampleClick={handleSampleColors}
               colors={colors}
               bulkInput={paletteInput}
               onInputChange={handleInputChange}
-              onTestPalette={handleTestPalette}
             />
-          </div>
-          <aside className="min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-2">
-            <PaletteDownloads
-              colors={colors}
-              selectedPairs={selectedPairs}
-              busy={exportBusy}
-              onOpenDownload={openDownload}
-              onRemoveFavorite={handleToggleFavorite}
-              onReset={handleResetPalette}
-              storageWarning={saveFailed
-                ? "Browser storage is unavailable or full. Your current changes are not saved and may be lost when you leave or refresh."
-                : storageWarning}
-            />
-          </aside>
-          {pairs.length > 0 && (
-          <div id="results-section" className="min-w-0 lg:col-start-1 lg:row-start-2">
+          </section>
+          <div id="results-section" className="min-w-0 scroll-mt-6 lg:col-start-1 lg:row-start-2">
             <ResultsSection
               pairs={pairs}
               threshold={threshold}
@@ -310,11 +285,21 @@ export default function Home() {
               onDisplayFilterChange={handleDisplayFilterChange}
               previewFontSize={previewFontSize}
               onPreviewFontSizeChange={setPreviewFontSize}
-              hasNoHighContrastPairs={hasNoHighContrastPairs}
-              hasLowHighContrastPairs={hasLowHighContrastPairs}
             />
           </div>
-          )}
+          <aside id="download-palette" className="min-w-0 scroll-mt-6 lg:col-start-2 lg:row-start-1 lg:row-span-2">
+            <PaletteDownloads
+              colors={colors}
+              selectedPairs={selectedPairs}
+              busy={exportBusy}
+              onOpenDownload={openDownload}
+              onRemoveFavorite={handleToggleFavorite}
+              onReset={handleResetPalette}
+              storageWarning={saveFailed
+                ? "Browser storage is unavailable or full. Your current changes are not saved and may be lost when you leave or refresh."
+                : storageWarning}
+            />
+          </aside>
         </div>
 
         <HowItWorksSection />

@@ -6,62 +6,32 @@ interface HeroSectionProps {
   colors: RGB[];
   bulkInput: string;
   onInputChange: (input: string) => void;
-  onTestPalette: () => void;
 }
 
 export function PaletteIntroduction() {
   return (
-    <div className="text-center space-y-8">
-      <div className="space-y-4">
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight">
-          <span className="text-foreground">Color Palette </span>
-          <span 
-            style={{
-              color: '#ff6b35',
-              backgroundImage: 'linear-gradient(90deg, #ff6b35, #ffa500, #ffd700, #32cd32, #00bfff, #9370db)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}
-            data-testid="text-rainbow"
-          >
-            Tester
-          </span>
-        </h1>
-        
-        {/* Answer-First Content */}
-        <div className="max-w-3xl mx-auto space-y-4">
-          <p className="text-lg text-foreground font-medium" data-testid="text-answer-first">
-            A color palette tester scores every foreground/background combination in your palette at once. Choose a numeric contrast benchmark, then see which pairs meet it and which fall short.
-          </p>
-          
-          {/* Problem/Solution Statements */}
-          <div className="bg-card/50 border border-card-border rounded-lg p-6 text-left space-y-3">
-            <div className="space-y-1">
-              <p className="text-sm font-semibold text-muted-foreground">Problem:</p>
-              <p className="text-base text-foreground">
-                Checking colors one pairing at a time is slow, and low-contrast combinations can be easy to miss.
-              </p>
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-semibold text-muted-foreground">Solution:</p>
-              <p className="text-base text-foreground">
-                Compare every pairing against a 3:1, 4.5:1, or 7:1 score benchmark, filter the results, and download your colors and selected pairings as a PNG.
-              </p>
-            </div>
-          </div>
-          
-          <p className="text-base text-muted-foreground">
-            Paste HEX, RGB, or HSL colors below and click "Test Contrast" to see each pair's score against your selected benchmark.
-          </p>
-        </div>
-        
-        <p className="text-sm text-muted-foreground/80">
-          Trusted by 2,000+ designers
-        </p>
-      </div>
-
-    </div>
+    <header className="mx-auto max-w-5xl space-y-4 text-center">
+      <h1 className="text-4xl font-bold leading-tight sm:text-5xl">
+        <span className="text-foreground">Color Palette </span>
+        <span
+          className="bg-clip-text text-transparent"
+          style={{
+            backgroundImage: "linear-gradient(90deg, #ff6b35, #ffa500, #ffd025, #55bd63, #43a9df, #8173e8)",
+          }}
+          data-testid="text-rainbow"
+        >
+          Tester
+        </span>
+      </h1>
+      <p className="mx-auto max-w-2xl text-base text-muted-foreground sm:text-lg" data-testid="text-answer-first">
+        Add colors, compare every text-and-background pairing, then keep and download the combinations you want.
+      </p>
+      <nav aria-label="Palette tester steps" className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-medium">
+        <a className="text-foreground underline decoration-primary/50 underline-offset-4 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href="#add-colors">1. Add your colors</a>
+        <a className="text-foreground underline decoration-primary/50 underline-offset-4 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href="#results-section">2. Compare &amp; choose</a>
+        <a className="text-foreground underline decoration-primary/50 underline-offset-4 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href="#download-palette">3. Download your palette</a>
+      </nav>
+    </header>
   );
 }
 
@@ -70,20 +40,16 @@ export default function HeroSection({
   colors,
   bulkInput,
   onInputChange,
-  onTestPalette,
 }: HeroSectionProps) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-5">
       <PaletteIntroduction />
-      <div className="max-w-5xl mx-auto">
-        <ColorPaletteBuilder
-          colors={colors}
-          bulkInput={bulkInput}
-          onInputChange={onInputChange}
-          onSampleClick={onSampleClick}
-          onTestPalette={onTestPalette}
-        />
-      </div>
+      <ColorPaletteBuilder
+        onSampleClick={onSampleClick}
+        colors={colors}
+        bulkInput={bulkInput}
+        onInputChange={onInputChange}
+      />
     </div>
   );
 }

@@ -2,18 +2,18 @@ export default function HowItWorksSection() {
   const steps = [
     {
       number: 1,
-      title: "Paste your brand colors",
+      title: "Add your colors",
       description: "Enter HEX, RGB, or HSL — separate colors with spaces, line breaks, or commas.",
     },
     {
       number: 2,
-      title: 'Click "Test" — we check every pairing',
-      description: "Each foreground/background pair gets a score on a 1:1–21:1 scale.",
+      title: "Compare & choose",
+      description: "Scores update automatically. Choose a 3:1, 4.5:1, or 7:1 target and keep the pairings you like.",
     },
     {
       number: 3,
-      title: "Filter + export your favorites",
-      description: "Choose a 3:1, 4.5:1, or 7:1 benchmark, then open Download to save a PNG or copy your HEX codes and Studio Code.",
+      title: "Download your palette",
+      description: "Open Download to save colors only or colors and chosen pairings as a PNG, or copy HEX codes and Studio Code.",
     },
   ];
 

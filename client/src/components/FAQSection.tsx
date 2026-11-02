@@ -10,7 +10,7 @@ export default function FAQSection() {
     {
       question: "How do I test all color pairings?",
       answer:
-        'Paste your brand colors as HEX, RGB, or HSL, separated by spaces, line breaks, or commas, and click "Test." We calculate a contrast score for every foreground/background combination.',
+        "Paste your brand colors as HEX, RGB, or HSL, separated by spaces, line breaks, or commas. Contrast scores update automatically for every text-and-background combination.",
     },
     {
       question: "What do the numeric benchmarks mean?",

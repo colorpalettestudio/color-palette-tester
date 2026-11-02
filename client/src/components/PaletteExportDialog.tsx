@@ -60,17 +60,15 @@ export default function PaletteExportDialog({
       >
         <div className="p-5 pb-4 sm:p-6 sm:pb-5">
           <DialogHeader className="pr-7 text-left">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">Export palette</p>
-            <DialogTitle className="text-xl">Choose what to include</DialogTitle>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">Palette export</p>
+            <DialogTitle className="text-xl">Download your palette</DialogTitle>
             <DialogDescription>
-              Choose the scope first, then select an action. Nothing is exported until you click below.
+              What would you like to include?
             </DialogDescription>
           </DialogHeader>
 
           <fieldset className="mt-5 space-y-2">
-            <legend className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              Export scope
-            </legend>
+            <legend className="mb-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">Include</legend>
             <label
               className={`flex cursor-pointer items-start gap-3 rounded-lg border p-3.5 transition-colors focus-within:ring-2 focus-within:ring-ring ${
                 !includePairings ? "border-primary/60 bg-primary/5" : "border-border bg-background hover:bg-muted/40"
@@ -159,6 +157,9 @@ export default function PaletteExportDialog({
               <Braces className="mr-2 h-4 w-4" aria-hidden="true" />
               Copy Studio Code
             </Button>
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              Studio Code keeps your palette colors and, when included, chosen pairings together for easy import later.
+            </p>
           </div>
           <DialogFooter className="mt-3">
             <Button type="button" variant="ghost" onClick={() => closeDialog(false)}>
