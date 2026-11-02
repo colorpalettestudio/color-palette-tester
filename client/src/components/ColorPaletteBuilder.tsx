@@ -1,10 +1,7 @@
-import { useState, useEffect } from "react";
-import { Plus, X, Trash2, Palette, GripVertical } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { parseColor, rgbToHex, type RGB, parseColorInput } from "@/lib/colorUtils";
-import { useToast } from "@/hooks/use-toast";
+import { parseColor, rgbToHex, type RGB, parseColorInput, parseStudioCode, type StudioPairing } from "@/lib/colorUtils";
 
 interface ColorItem {
   color: RGB;
@@ -16,6 +13,7 @@ interface ColorPaletteBuilderProps {
   onColorsChange: (colors: RGB[]) => void;
   onSampleClick: () => string;
   onTestPalette: () => void;
+  onImportPairings?: (pairings: StudioPairing[]) => void;
 }
 
 export default function ColorPaletteBuilder({
@@ -23,14 +21,16 @@ export default function ColorPaletteBuilder({
   onColorsChange,
   onSampleClick,
   onTestPalette,
+  onImportPairings,
 }: ColorPaletteBuilderProps) {
   const [colorItems, setColorItems] = useState<ColorItem[]>([]);
   const [bulkInput, setBulkInput] = useState("");
-  const [previewColors, setPreviewColors] = useState<RGB[]>([]);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const [newColorInput, setNewColorInput] = useState("#000000");
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { toast } = useToast();
+  const [quickAddInput, setQuickAddInput] = useState("");
+  const [quickAddError, setQuickAddError] = useState("");
+  const [pickerPreview, setPickerPreview] = useState("#000000");
+  const quickAddInputRef = useRef<HTMLInputElement>(null);
+  const colorPickerRef = useRef<HTMLInputElement>(null);
 
   // Initialize textarea with default colors on mount
   useEffect(() => {
@@ -67,6 +67,8 @@ export default function ColorPaletteBuilder({
     
     setColorItems(newItems);
     onColorsChange(newItems.map(item => item.color));
+    const studio = parseStudioCode(bulkInput);
+    if (studio) onImportPairings?.(studio.pairings ?? []);
   }, [bulkInput]);
 
   // Sync colors with colorItems
@@ -99,42 +101,55 @@ export default function ColorPaletteBuilder({
     setBulkInput("");
   };
 
-  const handleAddColor = () => {
-    const rgb = parseColor(newColorInput);
+  const addColor = (input: string, source: "text" | "picker") => {
+    const rgb = parseColor(input);
     if (!rgb) {
-      toast({
-        title: "Invalid color",
-        description: "Please enter a valid color code.",
-        variant: "destructive",
-      });
-      return;
+      setQuickAddError("Enter a valid HEX, RGB, or HSL color.");
+      return false;
     }
 
     const hexValue = rgbToHex(rgb);
     const isDuplicate = colorItems.some(item => rgbToHex(item.color) === hexValue);
     
     if (isDuplicate) {
-      toast({
-        title: "Duplicate color",
-        description: "This color is already in your palette.",
-        variant: "destructive",
-      });
-      return;
+      setQuickAddError(`${hexValue.toUpperCase()} is already in your palette.`);
+      return false;
     }
 
-    // Add to textarea
-    const currentColors = bulkInput ? bulkInput + ', ' : '';
-    setBulkInput(currentColors + hexValue);
-    
-    // Reset input and close popover
-    setNewColorInput("#000000");
-    setIsPopoverOpen(false);
-    
-    toast({
-      title: "Color added",
-      description: `${hexValue.toUpperCase()} has been added to your palette.`,
+    setBulkInput(current => {
+      // Normalize imported Studio Code and mixed input before appending.
+      const existing = parseColorInput(current)
+        .map(parseColor)
+        .filter((color): color is RGB => color !== null)
+        .map(rgbToHex);
+      return Array.from(new Set([...existing, hexValue])).join(", ");
     });
+    setQuickAddError("");
+    if (source === "text") {
+      setQuickAddInput("");
+      requestAnimationFrame(() => quickAddInputRef.current?.focus());
+    } else {
+      setPickerPreview("#000000");
+      if (colorPickerRef.current) colorPickerRef.current.value = "#000000";
+    }
+    return true;
   };
+
+  // Native color picker: input previews while dragging; only change commits.
+  useEffect(() => {
+    const picker = colorPickerRef.current;
+    if (!picker) return;
+    const handleInput = () => setPickerPreview(picker.value);
+    const handleChange = () => {
+      addColor(picker.value, "picker");
+    };
+    picker.addEventListener("input", handleInput);
+    picker.addEventListener("change", handleChange);
+    return () => {
+      picker.removeEventListener("input", handleInput);
+      picker.removeEventListener("change", handleChange);
+    };
+  }, [colorItems]);
 
   const handleSwatchDragStart = (index: number) => {
     setDraggedIndex(index);
@@ -233,6 +248,75 @@ export default function ColorPaletteBuilder({
         </div>
       )}
 
+      <section
+        className="rounded-lg border border-border bg-card/70 px-3 py-3 sm:px-4"
+        aria-label="Quick add a color"
+      >
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start">
+          <div className="flex min-w-0 flex-1 gap-2">
+            <label htmlFor="quick-add-color" className="sr-only">Color value</label>
+            <input
+              id="quick-add-color"
+              ref={quickAddInputRef}
+              type="text"
+              value={quickAddInput}
+              onChange={(event) => {
+                setQuickAddInput(event.target.value);
+                if (quickAddError) setQuickAddError("");
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter") {
+                  event.preventDefault();
+                  addColor(quickAddInput, "text");
+                }
+              }}
+              placeholder="HEX, RGB, or HSL"
+              autoComplete="off"
+              aria-invalid={Boolean(quickAddError)}
+              aria-describedby={quickAddError ? "quick-add-error" : undefined}
+              className="h-10 min-w-0 flex-1 rounded-md border border-input bg-background px-3 font-mono text-sm outline-none transition-colors placeholder:font-sans placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20"
+              data-testid="input-color-hex"
+            />
+            <Button
+              type="button"
+              onClick={() => addColor(quickAddInput, "text")}
+              onMouseDown={(event) => event.preventDefault()}
+              className="h-10 px-4"
+              data-testid="button-confirm-add-color"
+              aria-label="Add color to palette"
+            >
+              Add
+            </Button>
+          </div>
+          <div className="flex items-center gap-2">
+            <label
+              htmlFor="quick-add-picker"
+              className="text-xs font-medium text-muted-foreground"
+            >
+              Pick a color
+            </label>
+            <input
+              id="quick-add-picker"
+              ref={colorPickerRef}
+              type="color"
+              value={pickerPreview}
+              onInput={(event) => setPickerPreview(event.currentTarget.value)}
+              className="h-9 w-12 cursor-pointer rounded-md border border-input bg-background p-1"
+              aria-label="Choose and add a color"
+              data-testid="input-color-picker"
+            />
+            <span className="font-mono text-xs text-muted-foreground" aria-live="polite">
+              {pickerPreview.toUpperCase()}
+            </span>
+          </div>
+        </div>
+        {quickAddError && (
+          <p id="quick-add-error" role="alert" className="mt-2 text-sm text-destructive">
+            {quickAddError}
+          </p>
+        )}
+      </section>
+
       <div className="p-6 rounded-lg border-2 border-border bg-card space-y-4">
         <div className="space-y-2">
           <textarea
@@ -266,56 +350,9 @@ export default function ColorPaletteBuilder({
             className={hasColors ? "" : "flex-1"}
             data-testid="button-try-sample"
           >
-            ✨ Try Sample Palette
+            Try Sample Palette
           </Button>
 
-          <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                size="lg"
-                data-testid="button-add-color"
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-80" data-testid="popover-add-color">
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <h4 className="font-medium text-sm">Add New Color</h4>
-                  <p className="text-xs text-muted-foreground">
-                    Use the color picker or enter a hex code
-                  </p>
-                </div>
-                
-                <div className="flex gap-3">
-                  <input
-                    type="color"
-                    value={newColorInput}
-                    onChange={(e) => setNewColorInput(e.target.value)}
-                    className="w-16 h-10 rounded-md cursor-pointer border border-input"
-                    data-testid="input-color-picker"
-                  />
-                  <Input
-                    value={newColorInput}
-                    onChange={(e) => setNewColorInput(e.target.value)}
-                    placeholder="#000000"
-                    className="flex-1 font-mono"
-                    data-testid="input-color-hex"
-                  />
-                </div>
-                
-                <Button
-                  onClick={handleAddColor}
-                  className="w-full"
-                  data-testid="button-confirm-add-color"
-                >
-                  Add Color
-                </Button>
-              </div>
-            </PopoverContent>
-          </Popover>
-          
           {colorItems.length > 0 && (
             <Button
               onClick={handleClearAll}

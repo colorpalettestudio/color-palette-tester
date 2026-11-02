@@ -20,13 +20,13 @@ export interface ColorPair {
 interface ColorPairTableProps {
   pairs: ColorPair[];
   threshold: number;
-  textSize: "small" | "large";
   favorites: Set<string>;
   onToggleFavorite: (id: string) => void;
   onSelectAll: () => void;
   onClearFavorites: () => void;
-  wcagLevel: string;
-  onWcagLevelChange: (value: string) => void;
+  onThresholdChange: (value: number) => void;
+  displayFilter: "all" | "passing";
+  onDisplayFilterChange: (value: "all" | "passing") => void;
   previewFontSize: number;
   onPreviewFontSizeChange: (size: number) => void;
 }
@@ -34,58 +34,73 @@ interface ColorPairTableProps {
 export default function ColorPairTable({
   pairs,
   threshold,
-  textSize,
   favorites,
   onToggleFavorite,
   onSelectAll,
   onClearFavorites,
-  wcagLevel,
-  onWcagLevelChange,
+  onThresholdChange,
+  displayFilter,
+  onDisplayFilterChange,
   previewFontSize,
   onPreviewFontSizeChange,
 }: ColorPairTableProps) {
-  const filterOptions = [
-    { value: "all", label: "All Pairs", threshold: 0 },
-    { value: "aa-large", label: "WCAG AA Large (3:1+)", threshold: 3.0 },
-    { value: "aa-small", label: "WCAG AA Normal (4.5:1+)", threshold: 4.5 },
-    { value: "aaa-large", label: "WCAG AAA Normal (7:1+)", threshold: 7.0 },
+  const benchmarks = [
+    { value: 3, label: "3:1" },
+    { value: 4.5, label: "4.5:1" },
+    { value: 7, label: "7:1" },
   ];
-
-  const getFilteredPairs = (filterValue: string) => {
-    const option = filterOptions.find(opt => opt.value === filterValue);
-    if (!option || option.value === "all") return pairs;
-    return pairs.filter(pair => pair.ratio >= option.threshold);
-  };
-
-  const filteredPairs = getFilteredPairs(wcagLevel);
+  const filteredPairs = displayFilter === "all"
+    ? pairs
+    : pairs.filter((pair) => pair.ratio >= threshold);
   const passCount = pairs.filter((pair) => pair.ratio >= threshold).length;
   const failCount = pairs.length - passCount;
-  const activeFilter = filterOptions.find((option) => option.value === wcagLevel);
-  const benchmarkLabel = wcagLevel === "all"
-    ? `WCAG AA Normal · ${threshold}:1`
-    : activeFilter?.label.replace(/\s*\([^)]*\)/, "") ?? "Selected WCAG benchmark";
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap gap-3">
-        {filterOptions.map((option) => {
-          const count = option.value === "all" 
-            ? pairs.length 
-            : pairs.filter(pair => pair.ratio >= option.threshold).length;
-          const isActive = wcagLevel === option.value;
-          
-          return (
+      <div className="flex flex-col gap-5 rounded-lg border border-border bg-card/60 p-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">Score benchmark</p>
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Choose contrast score benchmark">
+            {benchmarks.map((benchmark) => (
+              <Button
+                key={benchmark.value}
+                type="button"
+                variant={threshold === benchmark.value ? "default" : "outline"}
+                onClick={() => onThresholdChange(benchmark.value)}
+                aria-pressed={threshold === benchmark.value}
+                data-testid={`benchmark-${benchmark.value}`}
+                className="font-semibold"
+              >
+                {benchmark.label}
+              </Button>
+            ))}
+          </div>
+        </div>
+        <div className="space-y-2">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">Display</p>
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter color pairs">
             <Button
-              key={option.value}
-              variant={isActive ? "default" : "outline"}
-              onClick={() => onWcagLevelChange(option.value)}
-              data-testid={`button-filter-${option.value}`}
-              className="font-medium"
+              type="button"
+              variant={displayFilter === "all" ? "default" : "outline"}
+              onClick={() => onDisplayFilterChange("all")}
+              aria-pressed={displayFilter === "all"}
+              data-testid="filter-all"
+              className="font-semibold"
             >
-              {option.label} <span className="ml-2">{count}</span>
+              All pairs <span className="ml-2">{pairs.length}</span>
             </Button>
-          );
-        })}
+            <Button
+              type="button"
+              variant={displayFilter === "passing" ? "default" : "outline"}
+              onClick={() => onDisplayFilterChange("passing")}
+              aria-pressed={displayFilter === "passing"}
+              data-testid="filter-passing"
+              className="font-semibold"
+            >
+              Passing only <span className="ml-2">{passCount}</span>
+            </Button>
+          </div>
+        </div>
       </div>
 
       <section
@@ -97,10 +112,10 @@ export default function ColorPairTable({
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              Pass / fail summary
+              Score summary
             </p>
             <p className="mt-1 text-sm font-medium text-foreground">
-              Benchmark: {benchmarkLabel}
+              {threshold}:1 benchmark
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
@@ -114,9 +129,9 @@ export default function ColorPairTable({
             </span>
           </div>
         </div>
-        {wcagLevel !== "all" && (
+        {displayFilter === "passing" && (
           <p className="mt-2 text-xs text-muted-foreground">
-            Showing {filteredPairs.length} passing {filteredPairs.length === 1 ? "pair" : "pairs"} only. Summary counts all {pairs.length} pairs.
+            Showing {filteredPairs.length} passing {filteredPairs.length === 1 ? "pair" : "pairs"} at {threshold}:1. Summary counts all {pairs.length} pairs.
           </p>
         )}
       </section>
@@ -157,12 +172,11 @@ export default function ColorPairTable({
                   <div className="space-y-2">
                     <h4 className="font-semibold text-sm">What is a Contrast Score?</h4>
                     <p className="text-sm text-muted-foreground">
-                      The contrast ratio measures the difference in brightness between text and background colors, ranging from 1:1 (no contrast) to 21:1 (maximum contrast).
+                      A contrast ratio compares the relative brightness of foreground and background colors. Scores range from 1:1 (the least separation) to 21:1 (the most). A higher score generally makes text easier to distinguish.
                     </p>
-                    <div className="space-y-1 text-xs">
-                      <p><strong>WCAG AA Large:</strong> Requires 3:1 for large text (18pt+)</p>
-                      <p><strong>WCAG AA Normal:</strong> Requires 4.5:1 for normal text</p>
-                      <p><strong>WCAG AAA:</strong> Requires 7:1 for enhanced accessibility</p>
+                    <div className="space-y-1 text-xs text-muted-foreground">
+                      <p><strong className="text-foreground">Your selected benchmark:</strong> {threshold}:1. Scores at or above it are marked passing; scores below it are marked below target.</p>
+                      <p>This is a comparison aid, not a certification. Check colors in their real layout and at their intended text size.</p>
                     </div>
                   </div>
                 </PopoverContent>

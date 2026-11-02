@@ -1,0 +1,2 @@
+- [Palette exports](palette-exports.md) — user wants design-focused exports without WCAG passing/failing information.
+- [Contrast terminology](contrast-terminology.md) — use selectable numeric contrast benchmarks rather than WCAG labels.

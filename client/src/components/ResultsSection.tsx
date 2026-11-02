@@ -13,7 +13,7 @@ import { trackEvent } from "@/lib/analytics";
 interface ResultsSectionProps {
   pairs: ColorPair[];
   threshold: number;
-  textSize: "small" | "large";
+  onThresholdChange: (value: number) => void;
   favorites: Set<string>;
   onToggleFavorite: (id: string) => void;
   onExportPNG: () => void;
@@ -21,8 +21,8 @@ interface ResultsSectionProps {
   onExportStudioCode: () => void;
   onSelectAll: () => void;
   onClearFavorites: () => void;
-  wcagLevel: string;
-  onWcagLevelChange: (value: string) => void;
+  displayFilter: "all" | "passing";
+  onDisplayFilterChange: (value: "all" | "passing") => void;
   previewFontSize: number;
   onPreviewFontSizeChange: (size: number) => void;
   hasNoHighContrastPairs?: boolean;
@@ -32,7 +32,7 @@ interface ResultsSectionProps {
 export default function ResultsSection({
   pairs,
   threshold,
-  textSize,
+  onThresholdChange,
   favorites,
   onToggleFavorite,
   onExportPNG,
@@ -40,8 +40,8 @@ export default function ResultsSection({
   onExportStudioCode,
   onSelectAll,
   onClearFavorites,
-  wcagLevel,
-  onWcagLevelChange,
+  displayFilter,
+  onDisplayFilterChange,
   previewFontSize,
   onPreviewFontSizeChange,
   hasNoHighContrastPairs = false,
@@ -68,7 +68,7 @@ export default function ResultsSection({
               {hasNoHighContrastPairs && (
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 dark:bg-red-950/40 border border-red-600/50 text-red-900 dark:text-red-100 text-sm font-semibold" data-testid="badge-no-contrast">
                   <AlertCircle className="h-4 w-4" />
-                  Critical Issue
+                  Below benchmark
                 </span>
               )}
               {hasLowHighContrastPairs && (
@@ -106,7 +106,7 @@ export default function ResultsSection({
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={onExportStudioCode} data-testid="menu-export-studio-code">
                   <Code className="w-4 h-4 mr-2" />
-                  Export as Studio Code
+                  Copy Studio Code
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -117,10 +117,10 @@ export default function ResultsSection({
           <Alert id="contrast-alert" className="border-red-600/50 bg-red-50 dark:bg-red-950/20" data-testid="alert-no-contrast">
             <AlertCircle className="h-4 w-4 text-red-700 dark:text-red-400" />
             <AlertTitle className="text-base font-semibold text-red-900 dark:text-red-100" data-testid="text-alert-title">
-              No color pairs meet WCAG AA standards (4.5:1 ratio)
+              No color pairs meet your {threshold}:1 contrast benchmark
             </AlertTitle>
             <AlertDescription className="text-sm text-red-800 dark:text-red-200" data-testid="text-alert-description">
-              Your palette needs accessible color combinations for text readability.{' '}
+              Try adjusting your colors or choosing a different contrast benchmark.{' '}
               <a
                 href="https://thecolorpalettestudio.com/products/color-palette-fixer"
                 target="_blank"
@@ -142,7 +142,7 @@ export default function ResultsSection({
         {hasLowHighContrastPairs && (
           <div id="contrast-alert" className="px-4 py-3 rounded-lg border border-blue-500/30 bg-blue-50/50 dark:bg-blue-950/10" data-testid="alert-low-contrast">
             <p className="text-sm text-blue-900 dark:text-blue-100">
-              <strong>Good start!</strong> Less than half of your colors have high-contrast pairs.{' '}
+              <strong>Good start!</strong> Less than half of your colors have a pairing at or above {threshold}:1.{' '}
               <a
                 href="https://thecolorpalettestudio.com/products/color-palette-fixer"
                 target="_blank"
@@ -155,7 +155,7 @@ export default function ResultsSection({
                 className="font-semibold underline hover:no-underline"
                 data-testid="link-improve-palette"
               >
-                Improve accessibility →
+                Improve contrast →
               </a>
             </p>
           </div>
@@ -165,13 +165,13 @@ export default function ResultsSection({
       <ColorPairTable
         pairs={pairs}
         threshold={threshold}
-        textSize={textSize}
+        onThresholdChange={onThresholdChange}
         favorites={favorites}
         onToggleFavorite={onToggleFavorite}
         onSelectAll={onSelectAll}
         onClearFavorites={onClearFavorites}
-        wcagLevel={wcagLevel}
-        onWcagLevelChange={onWcagLevelChange}
+        displayFilter={displayFilter}
+        onDisplayFilterChange={onDisplayFilterChange}
         previewFontSize={previewFontSize}
         onPreviewFontSizeChange={onPreviewFontSizeChange}
       />

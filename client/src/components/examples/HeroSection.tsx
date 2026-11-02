@@ -2,18 +2,15 @@ import { useState } from 'react';
 import HeroSection from '../HeroSection';
 
 export default function HeroSectionExample() {
-  const [colorInput, setColorInput] = useState('');
-  const [wcagLevel, setWcagLevel] = useState('aa-small');
+  const [colors, setColors] = useState([{ r: 0, g: 0, b: 0 }, { r: 255, g: 255, b: 255 }]);
 
   return (
     <div className="p-8">
       <HeroSection
-        onTestClick={() => console.log('Test clicked')}
-        onSampleClick={() => console.log('Sample clicked')}
-        colorInput={colorInput}
-        onColorInputChange={setColorInput}
-        wcagLevel={wcagLevel}
-        onWcagLevelChange={setWcagLevel}
+        onTestPalette={() => console.log('Test clicked')}
+        onSampleClick={() => "#000000 #ffffff"}
+        colors={colors}
+        onColorsChange={setColors}
       />
     </div>
   );

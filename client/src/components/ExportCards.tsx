@@ -1,5 +1,5 @@
 import { type ColorPair } from "./ColorPairTable";
-import { rgbToHex, getLuminance } from "@/lib/colorUtils";
+import { rgbToHex } from "@/lib/colorUtils";
 
 interface ExportCardsProps {
   pairs: ColorPair[];
@@ -20,10 +20,6 @@ export default function ExportCards({ pairs, favorites }: ExportCardsProps) {
           const textHex = rgbToHex(pair.foreground);
           const bgHex = rgbToHex(pair.background);
           
-          // Determine header text color based on text color luminance
-          const textLuminance = getLuminance(pair.foreground);
-          const headerTextColor = textLuminance > 0.5 ? '#4a5568' : textHex;
-          
           return (
             <div 
               key={pair.id}
@@ -40,13 +36,13 @@ export default function ExportCards({ pairs, favorites }: ExportCardsProps) {
                 <div className="text-center">
                   <div 
                     className="text-lg font-bold tracking-wide"
-                    style={{ color: headerTextColor }}
+                    style={{ color: textHex }}
                   >
                     FAVORITE
                   </div>
                   <div 
                     className="text-lg font-bold tracking-wide"
-                    style={{ color: headerTextColor }}
+                    style={{ color: textHex }}
                   >
                     PAIRING
                   </div>
@@ -65,13 +61,6 @@ export default function ExportCards({ pairs, favorites }: ExportCardsProps) {
                   <div className="text-sm text-gray-700">{bgHex}</div>
                 </div>
                 
-                <div>
-                  <div className="text-sm font-bold text-gray-900 mb-1">Contrast:</div>
-                  <div className="text-sm text-gray-700">{pair.ratio.toFixed(2)}:1</div>
-                  <div className="text-sm text-gray-700">
-                    AA normal text: {pair.ratio >= 4.5 ? "Pass" : "Fail"}
-                  </div>
-                </div>
               </div>
             </div>
           );

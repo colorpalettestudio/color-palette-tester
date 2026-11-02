@@ -97,32 +97,60 @@ export function getContrastRatio(color1: RGB, color2: RGB): number {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-export function parseColorInput(input: string): string[] {
+export interface StudioPairing {
+  foreground: string;
+  background: string;
+}
+
+export function parseStudioCode(input: string): { colors: string[]; pairings?: StudioPairing[] } | null {
   const trimmed = input.trim();
-  
-  // Check for studio code format
-  if (trimmed.startsWith('studiocode?') || trimmed.includes('colorNames=')) {
-    try {
-      // Parse URL parameters
-      const urlParams = new URLSearchParams(trimmed.replace('studiocode?', ''));
-      const colorNamesParam = urlParams.get('colorNames');
-      
-      if (colorNamesParam) {
-        // Decode and parse the JSON
-        const colorNames = JSON.parse(decodeURIComponent(colorNamesParam));
-        
-        // Extract hex values from the array
-        if (Array.isArray(colorNames)) {
-          return colorNames
-            .map((item: any) => item.hex)
-            .filter((hex: string) => hex && hex.trim().length > 0);
-        }
-      }
-    } catch (e) {
-      // If parsing fails, fall through to default parsing
-      console.warn('Failed to parse studio code:', e);
+  if (!trimmed.startsWith("studiocode?") && !trimmed.includes("/studiocode?") && !trimmed.includes("colorNames=")) return null;
+  try {
+    const query = trimmed.includes("?") ? trimmed.slice(trimmed.indexOf("?") + 1) : trimmed;
+    const params = new URLSearchParams(query);
+    const decodeJSON = (value: string) => {
+      try { return JSON.parse(value); }
+      catch { return JSON.parse(decodeURIComponent(value)); }
+    };
+    const names = params.get("colorNames");
+    // Accept the previous exporter's encoded JSON URL as well as parameter-based codes.
+    const legacy = names ? null : decodeJSON(decodeURIComponent(query));
+    const entries: unknown = names ? decodeJSON(names) : legacy?.colors;
+    if (!Array.isArray(entries)) return null;
+    const colors = Array.from(new Set(entries.map(item => {
+      const value = typeof item === "string" ? item : item?.hex;
+      if (typeof value !== "string") return null;
+      const color = parseColor(value);
+      return color ? rgbToHex(color) : null;
+    }).filter((hex): hex is string => hex !== null)));
+    if (!colors.length) return null;
+    const encodedPairs = params.get("pairings");
+    const rawPairs = encodedPairs ? decodeJSON(encodedPairs) : legacy?.pairings;
+    if (rawPairs === undefined || rawPairs === null) return { colors };
+    if (!Array.isArray(rawPairs)) return null;
+    const seen = new Set<string>();
+    const pairings: StudioPairing[] = [];
+    for (const pair of rawPairs) {
+      if (typeof pair?.foreground !== "string" || typeof pair?.background !== "string") continue;
+      const fg = parseColor(pair.foreground);
+      const bg = parseColor(pair.background);
+      if (!fg || !bg) continue;
+      const foreground = rgbToHex(fg);
+      const background = rgbToHex(bg);
+      const id = `${foreground}-${background}`;
+      if (foreground === background || !colors.includes(foreground) || !colors.includes(background) || seen.has(id)) continue;
+      seen.add(id);
+      pairings.push({ foreground, background });
     }
+    return { colors, pairings };
+  } catch {
+    return null;
   }
+}
+
+export function parseColorInput(input: string): string[] {
+  const studio = parseStudioCode(input);
+  if (studio) return studio.colors;
   
   // Keep RGB/HSL functions intact while accepting whitespace or punctuation
   // between colors. parseColor validates each complete token afterward.

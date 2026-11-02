@@ -8,12 +8,12 @@ export default function HowItWorksSection() {
     {
       number: 2,
       title: 'Click "Test" — we check every pairing',
-      description: "We calculate contrast ratios for each foreground/background combo.",
+      description: "Each foreground/background pair gets a score on a 1:1–21:1 scale.",
     },
     {
       number: 3,
       title: "Filter + export your favorites",
-      description: "Save time by exporting passing pairs to PNG or PDF.",
+      description: "Choose a 3:1, 4.5:1, or 7:1 benchmark, then export selected pairs to PNG or PDF.",
     },
   ];
 

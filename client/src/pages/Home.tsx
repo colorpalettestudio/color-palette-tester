@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
-import HeroSection from "@/components/HeroSection";
+import { PaletteIntroduction } from "@/components/HeroSection";
+import ColorPaletteBuilder from "@/components/ColorPaletteBuilder";
 import ResultsSection from "@/components/ResultsSection";
 import { type ColorPair } from "@/components/ColorPairTable";
 import ExportCards from "@/components/ExportCards";
 import PaletteDownloads from "@/components/PaletteDownloads";
-import { downloadPalettePNG, downloadPaletteText } from "@/lib/paletteDownload";
+import { downloadPalettePNG, downloadPaletteText, paletteHexText, createStudioCode, downloadTextFile } from "@/lib/paletteDownload";
 import CTACard from "@/components/CTACard";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import EducationSections from "@/components/EducationSections";
@@ -19,17 +20,10 @@ import {
   getContrastRatio,
   type RGB,
   rgbToHex,
+  type StudioPairing,
 } from "@/lib/colorUtils";
 import { trackEvent } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
-
-const WCAG_THRESHOLDS = {
-  "all": 4.5,
-  "aa-small": 4.5,
-  "aa-large": 3.0,
-  "aaa-small": 7.0,
-  "aaa-large": 7.0,
-};
 
 const SAMPLE_COLORS = "#f91d71, #fd806a, #ffd025, #74d551, #76c4f4, #7c70ff";
 
@@ -41,7 +35,8 @@ const parseDefaultColors = () => {
 
 export default function Home() {
   const [colors, setColors] = useState<RGB[]>(parseDefaultColors());
-  const [wcagLevel, setWcagLevel] = useState("all");
+  const [threshold, setThreshold] = useState(4.5);
+  const [displayFilter, setDisplayFilter] = useState<"all" | "passing">("all");
   const [pairs, setPairs] = useState<ColorPair[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [previewFontSize, setPreviewFontSize] = useState(14);
@@ -80,7 +75,6 @@ export default function Home() {
       return;
     }
 
-    const threshold = WCAG_THRESHOLDS[wcagLevel as keyof typeof WCAG_THRESHOLDS];
     const newPairs: ColorPair[] = [];
 
     // Create a map of color hex to original index
@@ -121,7 +115,7 @@ export default function Home() {
       return fgIndexA - fgIndexB;
     });
     setPairs(newPairs);
-  }, [colors, wcagLevel]);
+  }, [colors, threshold]);
 
 
   const handleSampleColors = () => {
@@ -150,23 +144,15 @@ export default function Home() {
   };
 
   const handleSelectAll = () => {
-    // Filter pairs based on current wcagLevel
-    const filterThresholds: Record<string, number> = {
-      "all": 0,
-      "aa-large": 3.0,
-      "aa-small": 4.5,
-      "aaa-large": 7.0,
-    };
-    
-    const threshold = filterThresholds[wcagLevel] ?? 0;
-    const filteredPairs = wcagLevel === "all" 
+    const filteredPairs = displayFilter === "all"
       ? pairs 
       : pairs.filter(pair => pair.ratio >= threshold);
     
     const filteredPairIds = new Set(filteredPairs.map(pair => pair.id));
     setFavorites(filteredPairIds);
     trackEvent("all_pairs_selected", {
-      wcag_level: wcagLevel,
+      contrast_benchmark: threshold,
+      display_filter: displayFilter,
       selected_pair_count: filteredPairs.length,
     });
     toast({
@@ -291,64 +277,53 @@ export default function Home() {
     }
   };
 
-  const handleExportStudioCode = () => {
-    if (favorites.size === 0) {
-      toast({
-        title: "No favorites selected",
-        description: "Please check at least one color pair to export.",
-        variant: "destructive",
-      });
-      return;
+  const selectedPairs = pairs.filter(pair => favorites.has(pair.id));
+  const selectedPairings: StudioPairing[] = selectedPairs.map(pair => ({
+    foreground: rgbToHex(pair.foreground),
+    background: rgbToHex(pair.background),
+  }));
+  const selectedColors = Array.from(new Map(selectedPairs.flatMap(pair => [
+    [rgbToHex(pair.foreground), pair.foreground] as const,
+    [rgbToHex(pair.background), pair.background] as const,
+  ])).values());
+
+  const handleCopy = async (scope: "palette" | "pairings", format: "hex" | "studio_code") => {
+    const exportColors = scope === "palette" ? colors : selectedColors;
+    if (!exportColors.length || exportBusy) return;
+    const text = format === "studio_code"
+      ? createStudioCode(exportColors, scope === "pairings" ? selectedPairings : undefined)
+      : scope === "palette"
+        ? paletteHexText(colors)
+        : selectedPairings.map(pair => `Text: ${pair.foreground.toUpperCase()} | Background: ${pair.background.toUpperCase()}`).join("\n");
+    try {
+      await navigator.clipboard.writeText(text);
+      trackEvent("palette_exported", { format, scope, method: "copy", color_count: exportColors.length, selected_pair_count: scope === "pairings" ? selectedPairs.length : 0 });
+      toast({ title: format === "studio_code" ? "Studio Code copied" : "Color codes copied", description: format === "studio_code" ? "Paste this code into the palette input to restore your colors and any selected pairings." : "Ready to paste wherever you need them." });
+    } catch {
+      toast({ title: "Could not copy", description: "Your browser blocked clipboard access. Use the download option instead.", variant: "destructive" });
+      trackEvent("palette_export_failed", { format, scope, method: "copy" });
     }
+  };
 
-    // Get unique colors from favorited pairs
-    const favoritePairs = pairs.filter(pair => favorites.has(pair.id));
-    const uniqueColors = new Map<string, RGB>();
-    
-    favoritePairs.forEach(pair => {
-      const fgHex = rgbToHex(pair.foreground);
-      const bgHex = rgbToHex(pair.background);
-      uniqueColors.set(fgHex, pair.foreground);
-      uniqueColors.set(bgHex, pair.background);
-    });
+  const handleDownloadStudio = (scope: "palette" | "pairings") => {
+    const exportColors = scope === "palette" ? colors : selectedColors;
+    if (!exportColors.length || exportBusy) return;
+    try {
+      downloadTextFile(createStudioCode(exportColors, scope === "pairings" ? selectedPairings : undefined), `my-${scope}-studio-code.txt`);
+      trackEvent("palette_exported", { format: "studio_code", scope, method: "download", color_count: exportColors.length, selected_pair_count: scope === "pairings" ? selectedPairs.length : 0 });
+      toast({ title: "Studio Code downloaded", description: "Paste the contents of the text file into the palette input to restore it." });
+    } catch {
+      toast({ title: "Download failed", description: "Could not save your Studio Code. Please try again.", variant: "destructive" });
+    }
+  };
 
-    // Build studio code format
-    const colorNames = Array.from(uniqueColors.keys()).map((hex, index) => `Color ${index + 1}`);
-    const colorValues = Array.from(uniqueColors.keys());
-    
-    const studioCodeData = {
-      colorNames,
-      colors: colorValues
-    };
-    
-    const studioCodeUrl = `https://thecolorpalettestudio.com/studiocode?${encodeURIComponent(JSON.stringify(studioCodeData))}`;
-    
-    // Copy to clipboard
-    navigator.clipboard.writeText(studioCodeUrl).then(() => {
-      trackEvent("palette_exported", {
-        format: "studio_code",
-        selected_pair_count: favorites.size,
-      });
-      toast({
-        title: "Studio code copied!",
-        description: "The studio code URL has been copied to your clipboard.",
-      });
-    }).catch(() => {
-      trackEvent("palette_export_failed", { format: "studio_code" });
-      toast({
-        title: "Copy failed",
-        description: "Could not copy to clipboard. Please try again.",
-        variant: "destructive",
-      });
-    });
+  const handleImportPairings = (pairings: StudioPairing[]) => {
+    setFavorites(new Set(pairings.map(pair => `${pair.foreground}-${pair.background}`)));
   };
 
 
-  const threshold = WCAG_THRESHOLDS[wcagLevel as keyof typeof WCAG_THRESHOLDS];
-  const textSize = wcagLevel.includes("large") ? "large" : "small";
-  
-  // Check high contrast pair percentage (AA Small threshold - 4.5:1)
-  const highContrastPairs = pairs.filter(pair => pair.ratio >= 4.5);
+  // All summaries and warnings follow the user's selected benchmark.
+  const highContrastPairs = pairs.filter(pair => pair.ratio >= threshold);
   const hasNoHighContrastPairs = pairs.length > 0 && highContrastPairs.length === 0;
   
   // Check how many colors have at least one high contrast pair
@@ -365,7 +340,8 @@ export default function Home() {
   const handleTestPalette = () => {
     trackEvent("palette_tested", {
       color_count: colors.length,
-      wcag_level: wcagLevel,
+      contrast_benchmark: threshold,
+      display_filter: displayFilter,
       pair_count: pairs.length,
       passing_pair_count: pairs.filter(pair => pair.ratio >= threshold).length,
     });
@@ -375,9 +351,14 @@ export default function Home() {
     }
   };
 
-  const handleWcagLevelChange = (value: string) => {
-    setWcagLevel(value);
-    trackEvent("wcag_level_changed", { wcag_level: value });
+  const handleThresholdChange = (value: number) => {
+    setThreshold(value);
+    trackEvent("contrast_benchmark_changed", { contrast_benchmark: value });
+  };
+
+  const handleDisplayFilterChange = (value: "all" | "passing") => {
+    setDisplayFilter(value);
+    trackEvent("contrast_filter_changed", { display_filter: value, contrast_benchmark: threshold });
   };
 
   return (
@@ -387,46 +368,59 @@ export default function Home() {
         <ExportCards pairs={pairs} favorites={favorites} />
       </div>
 
-      <main className="max-w-6xl mx-auto px-6 py-16 space-y-24">
-        <HeroSection
-          onSampleClick={handleSampleColors}
-          colors={colors}
-          onColorsChange={setColors}
-          onTestPalette={handleTestPalette}
-        />
-
-        <PaletteDownloads
-          colorCount={colors.length}
-          favoriteCount={pairs.filter(pair => favorites.has(pair.id)).length}
-          busy={exportBusy}
-          onPalettePNG={() => handlePaletteDownload("png")}
-          onPaletteText={() => handlePaletteDownload("txt")}
-          onFavoritesPNG={handleExportPNG}
-          onFavoritesPDF={handleExportPDF}
-        />
-
-        {pairs.length > 0 && (
-          <div id="results-section">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-16 space-y-16">
+        <PaletteIntroduction />
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_320px] gap-8 items-start">
+          <div className="min-w-0 lg:col-start-1 lg:row-start-1">
+            <ColorPaletteBuilder
+              onSampleClick={handleSampleColors}
+              colors={colors}
+              onColorsChange={setColors}
+              onTestPalette={handleTestPalette}
+              onImportPairings={handleImportPairings}
+            />
+          </div>
+          <aside className="min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-6 lg:max-h-[calc(100dvh-3rem)] lg:overflow-y-auto">
+            <PaletteDownloads
+              colors={colors}
+              selectedPairs={selectedPairs}
+              busy={exportBusy}
+              onPalettePNG={() => handlePaletteDownload("png")}
+              onPaletteText={() => handlePaletteDownload("txt")}
+              onFavoritesPNG={handleExportPNG}
+              onFavoritesPDF={handleExportPDF}
+              onCopyPaletteHex={() => handleCopy("palette", "hex")}
+              onCopyPaletteStudio={() => handleCopy("palette", "studio_code")}
+              onDownloadPaletteStudio={() => handleDownloadStudio("palette")}
+              onCopyFavoritesHex={() => handleCopy("pairings", "hex")}
+              onCopyFavoritesStudio={() => handleCopy("pairings", "studio_code")}
+              onDownloadFavoritesStudio={() => handleDownloadStudio("pairings")}
+              onRemoveFavorite={handleToggleFavorite}
+            />
+          </aside>
+          {pairs.length > 0 && (
+          <div id="results-section" className="min-w-0 lg:col-start-1 lg:row-start-2">
             <ResultsSection
               pairs={pairs}
               threshold={threshold}
-              textSize={textSize}
+              onThresholdChange={handleThresholdChange}
               favorites={favorites}
               onToggleFavorite={handleToggleFavorite}
               onExportPNG={handleExportPNG}
               onExportPDF={handleExportPDF}
-              onExportStudioCode={handleExportStudioCode}
+              onExportStudioCode={() => handleCopy("pairings", "studio_code")}
               onSelectAll={handleSelectAll}
               onClearFavorites={handleClearFavorites}
-              wcagLevel={wcagLevel}
-              onWcagLevelChange={handleWcagLevelChange}
+              displayFilter={displayFilter}
+              onDisplayFilterChange={handleDisplayFilterChange}
               previewFontSize={previewFontSize}
               onPreviewFontSizeChange={setPreviewFontSize}
               hasNoHighContrastPairs={hasNoHighContrastPairs}
               hasLowHighContrastPairs={hasLowHighContrastPairs}
             />
           </div>
-        )}
+          )}
+        </div>
 
         <HowItWorksSection />
 

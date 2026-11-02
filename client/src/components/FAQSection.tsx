@@ -10,12 +10,12 @@ export default function FAQSection() {
     {
       question: "How do I test all color pairings?",
       answer:
-        'Paste your brand colors as HEX, RGB, or HSL, separated by spaces, line breaks, or commas, and click "Test." We build a matrix that checks every foreground/background combination against WCAG contrast ratios.',
+        'Paste your brand colors as HEX, RGB, or HSL, separated by spaces, line breaks, or commas, and click "Test." We calculate a contrast score for every foreground/background combination.',
     },
     {
-      question: "What WCAG levels are supported?",
+      question: "What do the numeric benchmarks mean?",
       answer:
-        "AA and AAA for Small and Large text. Thresholds: AA Small 4.5:1, AA Large 3.0:1, AAA Small 7.0:1, AAA Large 4.5:1.",
+        "Choose 3:1, 4.5:1, or 7:1 as a comparison target. A pair is marked passing when its score is equal to or above the selected number. This helps compare colors, but is not a certification or a guarantee of readability.",
     },
     {
       question: "Can I export my favorite pairs?",
@@ -25,7 +25,7 @@ export default function FAQSection() {
     {
       question: "Does this work for logos, buttons, and UI?",
       answer:
-        'Yes. The preview line simulates body text or larger UI elements. Use "Large" mode for headings, buttons, or logos on brand backgrounds.',
+        "Yes. Use the preview to compare foreground and background colors, and adjust the text size to better reflect your design. Evaluate the finished component in its real context.",
     },
     {
       question: "Does my palette stay private?",

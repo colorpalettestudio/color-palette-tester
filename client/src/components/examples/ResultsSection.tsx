@@ -3,7 +3,9 @@ import ResultsSection from '../ResultsSection';
 
 export default function ResultsSectionExample() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [wcagLevel, setWcagLevel] = useState('aa-small');
+  const [threshold, setThreshold] = useState(4.5);
+  const [displayFilter, setDisplayFilter] = useState<"all" | "passing">("all");
+  const [fontSize, setFontSize] = useState(14);
 
   const mockPairs = [
     {
@@ -38,15 +40,19 @@ export default function ResultsSectionExample() {
     <div className="p-8">
       <ResultsSection
         pairs={mockPairs}
-        threshold={4.5}
-        textSize="small"
+        threshold={threshold}
+        onThresholdChange={setThreshold}
         favorites={favorites}
         onToggleFavorite={toggleFavorite}
         onExportPNG={() => console.log('Export PNG')}
         onExportPDF={() => console.log('Export PDF')}
         onClearFavorites={() => setFavorites(new Set())}
-        wcagLevel={wcagLevel}
-        onWcagLevelChange={setWcagLevel}
+        displayFilter={displayFilter}
+        onDisplayFilterChange={setDisplayFilter}
+        onExportStudioCode={() => console.log('Copy Studio Code')}
+        onSelectAll={() => setFavorites(new Set(mockPairs.filter(pair => displayFilter === "all" || pair.ratio >= threshold).map(pair => pair.id)))}
+        previewFontSize={fontSize}
+        onPreviewFontSizeChange={setFontSize}
       />
     </div>
   );

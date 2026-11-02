@@ -8,12 +8,7 @@ interface HeroSectionProps {
   onTestPalette: () => void;
 }
 
-export default function HeroSection({
-  onSampleClick,
-  colors,
-  onColorsChange,
-  onTestPalette,
-}: HeroSectionProps) {
+export function PaletteIntroduction() {
   return (
     <div className="text-center space-y-8">
       <div className="space-y-4">
@@ -36,7 +31,7 @@ export default function HeroSection({
         {/* Answer-First Content */}
         <div className="max-w-3xl mx-auto space-y-4">
           <p className="text-lg text-foreground font-medium" data-testid="text-answer-first">
-            A color palette tester checks all color combinations in your brand palette for WCAG accessibility compliance. Instead of manually testing pairs one by one, paste your colors and see every foreground/background pairing tested at once.
+            A color palette tester scores every foreground/background combination in your palette at once. Choose a numeric contrast benchmark, then see which pairs meet it and which fall short.
           </p>
           
           {/* Problem/Solution Statements */}
@@ -44,19 +39,19 @@ export default function HeroSection({
             <div className="space-y-1">
               <p className="text-sm font-semibold text-muted-foreground">Problem:</p>
               <p className="text-base text-foreground">
-                Manually testing color contrast takes hours and you might miss critical accessibility issues that affect readability.
+                Checking colors one pairing at a time is slow, and low-contrast combinations can be easy to miss.
               </p>
             </div>
             <div className="space-y-1">
               <p className="text-sm font-semibold text-muted-foreground">Solution:</p>
               <p className="text-base text-foreground">
-                Test all pairings for WCAG AA/AAA compliance, filter results by level, and export passing combinations as PNG or PDF.
+                Compare every pairing against a 3:1, 4.5:1, or 7:1 score benchmark, filter the results, and export selected combinations as PNG or PDF.
               </p>
             </div>
           </div>
           
           <p className="text-base text-muted-foreground">
-            Paste HEX, RGB, or HSL colors below and click "Test Contrast" to check every pairing against WCAG standards.
+            Paste HEX, RGB, or HSL colors below and click "Test Contrast" to see each pair's score against your selected benchmark.
           </p>
         </div>
         
@@ -65,6 +60,19 @@ export default function HeroSection({
         </p>
       </div>
 
+    </div>
+  );
+}
+
+export default function HeroSection({
+  onSampleClick,
+  colors,
+  onColorsChange,
+  onTestPalette,
+}: HeroSectionProps) {
+  return (
+    <div className="space-y-8">
+      <PaletteIntroduction />
       <div className="max-w-5xl mx-auto">
         <ColorPaletteBuilder
           colors={colors}

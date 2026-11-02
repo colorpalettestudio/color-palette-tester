@@ -1,4 +1,21 @@
-import { rgbToHex, type RGB } from "./colorUtils";
+import { rgbToHex, type RGB, type StudioPairing } from "./colorUtils";
+
+export function createStudioCode(colors: RGB[], pairings?: StudioPairing[]): string {
+  const colorNames = Array.from(new Set(colors.map(rgbToHex))).map((hex, index) => ({
+    name: `Color ${index + 1}`, hex,
+  }));
+  const params = new URLSearchParams({ colorNames: JSON.stringify(colorNames) });
+  if (pairings !== undefined) {
+    params.set("pairings", JSON.stringify(pairings.map(({ foreground, background }) => ({ foreground, background }))));
+  }
+  return `studiocode?${params.toString()}`;
+}
+
+export function downloadTextFile(text: string, filename: string): void {
+  const url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
+  downloadFile(url, filename);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
 
 export function paletteHexText(colors: RGB[]): string {
   return colors.map(color => rgbToHex(color).toUpperCase()).join("\n") + "\n";
@@ -14,9 +31,7 @@ export function downloadFile(href: string, filename: string): void {
 }
 
 export function downloadPaletteText(colors: RGB[]): void {
-  const url = URL.createObjectURL(new Blob([paletteHexText(colors)], { type: "text/plain;charset=utf-8" }));
-  downloadFile(url, "my-color-palette.txt");
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  downloadTextFile(paletteHexText(colors), "my-color-palette.txt");
 }
 
 export function downloadPalettePNG(colors: RGB[]): void {

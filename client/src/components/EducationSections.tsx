@@ -8,7 +8,7 @@ export default function EducationSections() {
         <p className="text-muted-foreground leading-relaxed">
           A color palette tester lets you evaluate the readability and accessibility of your brand colors. 
           Instead of checking one combination at a time, this tool tests every foreground/background pairing 
-          in one click and flags which ones pass WCAG guidelines.
+          in one click and shows each pair's contrast score against a numeric benchmark you choose.
         </p>
         
         {/* Contrast Visualization */}
@@ -27,8 +27,8 @@ export default function EducationSections() {
               </p>
             </div>
             <div className="text-center space-y-1">
-              <p className="text-sm font-semibold text-green-600">✓ 6.7:1 Contrast</p>
-              <p className="text-xs text-muted-foreground">Passes WCAG AA & AAA</p>
+              <p className="text-sm font-semibold text-green-600">6.7:1 contrast score</p>
+              <p className="text-xs text-muted-foreground">Above a 4.5:1 benchmark</p>
             </div>
           </div>
           
@@ -46,8 +46,8 @@ export default function EducationSections() {
               </p>
             </div>
             <div className="text-center space-y-1">
-              <p className="text-sm font-semibold text-red-600">✗ 1.4:1 Contrast</p>
-              <p className="text-xs text-muted-foreground">Fails all WCAG standards</p>
+              <p className="text-sm font-semibold text-red-600">1.4:1 contrast score</p>
+              <p className="text-xs text-muted-foreground">Below a 4.5:1 benchmark</p>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@ export default function EducationSections() {
           </li>
           <li className="flex gap-3">
             <span className="text-primary shrink-0">•</span>
-            <span>Meet accessibility standards (WCAG) with confidence</span>
+            <span>Compare combinations with consistent, adjustable numeric targets</span>
           </li>
           <li className="flex gap-3">
             <span className="text-primary shrink-0">•</span>
@@ -83,31 +83,31 @@ export default function EducationSections() {
 
       <section className="space-y-4">
         <h2 className="text-2xl font-bold text-foreground">
-          WCAG Levels Explained
+          Reading Contrast Scores
         </h2>
         <p className="text-muted-foreground">
-          WCAG defines minimum contrast ratios for legibility:
+          Ratios describe the brightness difference between foreground and background colors. Pick a target that fits your design review, then inspect the actual text in context.
         </p>
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="p-4 bg-card rounded-md border border-card-border">
-            <p className="font-bold text-foreground">AA Small Text</p>
-            <p className="text-sm text-muted-foreground">4.5:1</p>
+            <p className="font-bold text-foreground">3:1 benchmark</p>
+            <p className="text-sm text-muted-foreground">A lower score target for comparing larger, bolder display text.</p>
           </div>
           <div className="p-4 bg-card rounded-md border border-card-border">
-            <p className="font-bold text-foreground">AA Large Text</p>
-            <p className="text-sm text-muted-foreground">3.0:1 (≥18pt or ≥14pt bold)</p>
+            <p className="font-bold text-foreground">4.5:1 benchmark</p>
+            <p className="text-sm text-muted-foreground">A practical target for comparing general-purpose text pairs.</p>
           </div>
           <div className="p-4 bg-card rounded-md border border-card-border">
-            <p className="font-bold text-foreground">AAA Small Text</p>
-            <p className="text-sm text-muted-foreground">7.0:1</p>
+            <p className="font-bold text-foreground">7:1 benchmark</p>
+            <p className="text-sm text-muted-foreground">A higher target that helps identify pairs with stronger separation.</p>
           </div>
           <div className="p-4 bg-card rounded-md border border-card-border">
-            <p className="font-bold text-foreground">AAA Large Text</p>
-            <p className="text-sm text-muted-foreground">4.5:1</p>
+            <p className="font-bold text-foreground">1:1–21:1 scale</p>
+            <p className="text-sm text-muted-foreground">Scores range from the least to the greatest brightness separation.</p>
           </div>
         </div>
         <p className="text-sm text-muted-foreground">
-          Use Small for paragraphs and body text. Use Large for headers, buttons, logos, and large UI labels.
+          A score is a useful comparison, not a guarantee of readability or certification. Font size, weight, spacing, and viewing conditions all matter.
         </p>
       </section>
 

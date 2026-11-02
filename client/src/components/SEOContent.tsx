@@ -6,7 +6,7 @@ export default function SEOContent() {
           About the Color Palette Tester
         </h2>
         <p className="text-base text-muted-foreground leading-relaxed">
-          The Color Palette Tester lets you instantly check the accessibility of your brand or website colors. Paste your HEX, RGB, or HSL values and test every possible color pairing for contrast ratio compliance with WCAG 2.1 standards. It's the fastest way to make sure your colors are readable and inclusive.
+          The Color Palette Tester gives every pairing in a brand or website palette a contrast score. Paste HEX, RGB, or HSL values, choose a 3:1, 4.5:1, or 7:1 numeric benchmark, and quickly compare all foreground and background combinations. Scores are a useful design aid; always review color choices in their intended context.
         </p>
       </div>
 
@@ -15,8 +15,8 @@ export default function SEOContent() {
           Why Test Color Contrast?
         </h2>
         <ul className="space-y-2 text-base text-muted-foreground list-disc list-inside">
-          <li>Ensure your brand colors meet WCAG AA or AAA accessibility standards.</li>
-          <li>Improve readability for users with visual impairments or color blindness.</li>
+          <li>Compare color combinations using a consistent, adjustable score target.</li>
+          <li>Spot pairs with less brightness separation and review them in context.</li>
           <li>Save time by testing every color pairing at once instead of manually.</li>
           <li>Export results to PNG or PDF for easy sharing with your design team.</li>
         </ul>
@@ -28,7 +28,7 @@ export default function SEOContent() {
         </h2>
         <ol className="space-y-2 text-base text-muted-foreground list-decimal list-inside">
           <li>Paste your brand colors as HEX, RGB, or HSL values — separated by spaces, line breaks, or commas.</li>
-          <li>Choose your WCAG level (AA/AAA, Small or Large text).</li>
+          <li>Choose a numeric benchmark: 3:1, 4.5:1, or 7:1.</li>
           <li>Click "Test Contrast" to instantly view all pass/fail results.</li>
           <li>Star your favorite pairs and export them as a PNG or PDF.</li>
         </ol>
@@ -39,7 +39,7 @@ export default function SEOContent() {
           Who It's For
         </h2>
         <p className="text-base text-muted-foreground leading-relaxed">
-          This tool is built for designers, developers, and brand owners who want their color palettes to be beautiful <em>and</em> accessible. Whether you're building a website, app, or brand style guide, you'll know which combinations meet accessibility standards.
+          This tool is built for designers, developers, and brand owners who want to understand how their palette colors compare. Whether you're building a website, app, or brand style guide, you can see which combinations meet a chosen numeric target and which fall below it.
         </p>
         <div className="pt-2">
           <h3 className="text-xl font-semibold text-foreground mb-2">
