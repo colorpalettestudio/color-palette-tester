@@ -46,7 +46,7 @@ export function PaletteIntroduction() {
             <div className="space-y-1">
               <p className="text-sm font-semibold text-muted-foreground">Solution:</p>
               <p className="text-base text-foreground">
-                Compare every pairing against a 3:1, 4.5:1, or 7:1 score benchmark, filter the results, and export selected combinations as PNG or PDF.
+                Compare every pairing against a 3:1, 4.5:1, or 7:1 score benchmark, filter the results, and download your colors and selected pairings as a PNG.
               </p>
             </div>
           </div>

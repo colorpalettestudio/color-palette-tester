@@ -72,7 +72,7 @@ export default function EducationSections() {
           </li>
           <li className="flex gap-3">
             <span className="text-primary shrink-0">•</span>
-            <span>Share decisions easily with PNG/PDF exports</span>
+            <span>Share colors and chosen pairings as a PNG, HEX codes, or Studio Code</span>
           </li>
           <li className="flex gap-3">
             <span className="text-primary shrink-0">•</span>

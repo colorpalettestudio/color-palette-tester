@@ -20,7 +20,7 @@ export default function FAQSection() {
     {
       question: "Can I export my favorite pairs?",
       answer:
-        "Yes. Star any passing pair and export all favorites as a PNG image or a PDF for quick sharing with your team or clients.",
+        "Yes. Select the pairings you want to keep, then open Download. Choose colors only or colors and pairings, download a PNG, or copy the HEX codes or Studio Code.",
     },
     {
       question: "Does this work for logos, buttons, and UI?",

@@ -1,13 +1,11 @@
-import { useState, useEffect, useMemo } from "react";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { PaletteIntroduction } from "@/components/HeroSection";
 import ColorPaletteBuilder from "@/components/ColorPaletteBuilder";
 import ResultsSection from "@/components/ResultsSection";
 import { type ColorPair } from "@/components/ColorPairTable";
-import ExportCards from "@/components/ExportCards";
 import PaletteDownloads from "@/components/PaletteDownloads";
-import { downloadPalettePNG, downloadPaletteText, paletteHexText, createStudioCode, downloadTextFile } from "@/lib/paletteDownload";
+import PaletteExportDialog from "@/components/PaletteExportDialog";
+import { downloadPalettePNG, paletteHexText, createStudioCode } from "@/lib/paletteDownload";
 import CTACard from "@/components/CTACard";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import EducationSections from "@/components/EducationSections";
@@ -39,7 +37,19 @@ export default function Home() {
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set(initial.draft.favorites));
   const [previewFontSize, setPreviewFontSize] = useState(14);
   const [exportBusy, setExportBusy] = useState(false);
+  const [downloadOpen, setDownloadOpen] = useState(false);
+  const downloadTriggerRef = useRef<HTMLElement | null>(null);
   const { toast } = useToast();
+
+  const openDownload = () => {
+    downloadTriggerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    setDownloadOpen(true);
+  };
+
+  const handleDownloadOpenChange = (open: boolean) => {
+    setDownloadOpen(open);
+    if (!open) requestAnimationFrame(() => downloadTriggerRef.current?.focus());
+  };
 
   useEffect(() => {
     setSaveFailed(!savePaletteDraft(paletteInput, favorites));
@@ -60,19 +70,6 @@ export default function Home() {
     setStorageWarning("");
     // Persist an empty draft, rather than restoring the sample on the next visit.
     setSaveFailed(!savePaletteDraft("", []));
-  };
-
-  const handlePaletteDownload = (format: "png" | "txt") => {
-    if (!colors.length || exportBusy) return;
-    try {
-      if (format === "png") downloadPalettePNG(colors);
-      else downloadPaletteText(colors);
-      trackEvent("palette_exported", { format, scope: "full_palette", color_count: colors.length });
-      toast({ title: "Palette downloaded", description: format === "png" ? "Saved your swatches with HEX codes as a PNG." : "Saved your HEX codes as a text file." });
-    } catch {
-      trackEvent("palette_export_failed", { format, scope: "full_palette" });
-      toast({ title: "Download failed", description: "Could not download your palette. Please try again.", variant: "destructive" });
-    }
   };
 
   // Automatically test colors whenever the palette changes
@@ -180,147 +177,44 @@ export default function Home() {
     });
   };
 
-  const handleExportPNG = async () => {
-    if (exportBusy) return;
-    if (favorites.size === 0) {
-      toast({
-        title: "No favorites selected",
-        description: "Please check at least one color pair to export.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const exportElement = document.getElementById("export-cards");
-    if (!exportElement) return;
-
-    setExportBusy(true);
-    try {
-      const canvas = await html2canvas(exportElement, {
-        backgroundColor: '#ffffff',
-        scale: 2,
-      });
-      const link = document.createElement("a");
-      link.download = "color-palette-results.png";
-      link.href = canvas.toDataURL();
-      link.click();
-      trackEvent("palette_exported", {
-        format: "png",
-        selected_pair_count: favorites.size,
-      });
-
-      toast({
-        title: "Export successful",
-        description: "Your color pairs have been exported as PNG.",
-      });
-    } catch (error) {
-      trackEvent("palette_export_failed", { format: "png" });
-      toast({
-        title: "Export failed",
-        description: "Could not export to PNG. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setExportBusy(false);
-    }
-  };
-
-  const handleExportPDF = async () => {
-    if (exportBusy) return;
-    if (favorites.size === 0) {
-      toast({
-        title: "No favorites selected",
-        description: "Please check at least one color pair to export.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const exportElement = document.getElementById("export-cards");
-    if (!exportElement) return;
-
-    setExportBusy(true);
-    try {
-      const canvas = await html2canvas(exportElement, {
-        backgroundColor: '#ffffff',
-        scale: 2,
-      });
-      
-      const pdf = new jsPDF({ unit: "pt", format: "a4" });
-      const margin = 28;
-      const pageWidth = pdf.internal.pageSize.getWidth() - margin * 2;
-      const pageHeight = pdf.internal.pageSize.getHeight() - margin * 2;
-      // Slice into printable A4 pages instead of producing a single oversized PDF.
-      const sliceHeight = Math.floor(pageHeight * canvas.width / pageWidth);
-      for (let offset = 0; offset < canvas.height; offset += sliceHeight) {
-        if (offset > 0) pdf.addPage();
-        const slice = document.createElement("canvas");
-        slice.width = canvas.width;
-        slice.height = Math.min(sliceHeight, canvas.height - offset);
-        const context = slice.getContext("2d");
-        if (!context) throw new Error("Canvas is unavailable");
-        context.drawImage(canvas, 0, offset, canvas.width, slice.height, 0, 0, slice.width, slice.height);
-        pdf.addImage(slice.toDataURL("image/png"), "PNG", margin, margin, pageWidth, slice.height * pageWidth / canvas.width, undefined, "FAST");
-      }
-      pdf.save("color-palette-results.pdf");
-      trackEvent("palette_exported", {
-        format: "pdf",
-        selected_pair_count: favorites.size,
-      });
-
-      toast({
-        title: "Export successful",
-        description: "Your color pairs have been exported as PDF.",
-      });
-    } catch (error) {
-      trackEvent("palette_export_failed", { format: "pdf" });
-      toast({
-        title: "Export failed",
-        description: "Could not export to PDF. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setExportBusy(false);
-    }
-  };
-
   const selectedPairs = pairs.filter(pair => favorites.has(pair.id));
   const selectedPairings: StudioPairing[] = selectedPairs.map(pair => ({
     foreground: rgbToHex(pair.foreground),
     background: rgbToHex(pair.background),
   }));
-  const selectedColors = Array.from(new Map(selectedPairs.flatMap(pair => [
-    [rgbToHex(pair.foreground), pair.foreground] as const,
-    [rgbToHex(pair.background), pair.background] as const,
-  ])).values());
-
-  const handleCopy = async (scope: "palette" | "pairings", format: "hex" | "studio_code") => {
-    const exportColors = scope === "palette" ? colors : selectedColors;
-    if (!exportColors.length || exportBusy) return;
-    const text = format === "studio_code"
-      ? createStudioCode(exportColors, scope === "pairings" ? selectedPairings : undefined)
-      : scope === "palette"
-        ? paletteHexText(colors)
-        : selectedPairings.map(pair => `Text: ${pair.foreground.toUpperCase()} | Background: ${pair.background.toUpperCase()}`).join("\n");
+  const handleExportPNG = async (includePairings: boolean) => {
+    if (!colors.length || exportBusy || (includePairings && !selectedPairs.length)) return;
+    setExportBusy(true);
+    const scope = includePairings ? "colors_and_pairings" : "colors";
     try {
-      await navigator.clipboard.writeText(text);
-      trackEvent("palette_exported", { format, scope, method: "copy", color_count: exportColors.length, selected_pair_count: scope === "pairings" ? selectedPairs.length : 0 });
-      toast({ title: format === "studio_code" ? "Studio Code copied" : "Color codes copied", description: format === "studio_code" ? "Paste this code into the palette input to restore your colors and any selected pairings." : "Ready to paste wherever you need them." });
+      // Yield so the dialog can display its progress state before rendering.
+      await new Promise<void>(resolve => requestAnimationFrame(() => resolve()));
+      downloadPalettePNG(colors, includePairings ? selectedPairs : []);
+      trackEvent("palette_exported", { format: "png", scope, color_count: colors.length, selected_pair_count: includePairings ? selectedPairs.length : 0 });
+      toast({ title: "PNG downloaded", description: includePairings ? "Your colors and selected pairings are included." : "Your palette colors are included." });
     } catch {
-      toast({ title: "Could not copy", description: "Your browser blocked clipboard access. Use the download option instead.", variant: "destructive" });
-      trackEvent("palette_export_failed", { format, scope, method: "copy" });
+      trackEvent("palette_export_failed", { format: "png", scope });
+      toast({ title: "Download failed", description: "Could not create your PNG. Try exporting fewer pairings.", variant: "destructive" });
+    } finally {
+      setExportBusy(false);
     }
   };
 
-  const handleDownloadStudio = (scope: "palette" | "pairings") => {
-    const exportColors = scope === "palette" ? colors : selectedColors;
-    if (!exportColors.length || exportBusy) return;
+  const handleCopy = async (includePairings: boolean, format: "hex" | "studio_code") => {
+    if (!colors.length || exportBusy || (includePairings && !selectedPairs.length)) return;
+    const scope = includePairings ? "colors_and_pairings" : "colors";
+    const text = format === "studio_code"
+      ? createStudioCode(colors, includePairings ? selectedPairings : undefined)
+      : paletteHexText(colors) + (includePairings
+        ? "\nSelected pairings\n" + selectedPairings.map(pair => `Text: ${pair.foreground.toUpperCase()} | Background: ${pair.background.toUpperCase()}`).join("\n")
+        : "");
     try {
-      downloadTextFile(createStudioCode(exportColors, scope === "pairings" ? selectedPairings : undefined), `my-${scope}-studio-code.txt`);
-      trackEvent("palette_exported", { format: "studio_code", scope, method: "download", color_count: exportColors.length, selected_pair_count: scope === "pairings" ? selectedPairs.length : 0 });
-      toast({ title: "Studio Code downloaded", description: "Paste the contents of the text file into the palette input to restore it." });
+      await navigator.clipboard.writeText(text);
+      trackEvent("palette_exported", { format, scope, method: "copy", color_count: colors.length, selected_pair_count: includePairings ? selectedPairs.length : 0 });
+      toast({ title: format === "studio_code" ? "Studio Code copied" : "Color codes copied", description: format === "studio_code" ? "Paste this code into the palette input to restore your colors and any selected pairings." : "Ready to paste wherever you need them." });
     } catch {
-      toast({ title: "Download failed", description: "Could not save your Studio Code. Please try again.", variant: "destructive" });
+      toast({ title: "Could not copy", description: "Your browser blocked clipboard access. Allow clipboard access and try again.", variant: "destructive" });
+      trackEvent("palette_export_failed", { format, scope, method: "copy" });
     }
   };
 
@@ -365,10 +259,16 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hidden export cards for PNG/PDF generation */}
-      <div className="fixed top-0 left-[-9999px]" aria-hidden="true">
-        <ExportCards pairs={pairs} favorites={favorites} />
-      </div>
+      <PaletteExportDialog
+        open={downloadOpen}
+        onOpenChange={handleDownloadOpenChange}
+        colorCount={colors.length}
+        pairCount={selectedPairs.length}
+        busy={exportBusy}
+        onDownloadPNG={handleExportPNG}
+        onCopyHex={includePairings => handleCopy(includePairings, "hex")}
+        onCopyStudio={includePairings => handleCopy(includePairings, "studio_code")}
+      />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-16 space-y-16">
         <PaletteIntroduction />
@@ -382,21 +282,12 @@ export default function Home() {
               onTestPalette={handleTestPalette}
             />
           </div>
-          <aside className="min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-6 lg:max-h-[calc(100dvh-3rem)] lg:overflow-y-auto">
+          <aside className="min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-2">
             <PaletteDownloads
               colors={colors}
               selectedPairs={selectedPairs}
               busy={exportBusy}
-              onPalettePNG={() => handlePaletteDownload("png")}
-              onPaletteText={() => handlePaletteDownload("txt")}
-              onFavoritesPNG={handleExportPNG}
-              onFavoritesPDF={handleExportPDF}
-              onCopyPaletteHex={() => handleCopy("palette", "hex")}
-              onCopyPaletteStudio={() => handleCopy("palette", "studio_code")}
-              onDownloadPaletteStudio={() => handleDownloadStudio("palette")}
-              onCopyFavoritesHex={() => handleCopy("pairings", "hex")}
-              onCopyFavoritesStudio={() => handleCopy("pairings", "studio_code")}
-              onDownloadFavoritesStudio={() => handleDownloadStudio("pairings")}
+              onOpenDownload={openDownload}
               onRemoveFavorite={handleToggleFavorite}
               onReset={handleResetPalette}
               storageWarning={saveFailed
@@ -412,9 +303,7 @@ export default function Home() {
               onThresholdChange={handleThresholdChange}
               favorites={favorites}
               onToggleFavorite={handleToggleFavorite}
-              onExportPNG={handleExportPNG}
-              onExportPDF={handleExportPDF}
-              onExportStudioCode={() => handleCopy("pairings", "studio_code")}
+              onOpenDownload={openDownload}
               onSelectAll={handleSelectAll}
               onClearFavorites={handleClearFavorites}
               displayFilter={displayFilter}

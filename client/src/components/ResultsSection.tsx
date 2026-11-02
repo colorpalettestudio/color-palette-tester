@@ -1,12 +1,6 @@
-import { Download, FileDown, Code, ChevronDown, AlertCircle } from "lucide-react";
+import { Download, AlertCircle } from "lucide-react";
 import ColorPairTable, { type ColorPair } from "./ColorPairTable";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { trackEvent } from "@/lib/analytics";
 
@@ -16,9 +10,7 @@ interface ResultsSectionProps {
   onThresholdChange: (value: number) => void;
   favorites: Set<string>;
   onToggleFavorite: (id: string) => void;
-  onExportPNG: () => void;
-  onExportPDF: () => void;
-  onExportStudioCode: () => void;
+  onOpenDownload: () => void;
   onSelectAll: () => void;
   onClearFavorites: () => void;
   displayFilter: "all" | "passing";
@@ -35,9 +27,7 @@ export default function ResultsSection({
   onThresholdChange,
   favorites,
   onToggleFavorite,
-  onExportPNG,
-  onExportPDF,
-  onExportStudioCode,
+  onOpenDownload,
   onSelectAll,
   onClearFavorites,
   displayFilter,
@@ -83,33 +73,15 @@ export default function ResultsSection({
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
                   size="sm"
                   data-testid="button-export"
+                  onClick={onOpenDownload}
                 >
                   <Download className="w-4 h-4 mr-2" />
-                  Export
-                  <ChevronDown className="w-4 h-4 ml-2" />
+                  Download
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={onExportPNG} data-testid="menu-export-png">
-                  <Download className="w-4 h-4 mr-2" />
-                  Export as PNG
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onExportPDF} data-testid="menu-export-pdf">
-                  <FileDown className="w-4 h-4 mr-2" />
-                  Export as PDF
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onExportStudioCode} data-testid="menu-export-studio-code">
-                  <Code className="w-4 h-4 mr-2" />
-                  Copy Studio Code
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
           </div>
         </div>
 

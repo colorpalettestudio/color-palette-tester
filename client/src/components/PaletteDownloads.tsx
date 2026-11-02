@@ -1,4 +1,4 @@
-import { Download, FileText, Image, Layers, Minus, Palette, X } from "lucide-react";
+import { Palette, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type RGB, rgbToHex } from "@/lib/colorUtils";
 import type { ColorPair } from "./ColorPairTable";
@@ -7,16 +7,7 @@ interface PaletteDownloadsProps {
   colors: RGB[];
   selectedPairs: ColorPair[];
   busy: boolean;
-  onPalettePNG: () => void;
-  onPaletteText: () => void;
-  onFavoritesPNG: () => void;
-  onFavoritesPDF: () => void;
-  onCopyPaletteHex: () => void;
-  onCopyPaletteStudio: () => void;
-  onDownloadPaletteStudio: () => void;
-  onCopyFavoritesHex: () => void;
-  onCopyFavoritesStudio: () => void;
-  onDownloadFavoritesStudio: () => void;
+  onOpenDownload: () => void;
   onRemoveFavorite: (id: string) => void;
   onReset: () => void;
   storageWarning: string;
@@ -30,24 +21,13 @@ export default function PaletteDownloads({
   colors,
   selectedPairs,
   busy,
-  onPalettePNG,
-  onPaletteText,
-  onFavoritesPNG,
-  onFavoritesPDF,
-  onCopyPaletteHex,
-  onCopyPaletteStudio,
-  onDownloadPaletteStudio,
-  onCopyFavoritesHex,
-  onCopyFavoritesStudio,
-  onDownloadFavoritesStudio,
+  onOpenDownload,
   onRemoveFavorite,
   onReset,
   storageWarning,
 }: PaletteDownloadsProps) {
   const hasColors = colors.length > 0;
   const hasPairs = selectedPairs.length > 0;
-  const paletteDisabled = !hasColors || busy;
-  const pairsDisabled = !hasPairs || busy;
 
   return (
     <section
@@ -79,30 +59,38 @@ export default function PaletteDownloads({
         </div>
       </header>
 
-      <div className="space-y-4 p-3.5 sm:p-4">
-        <div className="space-y-2">
-          <p className="text-xs text-muted-foreground">
-            Your palette input and selected pairings are saved on this browser only.
-            No signup or server storage. Clearing browser data removes your saved work.
+      <div className="space-y-3.5 p-3.5 sm:p-4">
+        <div className="flex items-center justify-between gap-3 rounded-lg border border-border/70 bg-background/70 px-3 py-2">
+          <p className="min-w-0 text-[11px] leading-relaxed text-muted-foreground">
+            Saved on this browser only. Clearing browser data removes your work.
           </p>
-          {storageWarning && (
-            <p role="alert" className="text-xs text-destructive" data-testid="palette-storage-warning">
-              {storageWarning}
-            </p>
-          )}
-          <Button type="button" variant="outline" size="sm" onClick={onReset} disabled={busy} data-testid="reset-saved-palette">
-            Reset saved palette
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            className="h-8 shrink-0 px-2.5 text-xs"
+            onClick={onReset}
+            disabled={busy}
+            data-testid="reset-saved-palette"
+          >
+            Reset
           </Button>
         </div>
+        {storageWarning && (
+          <p role="alert" className="text-xs text-destructive" data-testid="palette-storage-warning">
+            {storageWarning}
+          </p>
+        )}
+
         <section aria-labelledby="palette-colors-title">
           <div className="mb-2 flex items-baseline justify-between gap-2">
             <h3 id="palette-colors-title" className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
               Palette colors
             </h3>
-            {!hasColors && <span className="text-[11px] text-muted-foreground">Add colors to start a kit</span>}
+            {!hasColors && <span className="text-[11px] text-muted-foreground">Add colors to start</span>}
           </div>
           {hasColors ? (
-            <div className="grid max-h-48 grid-cols-2 gap-2 overflow-y-auto">
+            <div className="grid grid-cols-2 gap-2">
               {colors.map((color, index) => {
                 const colorHex = hex(color);
                 return (
@@ -112,7 +100,7 @@ export default function PaletteDownloads({
                     data-testid={`palette-color-${index}`}
                   >
                     <span
-                      className="h-8 w-8 shrink-0 rounded-md border border-black/10 shadow-sm"
+                      className="h-7 w-7 shrink-0 rounded-md border border-black/10"
                       style={{ backgroundColor: colorHex }}
                       aria-hidden="true"
                     />
@@ -138,7 +126,7 @@ export default function PaletteDownloads({
             {hasPairs && <span className="text-[11px] text-muted-foreground">Selected for export</span>}
           </div>
           {hasPairs ? (
-            <ul className="max-h-48 space-y-2 overflow-y-auto" data-testid="selected-pair-list">
+            <ul className="space-y-2" data-testid="selected-pair-list">
               {selectedPairs.map((pair, index) => {
                 const foreground = hex(pair.foreground);
                 const background = hex(pair.background);
@@ -179,61 +167,14 @@ export default function PaletteDownloads({
           )}
         </section>
 
-        <div className="grid gap-3 border-t border-border/70 pt-3">
-          <section aria-labelledby="full-palette-actions" className="min-w-0">
-            <div className="mb-2 flex items-center gap-1.5">
-              <Layers className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-              <h3 id="full-palette-actions" className="text-xs font-semibold text-foreground">Full palette</h3>
-              <span className="text-[10px] text-muted-foreground">· {colors.length}</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              <Button type="button" size="sm" onClick={onPalettePNG} disabled={paletteDisabled} aria-label="Download full palette as PNG" data-testid="download-palette-png">
-                <Image className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" /> PNG
-              </Button>
-              <Button type="button" size="sm" variant="outline" onClick={onPaletteText} disabled={paletteDisabled} aria-label="Download full palette as HEX text" data-testid="download-palette-text">
-                <FileText className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" /> HEX text
-              </Button>
-            </div>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                <Button type="button" size="sm" variant="secondary" onClick={onCopyPaletteHex} disabled={paletteDisabled} aria-label="Copy full palette HEX codes" data-testid="copy-palette-hex">
-                  Copy HEX codes
-                </Button>
-                <Button type="button" size="sm" variant="secondary" onClick={onCopyPaletteStudio} disabled={paletteDisabled} aria-label="Copy full palette Studio Code" data-testid="copy-palette-studio">
-                  Copy Studio Code
-                </Button>
-                <Button type="button" size="sm" variant="outline" onClick={onDownloadPaletteStudio} disabled={paletteDisabled} aria-label="Download full palette Studio Code" data-testid="download-palette-studio">
-                  <Download className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" /> Download Studio Code
-                </Button>
-              </div>
-          </section>
-
-          <section aria-labelledby="pairing-actions" className="min-w-0 border-t border-border/70 pt-3">
-            <div className="mb-2 flex items-center gap-1.5">
-              <Minus className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-              <h3 id="pairing-actions" className="text-xs font-semibold text-foreground">Chosen pairings</h3>
-              <span className="text-[10px] text-muted-foreground">· {selectedPairs.length}</span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              <Button type="button" size="sm" variant="secondary" onClick={onFavoritesPNG} disabled={pairsDisabled} aria-label="Download selected pairings as PNG" data-testid="download-favorites-png">
-                <Image className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" /> PNG
-              </Button>
-              <Button type="button" size="sm" variant="outline" onClick={onFavoritesPDF} disabled={pairsDisabled} aria-label="Download selected pairings as PDF" data-testid="download-favorites-pdf">
-                <FileText className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" /> PDF
-              </Button>
-            </div>
-              <div className="mt-2 flex flex-wrap gap-1.5">
-                <Button type="button" size="sm" variant="secondary" onClick={onCopyFavoritesHex} disabled={pairsDisabled} aria-label="Copy selected pairings HEX codes" data-testid="copy-favorites-hex">
-                  Copy HEX codes
-                </Button>
-                <Button type="button" size="sm" variant="secondary" onClick={onCopyFavoritesStudio} disabled={pairsDisabled} aria-label="Copy selected pairings Studio Code" data-testid="copy-favorites-studio">
-                  Copy Studio Code
-                </Button>
-                <Button type="button" size="sm" variant="outline" onClick={onDownloadFavoritesStudio} disabled={pairsDisabled} aria-label="Download selected pairings Studio Code" data-testid="download-favorites-studio">
-                  <Download className="mr-1.5 h-3.5 w-3.5" aria-hidden="true" /> Download Studio Code
-                </Button>
-              </div>
-          </section>
-        </div>
+        <Button
+          type="button"
+          className="w-full"
+          onClick={onOpenDownload}
+          data-testid="open-download"
+        >
+          Download
+        </Button>
       </div>
     </section>
   );

@@ -18,7 +18,7 @@ export default function SEOContent() {
           <li>Compare color combinations using a consistent, adjustable score target.</li>
           <li>Spot pairs with less brightness separation and review them in context.</li>
           <li>Save time by testing every color pairing at once instead of manually.</li>
-          <li>Export results to PNG or PDF for easy sharing with your design team.</li>
+          <li>Download a PNG or copy HEX codes and Studio Code for easy sharing with your design team.</li>
         </ul>
       </div>
 
@@ -30,7 +30,7 @@ export default function SEOContent() {
           <li>Paste your brand colors as HEX, RGB, or HSL values — separated by spaces, line breaks, or commas.</li>
           <li>Choose a numeric benchmark: 3:1, 4.5:1, or 7:1.</li>
           <li>Click "Test Contrast" to instantly view all pass/fail results.</li>
-          <li>Star your favorite pairs and export them as a PNG or PDF.</li>
+          <li>Select your favorite pairs, then open Download and choose colors only or colors and pairings.</li>
         </ol>
       </div>
 

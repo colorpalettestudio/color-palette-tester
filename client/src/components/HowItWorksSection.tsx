@@ -13,7 +13,7 @@ export default function HowItWorksSection() {
     {
       number: 3,
       title: "Filter + export your favorites",
-      description: "Choose a 3:1, 4.5:1, or 7:1 benchmark, then export selected pairs to PNG or PDF.",
+      description: "Choose a 3:1, 4.5:1, or 7:1 benchmark, then open Download to save a PNG or copy your HEX codes and Studio Code.",
     },
   ];
 

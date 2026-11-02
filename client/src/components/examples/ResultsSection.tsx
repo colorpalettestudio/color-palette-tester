@@ -44,12 +44,10 @@ export default function ResultsSectionExample() {
         onThresholdChange={setThreshold}
         favorites={favorites}
         onToggleFavorite={toggleFavorite}
-        onExportPNG={() => console.log('Export PNG')}
-        onExportPDF={() => console.log('Export PDF')}
+        onOpenDownload={() => console.log('Open download dialog')}
         onClearFavorites={() => setFavorites(new Set())}
         displayFilter={displayFilter}
         onDisplayFilterChange={setDisplayFilter}
-        onExportStudioCode={() => console.log('Copy Studio Code')}
         onSelectAll={() => setFavorites(new Set(mockPairs.filter(pair => displayFilter === "all" || pair.ratio >= threshold).map(pair => pair.id)))}
         previewFontSize={fontSize}
         onPreviewFontSizeChange={setFontSize}
