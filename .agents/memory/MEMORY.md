@@ -1,4 +1,5 @@
 - [Palette exports](palette-exports.md) — user wants design-focused exports without WCAG passing/failing information.
 - [Contrast terminology](contrast-terminology.md) — match reference filters: All Pairings, Basic, AA (Standard), AAA (Enhanced); retain numeric pair scores.
 - [Dependency security](dependency-security.md) — clean installs can reject old lockfile versions that previously ran; update blocked packages, never bypass checks.
+- [Deployment portability](deployment-portability.md) — verify Git-only builds; uploads are globally ignored and unavailable to Vercel.
 - [Workspace flow](workspace-flow.md) — three visible steps on one page; live results and comparison before the collection on mobile.

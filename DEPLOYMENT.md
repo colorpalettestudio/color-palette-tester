@@ -113,6 +113,7 @@ Once connected, every push to your `main` branch will automatically deploy to Ve
 - Verify Node version compatibility (20.x recommended)
 - If installation fails with `Exit handler never called`, check that dependency download URLs in `package-lock.json` use public npm URLs rather than a private development-environment host. Preserve locked versions and integrity hashes.
 - After syncing the fix to GitHub, deploy the latest commit with **Use existing Build Cache** unchecked. Retrying the old commit will not include the fix.
+- Keep imported product images in `client/src/assets`, not `attached_assets`. The uploads folder is excluded from Git by the workspace's global ignore rules, so those images will be missing on Vercel even if a workspace build succeeds.
 
 **404 errors?**
 - Check `vercel.json` rewrites configuration
