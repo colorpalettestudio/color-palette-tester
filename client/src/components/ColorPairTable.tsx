@@ -2,6 +2,7 @@ import { type RGB, rgbToHex } from "@/lib/colorUtils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
+import { AlertTriangle } from "lucide-react";
 
 export interface ColorPair {
   foreground: RGB;
@@ -94,15 +95,29 @@ export default function ColorPairTable({
       </div>
 
       {filteredPairs.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-          <p>No pairings meet this contrast score. Try a lower score or show all pairings.</p>
-          <div className="mt-3 flex flex-wrap justify-center gap-2">
+        <div
+          role="alert"
+          data-testid="no-pairings-alert"
+          className="rounded-xl border-2 border-red-600 bg-red-50 px-4 py-8 text-center text-red-950 sm:px-8 sm:py-10"
+        >
+          <div className="mx-auto flex max-w-2xl flex-col items-center">
+            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border-2 border-red-300 bg-red-100 text-red-700 sm:h-16 sm:w-16">
+              <AlertTriangle aria-hidden="true" className="h-8 w-8 sm:h-9 sm:w-9" />
+            </div>
+            <h3 className="text-xl font-bold tracking-tight sm:text-2xl">
+              No pairings meet this contrast level
+            </h3>
+            <p className="mt-2 max-w-lg text-sm leading-6 text-red-900 sm:text-base">
+              Your current minimum contrast filter hides every pairing. Choose a lower level or view all pairings to continue.
+            </p>
+          <div className="mt-6 flex w-full flex-col justify-center gap-2 sm:w-auto sm:flex-row">
             <Button type="button" size="sm" variant="outline" onClick={() => onPairFilterChange(3)}>
               Show Basic pairings
             </Button>
             <Button type="button" size="sm" variant="ghost" onClick={() => onPairFilterChange("all")}>
               Show all pairings
             </Button>
+          </div>
           </div>
         </div>
       ) : (
