@@ -131,7 +131,7 @@ export default function EducationSections() {
           </li>
         </ul>
         <p className="text-sm text-muted-foreground">
-          Enter one color per line or separate by commas.
+          Separate colors with spaces, line breaks, or commas.
         </p>
       </section>
     </div>

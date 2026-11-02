@@ -27,7 +27,7 @@ export default function SEOContent() {
           How to Use the Color Palette Tester
         </h2>
         <ol className="space-y-2 text-base text-muted-foreground list-decimal list-inside">
-          <li>Paste your brand colors as HEX, RGB, or HSL values — one per line.</li>
+          <li>Paste your brand colors as HEX, RGB, or HSL values — separated by spaces, line breaks, or commas.</li>
           <li>Choose your WCAG level (AA/AAA, Small or Large text).</li>
           <li>Click "Test Contrast" to instantly view all pass/fail results.</li>
           <li>Star your favorite pairs and export them as a PNG or PDF.</li>

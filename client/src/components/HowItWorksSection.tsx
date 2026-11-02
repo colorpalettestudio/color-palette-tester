@@ -3,7 +3,7 @@ export default function HowItWorksSection() {
     {
       number: 1,
       title: "Paste your brand colors",
-      description: "Enter HEX, RGB, or HSL — one per line or comma-separated.",
+      description: "Enter HEX, RGB, or HSL — separate colors with spaces, line breaks, or commas.",
     },
     {
       number: 2,

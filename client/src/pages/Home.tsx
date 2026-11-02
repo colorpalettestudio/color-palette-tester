@@ -22,10 +22,11 @@ import { trackEvent } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
 
 const WCAG_THRESHOLDS = {
+  "all": 4.5,
   "aa-small": 4.5,
   "aa-large": 3.0,
   "aaa-small": 7.0,
-  "aaa-large": 4.5,
+  "aaa-large": 7.0,
 };
 
 const SAMPLE_COLORS = "#f91d71, #fd806a, #ffd025, #74d551, #76c4f4, #7c70ff";

@@ -124,9 +124,7 @@ export function parseColorInput(input: string): string[] {
     }
   }
   
-  // Default parsing for comma/newline separated colors
-  const lines = input.split(/[\n,]+/);
-  return lines
-    .map(line => line.trim())
-    .filter(line => line.length > 0);
+  // Keep RGB/HSL functions intact while accepting whitespace or punctuation
+  // between colors. parseColor validates each complete token afterward.
+  return input.match(/(?:rgb|hsl)\s*\([^)]*\)|[^\s,;]+/gi) ?? [];
 }

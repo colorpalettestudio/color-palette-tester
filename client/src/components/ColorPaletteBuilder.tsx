@@ -236,7 +236,7 @@ export default function ColorPaletteBuilder({
       <div className="p-6 rounded-lg border-2 border-border bg-card space-y-4">
         <div className="space-y-2">
           <textarea
-            placeholder="Enter colors (one per line or comma-separated)&#10;Examples: #FF6F61, rgb(255, 111, 97), hsl(5, 100%, 69%)&#10;&#10;💡 Tip: You can also paste studio code directly here!"
+            placeholder="Enter colors separated by spaces, line breaks, or commas&#10;Examples: #FF6F61 #000000 #FFFFFF&#10;Also accepts rgb(255, 111, 97), hsl(5, 100%, 69%), and studio code."
             value={bulkInput}
             onChange={(e) => setBulkInput(e.target.value)}
             className="w-full min-h-[120px] px-4 py-3 text-sm rounded-lg border-2 border-input bg-background resize-y font-mono focus:border-primary focus:outline-none transition-colors"

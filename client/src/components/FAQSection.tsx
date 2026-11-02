@@ -10,7 +10,7 @@ export default function FAQSection() {
     {
       question: "How do I test all color pairings?",
       answer:
-        'Paste your brand colors as HEX, RGB, or HSL (one per line or comma-separated) and click "Test." We build a matrix that checks every foreground/background combination against WCAG contrast ratios.',
+        'Paste your brand colors as HEX, RGB, or HSL, separated by spaces, line breaks, or commas, and click "Test." We build a matrix that checks every foreground/background combination against WCAG contrast ratios.',
     },
     {
       question: "What WCAG levels are supported?",
