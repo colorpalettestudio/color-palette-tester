@@ -42,7 +42,7 @@ export default function ExportCards({ pairs, favorites }: ExportCardsProps) {
                     className="text-lg font-bold tracking-wide"
                     style={{ color: headerTextColor }}
                   >
-                    APPROVED
+                    FAVORITE
                   </div>
                   <div 
                     className="text-lg font-bold tracking-wide"
@@ -67,7 +67,10 @@ export default function ExportCards({ pairs, favorites }: ExportCardsProps) {
                 
                 <div>
                   <div className="text-sm font-bold text-gray-900 mb-1">Contrast:</div>
-                  <div className="text-sm text-gray-700">{pair.ratio.toFixed(2)}</div>
+                  <div className="text-sm text-gray-700">{pair.ratio.toFixed(2)}:1</div>
+                  <div className="text-sm text-gray-700">
+                    AA normal text: {pair.ratio >= 4.5 ? "Pass" : "Fail"}
+                  </div>
                 </div>
               </div>
             </div>

@@ -5,6 +5,8 @@ import HeroSection from "@/components/HeroSection";
 import ResultsSection from "@/components/ResultsSection";
 import { type ColorPair } from "@/components/ColorPairTable";
 import ExportCards from "@/components/ExportCards";
+import PaletteDownloads from "@/components/PaletteDownloads";
+import { downloadPalettePNG, downloadPaletteText } from "@/lib/paletteDownload";
 import CTACard from "@/components/CTACard";
 import HowItWorksSection from "@/components/HowItWorksSection";
 import EducationSections from "@/components/EducationSections";
@@ -43,7 +45,33 @@ export default function Home() {
   const [pairs, setPairs] = useState<ColorPair[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [previewFontSize, setPreviewFontSize] = useState(14);
+  const [exportBusy, setExportBusy] = useState(false);
   const { toast } = useToast();
+
+  // Removed colors should never leave invisible pairings selected for download.
+  useEffect(() => {
+    const hexes = new Set(colors.map(rgbToHex));
+    setFavorites(previous => {
+      const next = new Set(Array.from(previous).filter(id => {
+        const [foreground, background] = id.split("-");
+        return hexes.has(foreground) && hexes.has(background);
+      }));
+      return next.size === previous.size ? previous : next;
+    });
+  }, [colors]);
+
+  const handlePaletteDownload = (format: "png" | "txt") => {
+    if (!colors.length || exportBusy) return;
+    try {
+      if (format === "png") downloadPalettePNG(colors);
+      else downloadPaletteText(colors);
+      trackEvent("palette_exported", { format, scope: "full_palette", color_count: colors.length });
+      toast({ title: "Palette downloaded", description: format === "png" ? "Saved your swatches with HEX codes as a PNG." : "Saved your HEX codes as a text file." });
+    } catch {
+      trackEvent("palette_export_failed", { format, scope: "full_palette" });
+      toast({ title: "Download failed", description: "Could not download your palette. Please try again.", variant: "destructive" });
+    }
+  };
 
   // Automatically test colors whenever the palette changes
   useEffect(() => {
@@ -160,6 +188,7 @@ export default function Home() {
   };
 
   const handleExportPNG = async () => {
+    if (exportBusy) return;
     if (favorites.size === 0) {
       toast({
         title: "No favorites selected",
@@ -172,6 +201,7 @@ export default function Home() {
     const exportElement = document.getElementById("export-cards");
     if (!exportElement) return;
 
+    setExportBusy(true);
     try {
       const canvas = await html2canvas(exportElement, {
         backgroundColor: '#ffffff',
@@ -197,10 +227,13 @@ export default function Home() {
         description: "Could not export to PNG. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setExportBusy(false);
     }
   };
 
   const handleExportPDF = async () => {
+    if (exportBusy) return;
     if (favorites.size === 0) {
       toast({
         title: "No favorites selected",
@@ -213,29 +246,29 @@ export default function Home() {
     const exportElement = document.getElementById("export-cards");
     if (!exportElement) return;
 
+    setExportBusy(true);
     try {
       const canvas = await html2canvas(exportElement, {
         backgroundColor: '#ffffff',
         scale: 2,
       });
       
-      const imgData = canvas.toDataURL("image/png");
-      
-      // Calculate dimensions to fit content on page
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      
-      // Use points as unit (72 points = 1 inch)
-      const pdfWidth = imgWidth * 0.75; // Convert pixels to points (assuming 96 DPI)
-      const pdfHeight = imgHeight * 0.75;
-      
-      const pdf = new jsPDF({
-        orientation: pdfWidth > pdfHeight ? "landscape" : "portrait",
-        unit: "pt",
-        format: [pdfWidth, pdfHeight],
-      });
-      
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+      const pdf = new jsPDF({ unit: "pt", format: "a4" });
+      const margin = 28;
+      const pageWidth = pdf.internal.pageSize.getWidth() - margin * 2;
+      const pageHeight = pdf.internal.pageSize.getHeight() - margin * 2;
+      // Slice into printable A4 pages instead of producing a single oversized PDF.
+      const sliceHeight = Math.floor(pageHeight * canvas.width / pageWidth);
+      for (let offset = 0; offset < canvas.height; offset += sliceHeight) {
+        if (offset > 0) pdf.addPage();
+        const slice = document.createElement("canvas");
+        slice.width = canvas.width;
+        slice.height = Math.min(sliceHeight, canvas.height - offset);
+        const context = slice.getContext("2d");
+        if (!context) throw new Error("Canvas is unavailable");
+        context.drawImage(canvas, 0, offset, canvas.width, slice.height, 0, 0, slice.width, slice.height);
+        pdf.addImage(slice.toDataURL("image/png"), "PNG", margin, margin, pageWidth, slice.height * pageWidth / canvas.width, undefined, "FAST");
+      }
       pdf.save("color-palette-results.pdf");
       trackEvent("palette_exported", {
         format: "pdf",
@@ -253,6 +286,8 @@ export default function Home() {
         description: "Could not export to PDF. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setExportBusy(false);
     }
   };
 
@@ -348,7 +383,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hidden export cards for PNG/PDF generation */}
-      <div className="fixed top-0 left-[-9999px]">
+      <div className="fixed top-0 left-[-9999px]" aria-hidden="true">
         <ExportCards pairs={pairs} favorites={favorites} />
       </div>
 
@@ -358,6 +393,16 @@ export default function Home() {
           colors={colors}
           onColorsChange={setColors}
           onTestPalette={handleTestPalette}
+        />
+
+        <PaletteDownloads
+          colorCount={colors.length}
+          favoriteCount={pairs.filter(pair => favorites.has(pair.id)).length}
+          busy={exportBusy}
+          onPalettePNG={() => handlePaletteDownload("png")}
+          onPaletteText={() => handlePaletteDownload("txt")}
+          onFavoritesPNG={handleExportPNG}
+          onFavoritesPDF={handleExportPDF}
         />
 
         {pairs.length > 0 && (
