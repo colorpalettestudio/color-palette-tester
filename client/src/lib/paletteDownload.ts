@@ -1,4 +1,4 @@
-import { rgbToHex, type RGB, type StudioPairing } from "./colorUtils";
+import { getContrastRatio, rgbToHex, type RGB, type StudioPairing } from "./colorUtils";
 
 export function createStudioCode(colors: RGB[], pairings?: StudioPairing[]): string {
   const colorNames = Array.from(new Set(colors.map(rgbToHex))).map((hex, index) => ({
@@ -35,7 +35,7 @@ export function downloadPalettePNG(
   const paletteHeight = 150 + rows * 220;
   const pairColumns = Math.max(1, Math.min(3, Math.floor((width - 80) / 280)));
   const pairRows = Math.ceil(pairings.length / pairColumns);
-  const height = paletteHeight + (pairings.length ? 80 + pairRows * 200 : 0);
+  const height = paletteHeight + (pairings.length ? 80 + pairRows * 224 : 0);
   const canvas = document.createElement("canvas");
   canvas.width = width * 2;
   canvas.height = height * 2;
@@ -67,7 +67,7 @@ export function downloadPalettePNG(
     const cardWidth = (width - 80) / pairColumns - 20;
     pairings.forEach((pair, index) => {
       const x = 40 + (index % pairColumns) * ((width - 80) / pairColumns);
-      const y = paletteHeight + 50 + Math.floor(index / pairColumns) * 200;
+      const y = paletteHeight + 50 + Math.floor(index / pairColumns) * 224;
       const fg = rgbToHex(pair.foreground).toUpperCase();
       const bg = rgbToHex(pair.background).toUpperCase();
       ctx.fillStyle = bg;
@@ -82,6 +82,8 @@ export function downloadPalettePNG(
       ctx.font = "16px monospace";
       ctx.fillText(`Text: ${fg}`, x, y + 130);
       ctx.fillText(`Background: ${bg}`, x, y + 156);
+      ctx.font = "bold 16px sans-serif";
+      ctx.fillText(`Contrast score: ${getContrastRatio(pair.foreground, pair.background).toFixed(2)}:1`, x, y + 182);
     });
   }
   const data = canvas.toDataURL("image/png");

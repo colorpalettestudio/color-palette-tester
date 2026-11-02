@@ -136,15 +136,25 @@ export default function PaletteDownloads({
                     className="flex min-w-0 items-stretch overflow-hidden rounded-lg border border-border/70 bg-background"
                     data-testid={`selected-pair-${pair.id}`}
                   >
-                    <div
-                      className="flex min-h-12 min-w-0 flex-1 items-center justify-between gap-2 px-3 py-2"
-                      style={{ backgroundColor: background, color: foreground }}
-                      aria-label={`Text ${foreground} on background ${background}`}
-                    >
-                      <span className="min-w-0 truncate text-xs font-semibold">Aa</span>
-                      <span className="shrink-0 font-mono text-[10px] font-medium">{foreground}</span>
-                      <span className="h-4 w-px shrink-0 opacity-30" style={{ backgroundColor: foreground }} aria-hidden="true" />
-                      <span className="shrink-0 font-mono text-[10px] font-medium">{background}</span>
+                    <div className="min-w-0 flex-1">
+                      <div
+                        className="min-h-12 min-w-0 px-3 py-2 text-[11px] font-medium leading-snug"
+                        style={{ backgroundColor: background, color: foreground }}
+                        aria-label={`Text ${foreground} on background ${background}`}
+                      >
+                        <span className="break-words">
+                          Text {foreground} on background {background}
+                        </span>
+                      </div>
+                      <div
+                        className="flex min-w-0 items-center justify-between gap-2 border-t border-border/70 px-3 py-1.5 text-[11px]"
+                        data-testid={`selected-pair-score-${pair.id}`}
+                      >
+                        <span className="min-w-0 truncate text-muted-foreground">Contrast score</span>
+                        <span className="shrink-0 font-mono font-medium tabular-nums text-foreground">
+                          {pair.ratio.toFixed(2)}:1
+                        </span>
+                      </div>
                     </div>
                     <button
                       type="button"
