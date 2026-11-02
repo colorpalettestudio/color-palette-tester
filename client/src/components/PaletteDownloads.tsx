@@ -51,6 +51,33 @@ export default function PaletteDownloads({
       </header>
 
       <div className="space-y-3.5 p-3.5 sm:p-4">
+        <div
+          role="group"
+          aria-label="Palette color preview"
+          data-testid="download-palette-preview"
+          className="flex h-[120px] w-full overflow-hidden rounded-lg border border-border bg-muted/30"
+        >
+          {hasColors ? (
+            colors.map((color, index) => {
+              const colorHex = hex(color);
+              return (
+                <div
+                  key={`${colorHex}-${index}`}
+                  title={`Color ${index + 1} ${colorHex}`}
+                  aria-label={`Color ${index + 1} ${colorHex}`}
+                  data-testid={`download-palette-bar-${index}`}
+                  className="min-w-0 flex-1 basis-0 border-r border-white/70 last:border-r-0"
+                  style={{ backgroundColor: colorHex }}
+                />
+              );
+            })
+          ) : (
+            <div className="flex w-full items-center justify-center px-3 text-center text-xs text-muted-foreground">
+              Your palette preview will appear here.
+            </div>
+          )}
+        </div>
+
         <div className="flex items-center justify-between gap-3 rounded-lg border border-border/70 bg-background/70 px-3 py-2">
           <p className="min-w-0 text-[11px] leading-relaxed text-muted-foreground">
             Saved on this browser only. Clearing browser data removes your work.

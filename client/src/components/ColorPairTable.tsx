@@ -86,8 +86,8 @@ export default function ColorPairTable({
           </div>
         </div>
         <div className="text-sm font-semibold text-foreground sm:text-center">Contrast score</div>
-        <div className="flex items-center justify-between gap-3 sm:justify-end">
-          <span className="text-sm font-semibold text-foreground">Keep pairing</span>
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 sm:justify-end">
+          <span className="w-full text-sm font-semibold text-foreground sm:text-right">Add to chosen pairings</span>
           <button type="button" onClick={onSelectAll} disabled={filteredPairs.length === 0} className="rounded px-1.5 py-1 text-xs font-medium text-primary underline underline-offset-2 hover:text-primary/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50" data-testid="button-select-all">Choose all shown</button>
           <button type="button" onClick={onClearFavorites} disabled={favorites.size === 0} className="rounded px-1.5 py-1 text-xs font-medium text-muted-foreground underline underline-offset-2 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50" data-testid="button-clear-favorites">Clear chosen</button>
         </div>
@@ -122,13 +122,13 @@ export default function ColorPairTable({
                   <span className="font-mono text-base font-bold tabular-nums text-foreground">{pair.ratio.toFixed(2)}:1</span>
                 </div>
                 <label className="flex items-center justify-between gap-3 border-t border-border/60 pt-2 text-xs text-muted-foreground sm:min-w-[130px] sm:justify-center sm:border-0 sm:pt-0">
-                  <span>{favorites.has(pair.id) ? "Chosen" : "Keep pairing"}</span>
+                  <span>{favorites.has(pair.id) ? "Added" : "Add"}</span>
                   <Checkbox
                     checked={favorites.has(pair.id)}
                     onCheckedChange={() => onToggleFavorite(pair.id)}
                     data-testid={`checkbox-favorite-${pair.id}`}
                     className="h-6 w-6"
-                    aria-label={`Keep ${fgHex} text on ${bgHex} background`}
+                    aria-label={`Add ${fgHex} text on ${bgHex} background to chosen pairings`}
                   />
                 </label>
               </div>
