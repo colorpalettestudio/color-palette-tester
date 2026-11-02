@@ -13,9 +13,9 @@ export default function FAQSection() {
         "Paste your brand colors as HEX, RGB, or HSL, separated by spaces, line breaks, or commas. Contrast scores update automatically for every text-and-background combination.",
     },
     {
-      question: "What do the numeric benchmarks mean?",
+      question: "What do the contrast filters mean?",
       answer:
-        "Choose All pairings to see every combination, or choose 3:1, 4:1, 5:1, or 7:1 to see pairings at or above that contrast score. Higher numbers mean stronger contrast. Scores are a design aid, not a certification or a guarantee of readability.",
+        "Choose All Pairings to see every combination. Basic shows scores of at least 3:1, AA (Standard) at least 4.5:1, and AAA (Enhanced) at least 7:1. Higher scores mean stronger contrast. These filters are a design aid, not a certification or a guarantee of readability.",
     },
     {
       question: "Can I export my favorite pairs?",

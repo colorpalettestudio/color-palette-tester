@@ -28,7 +28,7 @@ export default function EducationSections() {
             </div>
             <div className="text-center space-y-1">
               <p className="text-sm font-semibold text-green-600">6.7:1 contrast score</p>
-              <p className="text-xs text-muted-foreground">Above a 5:1 minimum score</p>
+              <p className="text-xs text-muted-foreground">Above the AA (Standard) minimum score</p>
             </div>
           </div>
           
@@ -47,7 +47,7 @@ export default function EducationSections() {
             </div>
             <div className="text-center space-y-1">
               <p className="text-sm font-semibold text-red-600">1.4:1 contrast score</p>
-              <p className="text-xs text-muted-foreground">Below a 5:1 minimum score</p>
+              <p className="text-xs text-muted-foreground">Below the AA (Standard) minimum score</p>
             </div>
           </div>
         </div>
@@ -90,15 +90,15 @@ export default function EducationSections() {
         </p>
         <div className="grid sm:grid-cols-2 gap-4">
           <div className="p-4 bg-card rounded-md border border-card-border">
-            <p className="font-bold text-foreground">3:1 benchmark</p>
+            <p className="font-bold text-foreground">Basic · 3:1</p>
             <p className="text-sm text-muted-foreground">A lower score target for comparing larger, bolder display text.</p>
           </div>
           <div className="p-4 bg-card rounded-md border border-card-border">
-            <p className="font-bold text-foreground">5:1 minimum score</p>
+            <p className="font-bold text-foreground">AA (Standard) · 4.5:1</p>
             <p className="text-sm text-muted-foreground">A practical target for comparing general-purpose text pairs.</p>
           </div>
           <div className="p-4 bg-card rounded-md border border-card-border">
-            <p className="font-bold text-foreground">7:1 benchmark</p>
+            <p className="font-bold text-foreground">AAA (Enhanced) · 7:1</p>
             <p className="text-sm text-muted-foreground">A higher target that helps identify pairs with stronger separation.</p>
           </div>
           <div className="p-4 bg-card rounded-md border border-card-border">

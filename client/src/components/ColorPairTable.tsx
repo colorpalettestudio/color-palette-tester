@@ -10,7 +10,7 @@ export interface ColorPair {
   id: string;
 }
 
-export type PairFilter = "all" | 3 | 4 | 5 | 7;
+export type PairFilter = "all" | 3 | 4.5 | 7;
 
 interface ColorPairTableProps {
   pairs: ColorPair[];
@@ -39,17 +39,16 @@ export default function ColorPairTable({
     pairFilter === "all" || pair.ratio >= pairFilter
   ));
   const filters: { id: PairFilter; label: string }[] = [
-    { id: "all", label: "All pairings" },
-    { id: 3, label: "3:1" },
-    { id: 4, label: "4:1" },
-    { id: 5, label: "5:1" },
-    { id: 7, label: "7:1" },
+    { id: "all", label: "All Pairings" },
+    { id: 3, label: "Basic" },
+    { id: 4.5, label: "AA (Standard)" },
+    { id: 7, label: "AAA (Enhanced)" },
   ];
 
   return (
     <div className="space-y-4">
       <section aria-label="Pairing contrast filter" className="rounded-xl border border-border bg-card/70 p-3 sm:p-4">
-        <p className="mb-2 text-sm font-medium text-foreground">Show pairings with a contrast score of at least…</p>
+        <p className="mb-2 text-sm font-medium text-foreground">Filter pairings by contrast level</p>
         <div className="flex flex-wrap gap-1.5" role="group" aria-label="Minimum contrast score">
           {filters.map(filter => (
             <Button
@@ -58,6 +57,7 @@ export default function ColorPairTable({
               variant={pairFilter === filter.id ? "secondary" : "ghost"}
               size="sm"
               onClick={() => onPairFilterChange(filter.id)}
+              title={filter.id === "all" ? "Show every pairing" : `Minimum contrast score: ${filter.id}:1`}
               aria-pressed={pairFilter === filter.id}
               data-testid={`filter-${filter.id}`}
               className="h-8 px-3 text-xs"
@@ -98,7 +98,7 @@ export default function ColorPairTable({
           <p>No pairings meet this contrast score. Try a lower score or show all pairings.</p>
           <div className="mt-3 flex flex-wrap justify-center gap-2">
             <Button type="button" size="sm" variant="outline" onClick={() => onPairFilterChange(3)}>
-              Show 3:1 and higher
+              Show Basic pairings
             </Button>
             <Button type="button" size="sm" variant="ghost" onClick={() => onPairFilterChange("all")}>
               Show all pairings

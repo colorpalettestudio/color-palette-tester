@@ -1,4 +1,4 @@
 - [Palette exports](palette-exports.md) — user wants design-focused exports without WCAG passing/failing information.
-- [Contrast terminology](contrast-terminology.md) — use selectable numeric contrast benchmarks rather than WCAG labels.
+- [Contrast terminology](contrast-terminology.md) — match reference filters: All Pairings, Basic, AA (Standard), AAA (Enhanced); retain numeric pair scores.
 - [Dependency security](dependency-security.md) — clean installs can reject old lockfile versions that previously ran; update blocked packages, never bypass checks.
 - [Workspace flow](workspace-flow.md) — three visible steps on one page; live results and comparison before the collection on mobile.

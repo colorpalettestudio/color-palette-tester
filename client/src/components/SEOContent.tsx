@@ -6,7 +6,7 @@ export default function SEOContent() {
           About the Color Palette Tester
         </h2>
         <p className="text-base text-muted-foreground leading-relaxed">
-          The Color Palette Tester gives every pairing in a brand or website palette a contrast score. Paste HEX, RGB, or HSL values, then view all pairings or filter to a minimum score of 3:1, 4:1, 5:1, or 7:1. Scores are a useful design aid; always review color choices in their intended context.
+          The Color Palette Tester gives every pairing in a brand or website palette a contrast score. Paste HEX, RGB, or HSL values, then view All Pairings or filter by Basic, AA (Standard), or AAA (Enhanced). Scores are a useful design aid; always review color choices in their intended context.
         </p>
       </div>
 
@@ -28,7 +28,7 @@ export default function SEOContent() {
         </h2>
         <ol className="space-y-2 text-base text-muted-foreground list-decimal list-inside">
           <li>Paste your brand colors as HEX, RGB, or HSL values — separated by spaces, line breaks, or commas.</li>
-          <li>Show all pairings or choose a minimum score: 3:1, 4:1, 5:1, or 7:1.</li>
+          <li>Show All Pairings or choose Basic, AA (Standard), or AAA (Enhanced).</li>
           <li>Scores update automatically as you edit your colors.</li>
           <li>Select your favorite pairs, then open Download and choose colors only or colors and pairings.</li>
         </ol>
