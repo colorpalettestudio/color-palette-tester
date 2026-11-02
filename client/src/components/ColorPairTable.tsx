@@ -1,99 +1,70 @@
 import { type RGB, rgbToHex } from "@/lib/colorUtils";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Check, X } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 
 export interface ColorPair {
   foreground: RGB;
   background: RGB;
   ratio: number;
-  passes: boolean;
   id: string;
 }
 
-export type PairFilter = "all" | "meets" | "below";
+export type PairFilter = "all" | 3 | 4 | 5 | 7;
 
 interface ColorPairTableProps {
   pairs: ColorPair[];
-  threshold: number;
+  pairFilter: PairFilter;
   favorites: Set<string>;
   onToggleFavorite: (id: string) => void;
   onSelectAll: () => void;
   onClearFavorites: () => void;
-  onThresholdChange: (value: number) => void;
-  displayFilter: PairFilter;
-  onDisplayFilterChange: (value: PairFilter) => void;
+  onPairFilterChange: (value: PairFilter) => void;
   previewFontSize: number;
   onPreviewFontSizeChange: (size: number) => void;
 }
 
 export default function ColorPairTable({
   pairs,
-  threshold,
+  pairFilter,
   favorites,
   onToggleFavorite,
   onSelectAll,
   onClearFavorites,
-  onThresholdChange,
-  displayFilter,
-  onDisplayFilterChange,
+  onPairFilterChange,
   previewFontSize,
   onPreviewFontSizeChange,
 }: ColorPairTableProps) {
-  const passCount = pairs.filter(pair => pair.ratio >= threshold).length;
-  const failCount = pairs.length - passCount;
   const filteredPairs = pairs.filter(pair => (
-    displayFilter === "all" ||
-    (displayFilter === "meets" ? pair.ratio >= threshold : pair.ratio < threshold)
+    pairFilter === "all" || pair.ratio >= pairFilter
   ));
-  const filters: { id: PairFilter; label: string; count: number }[] = [
-    { id: "all", label: "All", count: pairs.length },
-    { id: "meets", label: "Meets target", count: passCount },
-    { id: "below", label: "Below target", count: failCount },
+  const filters: { id: PairFilter; label: string }[] = [
+    { id: "all", label: "All pairings" },
+    { id: 3, label: "3:1" },
+    { id: 4, label: "4:1" },
+    { id: 5, label: "5:1" },
+    { id: 7, label: "7:1" },
   ];
 
   return (
     <div className="space-y-4">
-      <section aria-label="Pair score controls and summary" className="rounded-xl border border-border bg-card/70 p-3 sm:p-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="mr-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Benchmark</span>
-          {[3, 4.5, 7].map(value => (
+      <section aria-label="Pairing contrast filter" className="rounded-xl border border-border bg-card/70 p-3 sm:p-4">
+        <p className="mb-2 text-sm font-medium text-foreground">Show pairings with a contrast score of at least…</p>
+        <div className="flex flex-wrap gap-1.5" role="group" aria-label="Minimum contrast score">
+          {filters.map(filter => (
             <Button
-              key={value}
+              key={String(filter.id)}
               type="button"
-              variant={threshold === value ? "default" : "outline"}
+              variant={pairFilter === filter.id ? "secondary" : "ghost"}
               size="sm"
-              onClick={() => onThresholdChange(value)}
-              aria-pressed={threshold === value}
-              data-testid={`benchmark-${value}`}
+              onClick={() => onPairFilterChange(filter.id)}
+              aria-pressed={pairFilter === filter.id}
+              data-testid={`filter-${filter.id}`}
+              className="h-8 px-3 text-xs"
             >
-              {value}:1
+              {filter.label}
             </Button>
           ))}
-          <span className="ml-1 text-xs text-muted-foreground">Higher numbers mean stronger contrast.</span>
-        </div>
-        <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border/70 pt-3">
-          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter color pairs">
-            {filters.map(filter => (
-              <Button
-                key={filter.id}
-                type="button"
-                variant={displayFilter === filter.id ? "secondary" : "ghost"}
-                size="sm"
-                onClick={() => onDisplayFilterChange(filter.id)}
-                aria-pressed={displayFilter === filter.id}
-                data-testid={`filter-${filter.id}`}
-                className="h-8 px-2.5 text-xs"
-              >
-                {filter.label} <span className="ml-1.5 font-mono tabular-nums">{filter.count}</span>
-              </Button>
-            ))}
-          </div>
-          <div className="ml-auto flex items-center gap-3 text-xs" aria-live="polite">
-            <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400"><Check className="h-3.5 w-3.5" aria-hidden="true" />{passCount} meet</span>
-            <span className="inline-flex items-center gap-1 text-red-700 dark:text-red-400"><X className="h-3.5 w-3.5" aria-hidden="true" />{failCount} below</span>
-          </div>
         </div>
       </section>
 
@@ -124,16 +95,21 @@ export default function ColorPairTable({
 
       {filteredPairs.length === 0 ? (
         <div className="rounded-lg border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground">
-          {displayFilter === "below"
-            ? "No pairs are below this benchmark. Try All or Meets target."
-            : "No pairs meet this benchmark. Try All or Below target."}
+          <p>No pairings meet this contrast score. Try a lower score or show all pairings.</p>
+          <div className="mt-3 flex flex-wrap justify-center gap-2">
+            <Button type="button" size="sm" variant="outline" onClick={() => onPairFilterChange(3)}>
+              Show 3:1 and higher
+            </Button>
+            <Button type="button" size="sm" variant="ghost" onClick={() => onPairFilterChange("all")}>
+              Show all pairings
+            </Button>
+          </div>
         </div>
       ) : (
         <div className="space-y-3">
           {filteredPairs.map(pair => {
             const fgHex = rgbToHex(pair.foreground).toUpperCase();
             const bgHex = rgbToHex(pair.background).toUpperCase();
-            const meets = pair.ratio >= threshold;
             return (
               <div key={pair.id} className="grid min-w-0 grid-cols-1 items-center gap-2.5 rounded-xl border border-border/80 bg-card/45 p-2.5 sm:grid-cols-[minmax(0,1fr)_auto_auto] sm:gap-4 sm:p-3" data-testid={`row-pair-${pair.id}`}>
                 <div
@@ -143,10 +119,6 @@ export default function ColorPairTable({
                   <span className="break-words font-medium">Text {fgHex} on background {bgHex}</span>
                 </div>
                 <div className="flex items-center justify-between gap-3 sm:min-w-[120px] sm:justify-center">
-                  <span className={`inline-flex items-center gap-1.5 text-sm font-semibold ${meets ? "text-emerald-700 dark:text-emerald-400" : "text-red-700 dark:text-red-400"}`}>
-                    {meets ? <Check className="h-4 w-4" aria-hidden="true" /> : <X className="h-4 w-4" aria-hidden="true" />}
-                    {meets ? "Meets" : "Below"}
-                  </span>
                   <span className="font-mono text-base font-bold tabular-nums text-foreground">{pair.ratio.toFixed(2)}:1</span>
                 </div>
                 <label className="flex items-center justify-between gap-3 border-t border-border/60 pt-2 text-xs text-muted-foreground sm:min-w-[130px] sm:justify-center sm:border-0 sm:pt-0">

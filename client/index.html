@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <title>Color Palette Tester — Compare Every Pairing’s Contrast Score</title>
-    <meta name="description" content="Compare every color pairing’s contrast score. Choose a 3:1, 4.5:1, or 7:1 benchmark, filter results, and export your palette and favorites." />
+    <meta name="description" content="Compare every color pairing’s contrast score. View all pairings or filter to 3:1, 4:1, 5:1, or 7:1, then export your palette and favorites." />
     <link rel="canonical" href="https://www.colorpalettetester.com/" />
     
     <!-- Open Graph -->
     <meta property="og:title" content="Free Color Palette Tester" />
-    <meta property="og:description" content="Compare every pairing’s contrast score with a 3:1, 4.5:1, or 7:1 benchmark. Copy or download your palette and selected pairings." />
+    <meta property="og:description" content="View all color pairings or filter to a contrast score of at least 3:1, 4:1, 5:1, or 7:1. Copy or download your palette and selected pairings." />
     <meta property="og:url" content="https://www.colorpalettetester.com/" />
     <meta property="og:image" content="https://www.colorpalettetester.com/og-image.png" />
     <meta property="og:type" content="website" />
@@ -36,7 +36,7 @@
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "Color Palette Tester",
-      "description": "Compare all color pairings at once with numeric contrast scores and a selectable 3:1, 4.5:1, or 7:1 benchmark. Export your palette and chosen pairings.",
+      "description": "Compare all color pairings with numeric contrast scores, or filter to a minimum score of 3:1, 4:1, 5:1, or 7:1. Export your palette and chosen pairings.",
       "applicationCategory": "DesignApplication",
       "operatingSystem": "Web",
       "url": "https://www.colorpalettetester.com/",
@@ -59,7 +59,7 @@
       "@context": "https://schema.org",
       "@type": "FAQPage",
       "mainEntity": [
-        {"@type":"Question","name":"Can I choose a contrast benchmark?","acceptedAnswer":{"@type":"Answer","text":"Yes—choose 3:1, 4.5:1, or 7:1. Every pairing shows its contrast score and whether it meets your selected benchmark."}},
+        {"@type":"Question","name":"Can I filter by contrast score?","acceptedAnswer":{"@type":"Answer","text":"Yes—view All pairings, or choose 3:1, 4:1, 5:1, or 7:1 to show pairings at or above that score."}},
         {"@type":"Question","name":"How many colors can I test?","acceptedAnswer":{"@type":"Answer","text":"Typically 5–10 works best, but you can add more depending on device performance."}},
         {"@type":"Question","name":"Can I export pairings?","acceptedAnswer":{"@type":"Answer","text":"Yes—open Download, choose colors only or colors and pairings, then save a PNG or copy HEX codes or Studio Code."}},
         {"@type":"Question","name":"Is my data stored?","acceptedAnswer":{"@type":"Answer","text":"No. The tool runs client-side; palettes aren't saved unless you export."}},
@@ -90,7 +90,7 @@
           "@type": "HowToStep",
           "position": 2,
           "name": "Choose Your Contrast Benchmark",
-          "text": "Choose a contrast benchmark of 3:1, 4.5:1, or 7:1. The default is 4.5:1. Higher benchmarks require more contrast between text and background.",
+          "text": "Start with All pairings, or choose a minimum contrast score of 3:1, 4:1, 5:1, or 7:1 to filter the combinations shown.",
           "itemListElement": {
             "@type": "HowToDirection",
             "text": "Change the numeric benchmark to compare your palette against a different contrast target."
@@ -100,7 +100,7 @@
           "@type": "HowToStep",
           "position": 3,
           "name": "Test All Color Combinations",
-          "text": "Scores update automatically as you edit your colors. The tool calculates contrast ratios for every text-and-background pairing and shows which meet your selected numeric target.",
+          "text": "Scores update automatically as you edit your colors. The tool calculates contrast ratios for every text-and-background pairing and shows combinations at or above your selected minimum score, or all combinations when All pairings is selected.",
           "itemListElement": {
             "@type": "HowToDirection",
             "text": "The tool automatically tests every color combination at once, saving you hours of manual testing"
@@ -110,7 +110,7 @@
           "@type": "HowToStep",
           "position": 4,
           "name": "Review and Export Results",
-          "text": "Select your favorite combinations and open Download. Choose colors only or colors and pairings, then save a PNG or copy HEX codes or Studio Code. Use Meets target to see pairs that meet your selected numeric contrast benchmark.",
+          "text": "Select your favorite combinations and open Download in Step 3. Choose colors only or colors and pairings, then save a PNG or copy HEX codes or Studio Code.",
           "itemListElement": {
             "@type": "HowToDirection",
             "text": "Export selected pairs to share with your design team or include in brand style guides"

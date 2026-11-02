@@ -31,8 +31,7 @@ export default function Home() {
   const colors = useMemo(() => colorsFromInput(paletteInput), [paletteInput]);
   const [storageWarning, setStorageWarning] = useState(initial.warning);
   const [saveFailed, setSaveFailed] = useState(false);
-  const [threshold, setThreshold] = useState(4.5);
-  const [displayFilter, setDisplayFilter] = useState<PairFilter>("all");
+  const [pairFilter, setPairFilter] = useState<PairFilter>("all");
   const [pairs, setPairs] = useState<ColorPair[]>([]);
   const [favorites, setFavorites] = useState<Set<string>>(() => new Set(initial.draft.favorites));
   const [previewFontSize, setPreviewFontSize] = useState(14);
@@ -78,10 +77,7 @@ export default function Home() {
       setPairs([]);
       trackEvent("palette_tested", {
         color_count: colors.length,
-        contrast_benchmark: threshold,
-        display_filter: displayFilter,
         pair_count: 0,
-        passing_pair_count: 0,
       });
       return;
     }
@@ -100,7 +96,6 @@ export default function Home() {
           const fg = colors[i];
           const bg = colors[j];
           const ratio = getContrastRatio(fg, bg);
-          const passes = ratio >= threshold;
           const id = `${rgbToHex(fg)}-${rgbToHex(bg)}`;
           
           newPairs.push({
@@ -108,7 +103,6 @@ export default function Home() {
             foreground: fg,
             background: bg,
             ratio,
-            passes,
           });
         }
       }
@@ -128,12 +122,9 @@ export default function Home() {
     setPairs(newPairs);
     trackEvent("palette_tested", {
       color_count: colors.length,
-      contrast_benchmark: threshold,
-      display_filter: displayFilter,
       pair_count: newPairs.length,
-      passing_pair_count: newPairs.filter(pair => pair.ratio >= threshold).length,
     });
-  }, [colors, threshold, displayFilter]);
+  }, [colors]);
 
 
   const handleSampleColors = () => {
@@ -162,16 +153,13 @@ export default function Home() {
   };
 
   const handleSelectAll = () => {
-    const filteredPairs = displayFilter === "all"
+    const filteredPairs = pairFilter === "all"
       ? pairs 
-      : pairs.filter(pair => displayFilter === "meets"
-        ? pair.ratio >= threshold
-        : pair.ratio < threshold);
+      : pairs.filter(pair => pair.ratio >= pairFilter);
     
     setFavorites(previous => new Set([...Array.from(previous), ...filteredPairs.map(pair => pair.id)]));
     trackEvent("all_pairs_selected", {
-      contrast_benchmark: threshold,
-      display_filter: displayFilter,
+      contrast_filter: pairFilter,
       selected_pair_count: filteredPairs.length,
     });
     toast({
@@ -233,14 +221,9 @@ export default function Home() {
     }
   };
 
-  const handleThresholdChange = (value: number) => {
-    setThreshold(value);
-    trackEvent("contrast_benchmark_changed", { contrast_benchmark: value });
-  };
-
-  const handleDisplayFilterChange = (value: PairFilter) => {
-    setDisplayFilter(value);
-    trackEvent("contrast_filter_changed", { display_filter: value, contrast_benchmark: threshold });
+  const handlePairFilterChange = (value: PairFilter) => {
+    setPairFilter(value);
+    trackEvent("contrast_filter_changed", { contrast_filter: value });
   };
 
   return (
@@ -274,15 +257,12 @@ export default function Home() {
           <div id="results-section" className="min-w-0 scroll-mt-6 lg:col-start-1 lg:row-start-2">
             <ResultsSection
               pairs={pairs}
-              threshold={threshold}
-              onThresholdChange={handleThresholdChange}
+              pairFilter={pairFilter}
+              onPairFilterChange={handlePairFilterChange}
               favorites={favorites}
               onToggleFavorite={handleToggleFavorite}
-              onOpenDownload={openDownload}
               onSelectAll={handleSelectAll}
               onClearFavorites={handleClearFavorites}
-              displayFilter={displayFilter}
-              onDisplayFilterChange={handleDisplayFilterChange}
               previewFontSize={previewFontSize}
               onPreviewFontSizeChange={setPreviewFontSize}
             />

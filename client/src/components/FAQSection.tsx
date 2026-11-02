@@ -15,7 +15,7 @@ export default function FAQSection() {
     {
       question: "What do the numeric benchmarks mean?",
       answer:
-        "Choose 3:1, 4.5:1, or 7:1 as a comparison target. A pair is marked passing when its score is equal to or above the selected number. This helps compare colors, but is not a certification or a guarantee of readability.",
+        "Choose All pairings to see every combination, or choose 3:1, 4:1, 5:1, or 7:1 to see pairings at or above that contrast score. Higher numbers mean stronger contrast. Scores are a design aid, not a certification or a guarantee of readability.",
     },
     {
       question: "Can I export my favorite pairs?",

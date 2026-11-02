@@ -8,7 +8,7 @@ export default function HowItWorksSection() {
     {
       number: 2,
       title: "Compare & choose",
-      description: "Scores update automatically. Choose a 3:1, 4.5:1, or 7:1 target and keep the pairings you like.",
+      description: "Scores update automatically. Show all pairings or filter to a minimum score of 3:1, 4:1, 5:1, or 7:1, then keep the pairings you like.",
     },
     {
       number: 3,
