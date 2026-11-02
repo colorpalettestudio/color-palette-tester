@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { X, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { parseColor, rgbToHex, type RGB, parseColorInput, parseStudioCode, type StudioPairing } from "@/lib/colorUtils";
+import { parseColor, rgbToHex, type RGB, parseColorInput } from "@/lib/colorUtils";
 
 interface ColorItem {
   color: RGB;
@@ -10,21 +10,21 @@ interface ColorItem {
 
 interface ColorPaletteBuilderProps {
   colors: RGB[];
-  onColorsChange: (colors: RGB[]) => void;
+  bulkInput: string;
+  onInputChange: (input: string) => void;
   onSampleClick: () => string;
   onTestPalette: () => void;
-  onImportPairings?: (pairings: StudioPairing[]) => void;
 }
 
 export default function ColorPaletteBuilder({
   colors,
-  onColorsChange,
+  bulkInput,
+  onInputChange: setBulkInput,
   onSampleClick,
   onTestPalette,
-  onImportPairings,
 }: ColorPaletteBuilderProps) {
-  const [colorItems, setColorItems] = useState<ColorItem[]>([]);
-  const [bulkInput, setBulkInput] = useState("");
+  const [colorItems, setColorItems] = useState<ColorItem[]>(() =>
+    colors.map((color, i) => ({ color, name: `Color ${i + 1}` })));
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [quickAddInput, setQuickAddInput] = useState("");
   const [quickAddError, setQuickAddError] = useState("");
@@ -32,52 +32,10 @@ export default function ColorPaletteBuilder({
   const quickAddInputRef = useRef<HTMLInputElement>(null);
   const colorPickerRef = useRef<HTMLInputElement>(null);
 
-  // Initialize textarea with default colors on mount
+  // The parent owns the input and parsed colors, including restored drafts.
   useEffect(() => {
-    if (colors.length > 0 && !bulkInput) {
-      const hexColors = colors.map(c => rgbToHex(c)).join(', ');
-      setBulkInput(hexColors);
-    }
-  }, []);
-
-  // Auto-add colors from textarea in real-time
-  useEffect(() => {
-    if (!bulkInput.trim()) {
-      setColorItems([]);
-      onColorsChange([]);
-      return;
-    }
-
-    const colorStrings = parseColorInput(bulkInput);
-    const newItems: ColorItem[] = [];
-    
-    colorStrings.forEach(colorStr => {
-      const rgb = parseColor(colorStr);
-      if (rgb) {
-        const hexValue = rgbToHex(rgb);
-        const isDuplicate = newItems.some(item => rgbToHex(item.color) === hexValue);
-        if (!isDuplicate) {
-          newItems.push({
-            color: rgb,
-            name: `Color ${newItems.length + 1}`,
-          });
-        }
-      }
-    });
-    
-    setColorItems(newItems);
-    onColorsChange(newItems.map(item => item.color));
-    const studio = parseStudioCode(bulkInput);
-    if (studio) onImportPairings?.(studio.pairings ?? []);
-  }, [bulkInput]);
-
-  // Sync colors with colorItems
-  const syncColors = (items: ColorItem[]) => {
-    setColorItems(items);
-    onColorsChange(items.map(item => item.color));
-  };
-
-
+    setColorItems(colors.map((color, i) => ({ color, name: `Color ${i + 1}` })));
+  }, [colors]);
 
   const handleRemove = (index: number) => {
     const newItems = colorItems.filter((_, i) => i !== index);
@@ -86,7 +44,6 @@ export default function ColorPaletteBuilder({
       ...item,
       name: `Color ${i + 1}`,
     }));
-    syncColors(renumbered);
     
     // Update textarea to reflect removed color
     const hexColors = renumbered.map(item => rgbToHex(item.color)).join(', ');
@@ -94,10 +51,6 @@ export default function ColorPaletteBuilder({
   };
 
   const handleClearAll = () => {
-    if (colorItems.length === 0) return;
-    
-    setColorItems([]);
-    onColorsChange([]);
     setBulkInput("");
   };
 
@@ -116,14 +69,14 @@ export default function ColorPaletteBuilder({
       return false;
     }
 
-    setBulkInput(current => {
+    {
       // Normalize imported Studio Code and mixed input before appending.
-      const existing = parseColorInput(current)
+      const existing = parseColorInput(bulkInput)
         .map(parseColor)
         .filter((color): color is RGB => color !== null)
         .map(rgbToHex);
-      return Array.from(new Set([...existing, hexValue])).join(", ");
-    });
+      setBulkInput(Array.from(new Set([...existing, hexValue])).join(", "));
+    }
     setQuickAddError("");
     if (source === "text") {
       setQuickAddInput("");
@@ -179,21 +132,6 @@ export default function ColorPaletteBuilder({
     requestAnimationFrame(() => {
       setDraggedIndex(null);
     });
-  };
-
-  const handleUpdateColorHex = (index: number, value: string) => {
-    const rgb = parseColor(value);
-    if (rgb) {
-      const newItems = [...colorItems];
-      newItems[index].color = rgb;
-      syncColors(newItems);
-    }
-  };
-
-  const handleUpdateColorName = (index: number, value: string) => {
-    const newItems = [...colorItems];
-    newItems[index].name = value || `Color ${index + 1}`;
-    syncColors(newItems);
   };
 
   const hasColors = colorItems.length >= 2;
@@ -353,13 +291,15 @@ export default function ColorPaletteBuilder({
             Try Sample Palette
           </Button>
 
-          {colorItems.length > 0 && (
+          {bulkInput.length > 0 && (
             <Button
               onClick={handleClearAll}
               variant="ghost"
               size="icon"
               className="self-center sm:self-auto"
               data-testid="button-clear-palette"
+              aria-label="Clear palette input and selected pairings"
+              title="Clear palette input and selected pairings"
             >
               <Trash2 className="w-4 h-4" />
             </Button>

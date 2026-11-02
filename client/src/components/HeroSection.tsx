@@ -4,7 +4,8 @@ import { type RGB } from "@/lib/colorUtils";
 interface HeroSectionProps {
   onSampleClick: () => string;
   colors: RGB[];
-  onColorsChange: (colors: RGB[]) => void;
+  bulkInput: string;
+  onInputChange: (input: string) => void;
   onTestPalette: () => void;
 }
 
@@ -67,7 +68,8 @@ export function PaletteIntroduction() {
 export default function HeroSection({
   onSampleClick,
   colors,
-  onColorsChange,
+  bulkInput,
+  onInputChange,
   onTestPalette,
 }: HeroSectionProps) {
   return (
@@ -76,7 +78,8 @@ export default function HeroSection({
       <div className="max-w-5xl mx-auto">
         <ColorPaletteBuilder
           colors={colors}
-          onColorsChange={onColorsChange}
+          bulkInput={bulkInput}
+          onInputChange={onInputChange}
           onSampleClick={onSampleClick}
           onTestPalette={onTestPalette}
         />

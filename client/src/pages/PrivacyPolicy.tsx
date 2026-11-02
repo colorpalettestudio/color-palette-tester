@@ -18,8 +18,10 @@ export default function PrivacyPolicy() {
             <h2 className="text-2xl font-bold text-foreground mb-3">Information We Collect</h2>
             <p>
               Color Palette Tester is designed to respect your privacy. All color testing and processing 
-              happens entirely in your browser. We do not collect, store, or transmit the color values 
-              you enter.
+              happens entirely in your browser. Your palette input and selected pairings are saved
+              locally on this browser so you can return to your work. We do not collect or transmit
+              these color values to a server. Use “Reset saved palette” in the palette panel to clear
+              your saved work, or clear your browser data.
             </p>
           </section>
 

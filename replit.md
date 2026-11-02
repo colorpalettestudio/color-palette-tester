@@ -67,8 +67,8 @@ Preferred communication style: Simple, everyday language.
 
 **Client-Side Storage**
 - LocalStorage for cookie consent preferences
-- No persistent storage of user color palettes (privacy-by-design)
-- Favorites stored in component state only (lost on page refresh)
+- Palette input and selected pairings persist in this browser's LocalStorage only; no signup or server storage
+- Users can reset saved work; invalid or unavailable browser storage is reported visibly
 
 ### Design System
 

@@ -18,6 +18,8 @@ interface PaletteDownloadsProps {
   onCopyFavoritesStudio: () => void;
   onDownloadFavoritesStudio: () => void;
   onRemoveFavorite: (id: string) => void;
+  onReset: () => void;
+  storageWarning: string;
 }
 
 function hex(color: RGB) {
@@ -39,6 +41,8 @@ export default function PaletteDownloads({
   onCopyFavoritesStudio,
   onDownloadFavoritesStudio,
   onRemoveFavorite,
+  onReset,
+  storageWarning,
 }: PaletteDownloadsProps) {
   const hasColors = colors.length > 0;
   const hasPairs = selectedPairs.length > 0;
@@ -76,6 +80,20 @@ export default function PaletteDownloads({
       </header>
 
       <div className="space-y-4 p-3.5 sm:p-4">
+        <div className="space-y-2">
+          <p className="text-xs text-muted-foreground">
+            Your palette input and selected pairings are saved on this browser only.
+            No signup or server storage. Clearing browser data removes your saved work.
+          </p>
+          {storageWarning && (
+            <p role="alert" className="text-xs text-destructive" data-testid="palette-storage-warning">
+              {storageWarning}
+            </p>
+          )}
+          <Button type="button" variant="outline" size="sm" onClick={onReset} disabled={busy} data-testid="reset-saved-palette">
+            Reset saved palette
+          </Button>
+        </div>
         <section aria-labelledby="palette-colors-title">
           <div className="mb-2 flex items-baseline justify-between gap-2">
             <h3 id="palette-colors-title" className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">

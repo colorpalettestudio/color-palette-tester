@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { PaletteIntroduction } from "@/components/HeroSection";
@@ -15,45 +15,52 @@ import FAQSection from "@/components/FAQSection";
 import Footer from "@/components/Footer";
 import SEOContent from "@/components/SEOContent";
 import {
-  parseColor,
   parseColorInput,
   getContrastRatio,
-  type RGB,
   rgbToHex,
+  parseStudioCode,
   type StudioPairing,
 } from "@/lib/colorUtils";
+import { colorsFromInput, readPaletteDraft, savePaletteDraft, validFavorites } from "@/lib/paletteStorage";
 import { trackEvent } from "@/lib/analytics";
 import { useToast } from "@/hooks/use-toast";
 
 const SAMPLE_COLORS = "#f91d71, #fd806a, #ffd025, #74d551, #76c4f4, #7c70ff";
 
-// Parse default colors on page load
-const parseDefaultColors = () => {
-  const colorStrings = parseColorInput(SAMPLE_COLORS);
-  return colorStrings.map(str => parseColor(str)).filter((c): c is RGB => c !== null);
-};
-
 export default function Home() {
-  const [colors, setColors] = useState<RGB[]>(parseDefaultColors());
+  const [initial] = useState(() => readPaletteDraft(SAMPLE_COLORS));
+  const [paletteInput, setPaletteInput] = useState(initial.draft.input);
+  const colors = useMemo(() => colorsFromInput(paletteInput), [paletteInput]);
+  const [storageWarning, setStorageWarning] = useState(initial.warning);
+  const [saveFailed, setSaveFailed] = useState(false);
   const [threshold, setThreshold] = useState(4.5);
   const [displayFilter, setDisplayFilter] = useState<"all" | "passing">("all");
   const [pairs, setPairs] = useState<ColorPair[]>([]);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [favorites, setFavorites] = useState<Set<string>>(() => new Set(initial.draft.favorites));
   const [previewFontSize, setPreviewFontSize] = useState(14);
   const [exportBusy, setExportBusy] = useState(false);
   const { toast } = useToast();
 
-  // Removed colors should never leave invisible pairings selected for download.
   useEffect(() => {
-    const hexes = new Set(colors.map(rgbToHex));
-    setFavorites(previous => {
-      const next = new Set(Array.from(previous).filter(id => {
-        const [foreground, background] = id.split("-");
-        return hexes.has(foreground) && hexes.has(background);
-      }));
-      return next.size === previous.size ? previous : next;
-    });
-  }, [colors]);
+    setSaveFailed(!savePaletteDraft(paletteInput, favorites));
+  }, [paletteInput, favorites]);
+
+  const handleInputChange = (input: string) => {
+    setPaletteInput(input);
+    const studio = parseStudioCode(input);
+    setFavorites(previous => new Set(validFavorites(input, studio
+      ? (studio.pairings ?? []).map(pair => `${pair.foreground}-${pair.background}`)
+      : previous)));
+  };
+
+  const handleResetPalette = () => {
+    if (!window.confirm("Clear your palette, unfinished input, and all selected pairings from this browser? This cannot be undone.")) return;
+    setPaletteInput("");
+    setFavorites(new Set());
+    setStorageWarning("");
+    // Persist an empty draft, rather than restoring the sample on the next visit.
+    setSaveFailed(!savePaletteDraft("", []));
+  };
 
   const handlePaletteDownload = (format: "png" | "txt") => {
     if (!colors.length || exportBusy) return;
@@ -317,11 +324,6 @@ export default function Home() {
     }
   };
 
-  const handleImportPairings = (pairings: StudioPairing[]) => {
-    setFavorites(new Set(pairings.map(pair => `${pair.foreground}-${pair.background}`)));
-  };
-
-
   // All summaries and warnings follow the user's selected benchmark.
   const highContrastPairs = pairs.filter(pair => pair.ratio >= threshold);
   const hasNoHighContrastPairs = pairs.length > 0 && highContrastPairs.length === 0;
@@ -375,9 +377,9 @@ export default function Home() {
             <ColorPaletteBuilder
               onSampleClick={handleSampleColors}
               colors={colors}
-              onColorsChange={setColors}
+              bulkInput={paletteInput}
+              onInputChange={handleInputChange}
               onTestPalette={handleTestPalette}
-              onImportPairings={handleImportPairings}
             />
           </div>
           <aside className="min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:sticky lg:top-6 lg:max-h-[calc(100dvh-3rem)] lg:overflow-y-auto">
@@ -396,6 +398,10 @@ export default function Home() {
               onCopyFavoritesStudio={() => handleCopy("pairings", "studio_code")}
               onDownloadFavoritesStudio={() => handleDownloadStudio("pairings")}
               onRemoveFavorite={handleToggleFavorite}
+              onReset={handleResetPalette}
+              storageWarning={saveFailed
+                ? "Browser storage is unavailable or full. Your current changes are not saved and may be lost when you leave or refresh."
+                : storageWarning}
             />
           </aside>
           {pairs.length > 0 && (
